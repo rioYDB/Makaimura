@@ -1,0 +1,26 @@
+# Unity generated files
+[Ll]ibrary/
+[Tt]emp/
+[Tt]arget/
+[Oo]bj/
+.vscode/
+
+# User-specific files
+.idea/
+.idea/*
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# macOS system files
+.DS_Store
+
+# Unity Cloud Build
+*.pidb.meta
