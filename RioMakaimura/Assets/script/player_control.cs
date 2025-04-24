@@ -5,10 +5,7 @@ public class player_control : MonoBehaviour
 {
 	//変数宣言
 	public float moveSpeed;         //移動速度
-	public float addspeed;          //加速
 	public float jumpPower;         //ジャンプ力
-	public int jumpcount = 0;		//ジャンプの初期カウント
-	public int maxjumpcount;		//ジャンプの連続回数制限
 	public LayerMask Ground;        //地面を判別するオブジェクトレイヤー
 	public GameObject bulletPrefab;	//槍のプレハブ
 
@@ -53,15 +50,17 @@ public class player_control : MonoBehaviour
 
 	}
 
-	//床に触れたらjumpcountを0にする
-	//private void OnTriggerEnter2D(Collider2D collision)
-	//{
-	//	if(collision.gameObject.CompareTag("Ground"))
-	//	{
-	//		jumpcount = 0;
-	//	}
-	//}
 
+	// トリガーが発生した時の処理
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		// 接触したオブジェクトのtag名がEnemyの場合は
+		if (collision.gameObject.tag == "Enemy")
+		{
+			// Playerオブジェクトを消去する
+			Destroy(gameObject);
+		}
+	}
 
 
 	//関数名：Jump()
@@ -70,7 +69,7 @@ public class player_control : MonoBehaviour
 	//戻り値：なし
 	void Jump()
 	{
-		if (Input.GetKeyDown(KeyCode.Space))//&&jumpcount<maxjumpcount)
+		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			rb.AddForce(Vector2.up * jumpPower);
 			//++jumpcount;

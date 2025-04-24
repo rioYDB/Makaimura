@@ -65,6 +65,7 @@
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\bullet.cs" />
+    <Compile Include="Assets\script\enemy_control.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
