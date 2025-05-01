@@ -31,7 +31,7 @@ public class player_control : MonoBehaviour
 	{
 
 		//ˆÚ“®ˆ—
-		if (IsGrounded() == true && IsSquat == false && IsJumping == false)
+		if (/*IsGrounded() == true && */IsSquat == false /*&& IsJumping == false*/)
 		{
 
 			Move();
