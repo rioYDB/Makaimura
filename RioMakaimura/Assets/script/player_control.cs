@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 public class player_control : MonoBehaviour
@@ -66,6 +67,9 @@ public class player_control : MonoBehaviour
 
 			// Playerオブジェクトを消去する
 			Destroy(gameObject);
+
+			// 現在のシーンをリロード（最初からやり直し）
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 	}
 

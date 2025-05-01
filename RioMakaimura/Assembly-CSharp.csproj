@@ -64,13 +64,13 @@
     <Compile Include="Assets\script\player_control.cs" />
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\karasu.cs" />
-    <Compile Include="Assets\CameraMove.cs" />
     <Compile Include="Assets\script\enemy_Flower.cs" />
-    <Compile Include="Assets\ZonbiSpawner.cs" />
+    <Compile Include="Assets\script\CameraMove.cs" />
+    <Compile Include="Assets\script\ZonbiSpawner.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\zombi.cs" />
     <Compile Include="Assets\script\bullet.cs" />
-    <Compile Include="Assets\GameManager.cs" />
+    <Compile Include="Assets\script\GameManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
