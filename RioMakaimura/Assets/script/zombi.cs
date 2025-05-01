@@ -38,8 +38,5 @@ public class enemy_control : MonoBehaviour
 		transform.rotation = Quaternion.identity; // 常に回転をリセット（固定）
 	}
 
-	//void Enemy_Karasu(Collider2D collision)
-	//{
-	//	transform.position = new Vector3(-e_moveSpeed, Mathf.Sin(Time.time) * 2.0f + transform.position.y, transform.position.z);
-	//}
+	
 }
