@@ -65,6 +65,7 @@
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\karasu.cs" />
     <Compile Include="Assets\CameraMove.cs" />
+    <Compile Include="Assets\script\enemy_Flower.cs" />
     <Compile Include="Assets\ZonbiSpawner.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\zombi.cs" />
