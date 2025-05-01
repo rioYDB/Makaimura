@@ -598,7 +598,9 @@ MonoBehaviour:
   Ground:
     serializedVersion: 2
     m_Bits: 8
-  bulletPrefab: {fileID: 0}
+  bulletPrefab: {fileID: 2492583762915154637, guid: 0e0b79291ec686a40b4a93847d81455c, type: 3}
+  StandSize: {x: 3.4, y: 3.8, z: 1}
+  SquatSize: {x: 1.7, y: 1.9, z: 1}
 --- !u!114 &971793897
 MonoBehaviour:
   m_ObjectHideFlags: 0

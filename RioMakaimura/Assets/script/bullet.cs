@@ -19,15 +19,27 @@ public class bullet : MonoBehaviour
 
 
 	}
+
+	//画面外に出たらこのオブジェクトを破壊
 	private void OnBecameInvisible()
 	{
 		Destroy(gameObject);
 	}
 
-
-	private void OnTriggerExit2D(Collider2D collision)
+	//敵に触れたらこのオブジェクトを破壊
+	private void OnCollisionEnter2D(Collision2D collision)
 	{
-		if (collision.gameObject.tag == "Activearea")
+		if (collision.gameObject.tag == "Player")
+		{
+			return;
+		}
+
+
+		if (collision.gameObject.tag == "Enemy")
+		{
 			Destroy(collision.gameObject);
+			Destroy(gameObject);
+		}
 	}
+
 }
