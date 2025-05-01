@@ -27,19 +27,12 @@ public class bullet : MonoBehaviour
 	}
 
 	//敵に触れたらこのオブジェクトを破壊
-	private void OnCollisionEnter2D(Collision2D collision)
+	
+	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		//プレイヤーに触れたら何もしない
-		if (collision.gameObject.tag == "Player")
-		{
-			Debug.Log("プレイヤーとの衝突を無視します");
-			return;
-		}
-
 		//Enemyに触れたら破壊する
 		if (collision.gameObject.tag == "Enemy")
 		{
-
 			Debug.Log("敵との衝突を検出");
 			Destroy(collision.gameObject);
 			Destroy(gameObject);
