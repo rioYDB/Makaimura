@@ -12,6 +12,21 @@ public class enemy_Flower : MonoBehaviour
 
 	void Update()
 	{
+		// プレイヤーがnullでないか確認
+
+		if (player == null)
+		{
+			return; // プレイヤーが破棄されているので発射しない
+		}
+
+		// 敵キャラクターが画面内にいるか確認
+		Vector3 screenPos = Camera.main.WorldToViewportPoint(transform.position);
+		if (screenPos.x < 0 || screenPos.x > 1 || screenPos.y < 0 || screenPos.y > 1)
+		{
+			// 画面外にいる場合は発射しない
+			return;
+		}
+
 		if (Time.time >= nextFireTime)
 		{
 			nextFireTime = Time.time + fireRate ;
