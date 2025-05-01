@@ -29,7 +29,7 @@ public class ZonbiSpawner : MonoBehaviour
         if (player == null) return;
 
         // 三体ずつ出現
-        for(int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++)
         {
             // 左右どちらかをランダムで選ぶ
             int side = Random.value < 0.5f ? -1 : 1;
