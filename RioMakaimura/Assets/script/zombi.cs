@@ -38,5 +38,20 @@ public class enemy_control : MonoBehaviour
 		transform.rotation = Quaternion.identity; // 常に回転をリセット（固定）
 	}
 
-	
+	void OnCollisionEnter2D(Collision2D collision)
+	{
+		// 自分が敵レイヤーに属している場合
+		if (collision.gameObject.CompareTag("Enemy"))
+		{
+			// 衝突を無視する
+			Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+		}
+	}
+
+
+	void OnBecameInvisible()
+	{
+		// 画面外に出たら自動的に敵を破壊する
+		Destroy(gameObject);
+	}
 }

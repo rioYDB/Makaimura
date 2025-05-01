@@ -41,7 +41,7 @@ public class ZonbiSpawner : MonoBehaviour
             spawnX += Random.Range(-spawnWidthVariation, spawnWidthVariation); // 横のばらつきを追加
 
             // 最終的なスポーン位置
-            Vector2 spawnPos = new Vector2(spawnX, player.position.y);
+            Vector2 spawnPos = new Vector2(spawnX, -4.0f);
 
 
             // 敵を生成
