@@ -9,6 +9,7 @@ public class player_control : MonoBehaviour
 	public LayerMask Ground;                                    //地面を判別するオブジェクトレイヤー
 	public GameObject bulletPrefab;                             //槍のプレハブ
 
+
 	public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //立ってる時のサイズ
 	public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);         //しゃがんだ時のサイズ
 
@@ -66,6 +67,16 @@ public class player_control : MonoBehaviour
 
 			// Playerオブジェクトを消去する
 			Destroy(gameObject);
+		}
+
+		//はしごを登る処理
+		if (collision.gameObject.tag =="Ladder")
+		{
+			if(Input.GetKeyDown(KeyCode.UpArrow))
+			{
+				//プレイヤーを移動させる
+				transform.Translate(0.0f, moveSpeed,  0.0f);
+			}
 		}
 	}
 
