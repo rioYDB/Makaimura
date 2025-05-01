@@ -149,11 +149,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a08988b7fdb750d4595438f3c7441f2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bullet: {fileID: 8298561557497616378, guid: 87fcedfb177eace4a8d51817db497e37, type: 3}
-  bulletSpeed: 0
-  player: {fileID: 971793891}
-  targetTime: 1
-  currentTime: 0
+  bulletPrefab: {fileID: 8298561557497616378, guid: 87fcedfb177eace4a8d51817db497e37, type: 3}
+  player: {fileID: 971793897}
+  bulletSpeed: 3
+  fireRate: 5
 --- !u!212 &192698655
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -559,9 +558,9 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &971793891 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 546252856951616740, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
+--- !u!4 &971793897 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2848428944544956783, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
   m_PrefabInstance: {fileID: 503600781817056913}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1363147311

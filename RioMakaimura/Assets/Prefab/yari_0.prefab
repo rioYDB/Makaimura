@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6823826752577399508}
   - component: {fileID: 5070788154846250043}
   - component: {fileID: 4260373602628529416}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: yari_0
   m_TagString: Spear
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ EdgeCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
