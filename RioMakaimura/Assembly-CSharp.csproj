@@ -64,6 +64,8 @@
     <Compile Include="Assets\script\player_control.cs" />
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\karasu.cs" />
+    <Compile Include="Assets\CameraMove.cs" />
+    <Compile Include="Assets\ZonbiSpawner.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\zombi.cs" />
     <Compile Include="Assets\script\bullet.cs" />
