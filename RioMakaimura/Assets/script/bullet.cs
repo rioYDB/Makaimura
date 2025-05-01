@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class bullet : MonoBehaviour
 {
-	public float movespeed;　	//槍の移動速度
-	
+	public float movespeed;     //槍の移動速度
+	private float time;         //槍の消滅時間
+
 	// Start is called before the first frame update
 	void Start()
 	{
@@ -17,16 +18,16 @@ public class bullet : MonoBehaviour
 		transform.Translate(movespeed, 0.0f, 0.0f);
 
 
-
-
 	}
+	private void OnBecameInvisible()
+	{
+		Destroy(gameObject);
+	}
+
+
 	private void OnTriggerExit2D(Collider2D collision)
 	{
-		//当たっていた対象物の「tag」がActiveAreaだった場合は処理する
-		if (collision.gameObject.tag == "ActiveArea")
-		{
-			//自分自身の「GameObject」を破棄する
-			Destroy(gameObject);
-		}
+		if (collision.gameObject.tag == "Activearea")
+			Destroy(collision.gameObject);
 	}
 }
