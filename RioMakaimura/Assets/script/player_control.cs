@@ -54,7 +54,16 @@ public class player_control : MonoBehaviour
 
 	}
 
-
+	// トリガーが発生した時の処理
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		// 接触したオブジェクトのtag名がEnemyの場合は
+		if (collision.gameObject.tag == "Enemy")
+		{
+			// Playerオブジェクトを消去する
+			Destroy(gameObject);
+		}
+	}
 
 
 
