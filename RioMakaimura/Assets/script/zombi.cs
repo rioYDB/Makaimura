@@ -46,8 +46,20 @@ public class enemy_control : MonoBehaviour
 			// Õ“Ë‚ğ–³‹‚·‚é
 			Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
 		}
+
+		
 	}
 
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		if (collision.gameObject.tag == "Haka")
+		{
+			Debug.Log("aya");
+
+			// ”½‰‚µ‚È‚¢i‰½‚à‚µ‚È‚¢j
+			return;
+		}
+	}
 
 	void OnBecameInvisible()
 	{
