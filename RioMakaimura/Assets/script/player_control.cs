@@ -60,6 +60,10 @@ public class player_control : MonoBehaviour
 		// 接触したオブジェクトのtag名がEnemyの場合は
 		if (collision.gameObject.tag == "Enemy")
 		{
+
+			//// 最新スタイルの呼び出し
+			//GameManager.Instance.RespawnPlayer();
+
 			// Playerオブジェクトを消去する
 			Destroy(gameObject);
 		}

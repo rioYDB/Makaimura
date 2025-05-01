@@ -70,6 +70,7 @@
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\zombi.cs" />
     <Compile Include="Assets\script\bullet.cs" />
+    <Compile Include="Assets\GameManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
