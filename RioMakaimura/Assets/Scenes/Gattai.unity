@@ -806,6 +806,14 @@ PrefabInstance:
       propertyPath: bulletPrefab
       value: 
       objectReference: {fileID: 2492583762915154637, guid: 0e0b79291ec686a40b4a93847d81455c, type: 3}
+    - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
+      propertyPath: KnockbackForce
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
+      propertyPath: invincibleTime
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

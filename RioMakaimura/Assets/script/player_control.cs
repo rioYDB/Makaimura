@@ -110,11 +110,11 @@ public class player_control : MonoBehaviour
 
 			
 	
-			if (collision.gameObject.CompareTag("Player")&&IsInvincible==true)
-			{
-					// 衝突を無視する
-					Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
-			}
+			//if (collision.gameObject.CompareTag("Player")&&IsInvincible==true)
+			//{
+			//		// 衝突を無視する
+			//		Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+			//}
 			
 			// ノックバック処理
 			Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
@@ -133,10 +133,12 @@ public class player_control : MonoBehaviour
 	//戻り値：なし
 	void StartInvincibility()
 	{
-	
-
 		IsInvincible = true;
 		InvincibleTimer = invincibleTime;
+
+		// 無敵時、敵との衝突を無視する
+		StartCoroutine(IgnoreEnemyCollisionDuringInvincibility());
+
 		// プレイヤーを点滅させるためのコルーチンを開始
 		StartCoroutine(InvincibilityFlash());
 	}
@@ -160,7 +162,32 @@ public class player_control : MonoBehaviour
 	}
 
 
+	// 無敵時間中、プレイヤーと敵の衝突を無視する
+	IEnumerator IgnoreEnemyCollisionDuringInvincibility()
+	{
+		// 無敵時間が終了するまで繰り返し
+		while (IsInvincible)
+		{
+			// "Enemy" タグのついたオブジェクトをすべて取得
+			GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
+			// 敵との衝突を無視
+			foreach (GameObject enemy in enemies)
+			{
+				Physics2D.IgnoreCollision(bc, enemy.GetComponent<Collider2D>(), true);
+			}
+
+			// 無敵時間中は衝突を無視し続ける
+			yield return null;
+		}
+
+		// 無敵時間が終了したら、衝突を再び有効にする
+		GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+		foreach (GameObject enemy in allEnemies)
+		{
+			Physics2D.IgnoreCollision(bc, enemy.GetComponent<Collider2D>(), false);
+		}
+	}
 
 
 	//関数名：Jump()
