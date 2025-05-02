@@ -45,6 +45,8 @@ public class player_control : MonoBehaviour
 			Jump();
 		}
 
+		
+
 
 		//Zキーが押されたら
 		if (Input.GetKeyDown(KeyCode.Z))
@@ -56,33 +58,35 @@ public class player_control : MonoBehaviour
 
 	}
 
-	// トリガーが発生した時の処理
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnCollisionEnter2D(Collision2D collision)
 	{
-		// 接触したオブジェクトのtag名がEnemyの場合は
-		if (collision.gameObject.tag == "Enemy")
+		if ((collision.gameObject.tag=="Enemy"|| collision.gameObject.tag == "EnemyBullet"))
 		{
-
-			//// 最新スタイルの呼び出し
-			//GameManager.Instance.RespawnPlayer();
-
-			// Playerオブジェクトを消去する
 			Destroy(gameObject);
 
-			// 現在のシーンをリロード（最初からやり直し）
 			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
-
-		//はしごを登る処理
-		if (collision.gameObject.tag =="Ladder")
-		{
-			if(Input.GetKeyDown(KeyCode.UpArrow))
-			{
-				//プレイヤーを移動させる
-				transform.Translate(0.0f, moveSpeed,  0.0f);
-			}
-		}
 	}
+
+	// トリガーが発生した時の処理
+	//private void OnTriggerEnter2D(Collider2D collision)
+	//{
+	//	// 接触したオブジェクトのtag名がEnemyの場合は
+	//	if (collision.gameObject.tag == "Enemy")
+	//	{
+
+	//		//// 最新スタイルの呼び出し
+	//		//GameManager.Instance.RespawnPlayer();
+
+	//		// Playerオブジェクトを消去する
+	//		Destroy(gameObject);
+
+	//		// 現在のシーンをリロード（最初からやり直し）
+	//		//SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+	//	}
+
+
+	//}
 
 
 
