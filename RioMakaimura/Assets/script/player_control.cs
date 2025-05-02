@@ -5,22 +5,22 @@ using System.Collections.Generic;
 public class player_control : MonoBehaviour
 {
 	//変数宣言
-	public float moveSpeed;                                     //移動速度
-	public float jumpPower;                                     //ジャンプ力
-	public LayerMask Ground;                                    //地面を判別するオブジェクトレイヤー
-	public GameObject bulletPrefab;                             //槍のプレハブ
+	public float moveSpeed;												//移動速度
+	public float jumpPower;												//ジャンプ力
+	public LayerMask Ground;											//地面を判別するオブジェクトレイヤー
+	public GameObject bulletPrefab;										//槍のプレハブ
 
 
 	public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //立ってる時のサイズ
-	public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);         //しゃがんだ時のサイズ
+	public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);				//しゃがんだ時のサイズ
 
-	private bool IsSquat = false;                                           //しゃがみ判定
-	private bool IsJumping;                                     //空中にいるか判定
-	private float Moveinput;                                    //移動入力
-	private Vector2 Movedirection = Vector2.zero;             // 移動方向を記憶しておく
+	private bool IsSquat = false;                                       //しゃがみ判定
+	private bool IsJumping;												//空中にいるか判定
+	private float Moveinput;											//移動入力
+	private Vector2 Movedirection = Vector2.zero;						// 移動方向を記憶しておく
 
-	private Rigidbody2D rb;                                     //Rigidbody2Dの格納
-	private BoxCollider2D bc;                                   //BoxCollider2Dの格納庫
+	private Rigidbody2D rb;												//Rigidbody2Dの格納
+	private BoxCollider2D bc;											//BoxCollider2Dの格納庫
 	void Start()
 	{
 		//アタッチされているComponentを取得
@@ -33,9 +33,8 @@ public class player_control : MonoBehaviour
 	{
 
 		//移動処理
-		if (/*IsGrounded() == true && */IsSquat == false /*&& IsJumping == false*/)
+		if (/*IsGrounded() == true && */ IsSquat == false /*&& IsJumping == false*/)
 		{
-
 			Move();
 		}
 
@@ -45,44 +44,46 @@ public class player_control : MonoBehaviour
 			Jump();
 		}
 
-
 		//Zキーが押されたら
 		if (Input.GetKeyDown(KeyCode.Z))
 		{
 			//攻撃処理
-			Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+			GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+			bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), bullet.transform.localScale.y, bullet.transform.localScale.z); // Y軸、Z軸のサイズを保持// プレイヤーの向きに合わせて反転
 		}
+	}
 
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		//EnemyとEnemyBulletに当たったらプレイヤーを破壊する
+		if ((collision.gameObject.tag=="Enemy"|| collision.gameObject.tag == "EnemyBullet"))
+		{
+			Destroy(gameObject);
 
+			//Sceneをリセットする
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		}
 	}
 
 	// トリガーが発生した時の処理
-	private void OnTriggerEnter2D(Collider2D collision)
-	{
-		// 接触したオブジェクトのtag名がEnemyの場合は
-		if (collision.gameObject.tag == "Enemy")
-		{
+	//private void OnTriggerEnter2D(Collider2D collision)
+	//{
+	//	// 接触したオブジェクトのtag名がEnemyの場合は
+	//	if (collision.gameObject.tag == "Enemy")
+	//	{
 
-			//// 最新スタイルの呼び出し
-			//GameManager.Instance.RespawnPlayer();
+	//		//// 最新スタイルの呼び出し
+	//		//GameManager.Instance.RespawnPlayer();
 
-			// Playerオブジェクトを消去する
-			Destroy(gameObject);
+	//		// Playerオブジェクトを消去する
+	//		Destroy(gameObject);
 
-			// 現在のシーンをリロード（最初からやり直し）
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-		}
+	//		// 現在のシーンをリロード（最初からやり直し）
+	//		//SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+	//	}
 
-		//はしごを登る処理
-		if (collision.gameObject.tag =="Ladder")
-		{
-			if(Input.GetKeyDown(KeyCode.UpArrow))
-			{
-				//プレイヤーを移動させる
-				transform.Translate(0.0f, moveSpeed,  0.0f);
-			}
-		}
-	}
+
+	//}
 
 
 
@@ -96,18 +97,12 @@ public class player_control : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			rb.AddForce(Vector2.up * jumpPower);
-
 			//ジャンプ状態にする
 			IsJumping = true;
 
+			//ジャンプ中は移動速度を制限する
+			Moveinput *= 0.7f;
 		}
-
-		if (IsJumping == true)
-		{
-
-			rb.linearVelocity = new Vector2(Movedirection.x * moveSpeed, rb.linearVelocity.y);
-		}
-
 	}
 
 
@@ -118,62 +113,32 @@ public class player_control : MonoBehaviour
 	void Move()
 	{
 
-		Moveinput = Input.GetAxisRaw("Horizontal");
-
-
-		//横移動方向を記憶させる
-
+		//地上にいないときは入力を受け付けない
+		if (IsGrounded() == true)
+		{
+			Moveinput = Input.GetAxisRaw("Horizontal");
+		}
 
 
 		//プレイヤーを移動させる
 		transform.Translate(Moveinput * moveSpeed, 0.0f, 0.0f);
+
 		if (Moveinput != 0)
 		{
 			Movedirection = new Vector2(Moveinput, 0f);
 		}
 
-		/*
-		
-		//下矢印キーが押されたら
-		if (Input.GetKeyDown(KeyCode.DownArrow))
+		//プレイヤーの向きを変更
+		if (Moveinput != 0)
 		{
-			//プレイヤーをしゃがませる
-			Squat(true);
-		}
-		
+			Movedirection = new Vector2(Moveinput, 0f);
 
-		//下矢印キーを離したら
-		if(Input.GetKeyUp(KeyCode.DownArrow))
-		{
-			Debug.Log("通った");
-			//プレイヤーのしゃがみを辞めさせる
-			Squat(false);
-			
-		}
-		*/
-	}
-
-	/*
-	private void Squat(bool squat)
-	{
-		IsSquat=squat;
-
-		//しゃがみ時のサイズ変更
-		transform.localScale = squat ? SquatSize : StandSize;
-
-		//コライダーのサイズも変更する。
-		if (squat)
-		{
-			bc.size = new Vector2(bc.size.x, SquatSize.y); //しゃがんだ時のサイズに変更
-			Debug.Log("しゃがみ中");
-		}
-		
-		else
-		{
-			bc.size = new Vector2(bc.size.x,StandSize.y); //元のサイズに戻す
+			// 向きを反転させる処理
+			Vector3 scale = transform.localScale;
+			scale.x = Mathf.Abs(scale.x) * Mathf.Sign(Moveinput); // 左ならマイナス、右ならプラス
+			transform.localScale = scale;
 		}
 	}
-	*/
 
 	//関数名：IsGrounded()
 	//用途：接地判定処理
@@ -197,4 +162,5 @@ public class player_control : MonoBehaviour
 		return ret;
 	}
 }
+
 
