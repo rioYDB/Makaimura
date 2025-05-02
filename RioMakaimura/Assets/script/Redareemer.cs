@@ -2,99 +2,104 @@ using UnityEngine;
 
 public class Redareemer : MonoBehaviour
 {
+	public Transform player;             // プレイヤーのTransform
+	public float jumpForce = 8f;         // ジャンプ力
+	public float flySpeed = 3f;          // ホバリング速度
+	public float flyDuration = 2f;       // ホバリング時間
+	public float jumpCooldown = 3f;      // 次のジャンプまでの時間
+	public float lastJumpTime;			 //今は飛んだ時増える数字になってる
+	public float flyTimer;				 //飛んでいる時間にしようと思ってる
 
-	public Transform player;          // �v���C���[�̈ʒu
-	public GameObject Player;
-	public float moveSpeed = 2f;      // �ړ����x
-	public float attackRange = 1.5f;  // �U���͈�
-	public float attackDelay = 1f;    // �U���̊Ԋu
-	private float nextAttackTime = 0f;
+	public float radius = 3f;
+	public float angularSpeed = 2f; // ラジアン/秒
 
-	public GameObject projectilePrefab;  // �e�̃v���n�u
-	public float projectileSpeed = 5f;
+	private Rigidbody2D rb;
+	private Animator anim;               // 必要ならアニメーションも
+	private enum State { Idle, Jumping, Flying,Feint,Shoot }
+	private State currentState = State.Idle;
+	private float stateTimer = 0f;
 
-	
+	private bool isGrounded = true;
 
-	public enum AttackType
+
+
+	void Start()
 	{
-		Melee,
-		Ranged
+		rb = GetComponent<Rigidbody2D>();
 	}
 
-	public AttackType currentAttackType = AttackType.Melee;
-
-	void AttackPlayer()
+	void Update()
 	{
-		float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-		if (distanceToPlayer <= attackRange && Time.time >= nextAttackTime)
+		switch (currentState)
 		{
-			nextAttackTime = Time.time + attackDelay;
+			case State.Idle:
+				stateTimer += Time.deltaTime;
+				if (stateTimer >= jumpCooldown && isGrounded)
+				{
+					if (Vector2.Distance(player.position, transform.position) < 9f)
+					{
+						if (Time.time > lastJumpTime + jumpCooldown)
+						{
+							Jump();
+							lastJumpTime = Time.time;
+						}
+					}
+				}
+				break;
 
-			// �U���̎�ނ�؂�ւ�
-			if (distanceToPlayer < 2f)
-			{
-				currentAttackType = AttackType.Melee;
-			}
-			else
-			{
-				currentAttackType = AttackType.Ranged;
-			}
+			case State.Jumping:
+				if (rb.linearVelocity.y < 0) // 落下に転じたら飛行開始
+				{
+					currentState = State.Flying;
+					stateTimer = 0f;
+				}
+				break;
 
-			switch (currentAttackType)
-			{
-				case AttackType.Melee:
-					// �ߐڍU���A�j���[�V����
-					Debug.Log("Red Arremer Melee Attack!");
-					///////////////player.GetComponent<Player>().TakeDamage(20);  // �v���C���[�Ƀ_���[�W
-					break;
+			case State.Flying:
+				stateTimer += Time.deltaTime;
 
-				case AttackType.Ranged:
-					// ��ѓ���U��
-					ShootProjectile();
-					break;
-			}
+				Vector2 target = player.position;
+				Vector2 direction = (target - (Vector2)transform.position).normalized;
+				rb.linearVelocity = direction * flySpeed;
+				float hoverOffset = Mathf.Sin(Time.time * 5f) * 0.5f;
+				rb.linearVelocity = new Vector2(direction.x * flySpeed, hoverOffset);
+
+				if (stateTimer < flyDuration / 2f)
+				{
+					// プレイヤー方向へ
+					direction = (player.position - transform.position).normalized;
+				}
+				else
+				{
+					// フェイント的に逆方向へ
+					direction = -(player.position - transform.position).normalized;
+				}
+
+				if (stateTimer >= flyDuration)
+				{
+					rb.linearVelocity = Vector2.zero;
+					currentState = State.Idle;
+				}
+				break;
+		}
+
+	}
+
+	void Jump()
+	{
+		if (isGrounded)
+		{
+			rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+			currentState = State.Jumping;
+			isGrounded = false;
 		}
 	}
 
-
-	void ShootProjectile()
+	void OnCollisionEnter2D(Collision2D collision)
 	{
-		Vector3 direction = (player.position - transform.position).normalized;
-		GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
-		Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-		rb.linearVelocity = direction * projectileSpeed;
+		if (collision.collider.CompareTag("Ground"))
+		{
+			isGrounded = true;
+		}
 	}
-	 void Update()
-	{
-		MoveTowardsPlayer();
-		//////////////////////AttackPlayer();
-	}
-	// �v���C���[�Ɍ������Ĉړ�����
-	void MoveTowardsPlayer()
-	{
-		Vector3 direction = (player.position - transform.position).normalized;
-		transform.position += direction * moveSpeed * Time.deltaTime;
-	}
-
-	// �U���͈͓��Ƀv���C���[������ƍU�����s��
-	//////////void AttackPlayer()
-	//////////{
-	//////////	float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-	//////////	if (distanceToPlayer <= attackRange && Time.time >= nextAttackTime)
-	//////////	{
-	//////////		nextAttackTime = Time.time + attackDelay;
-	//////////		// �U�����[�V�������Č�
-	//////////		Debug.Log("Red Arremer Attacks!");
-	//////////		// �����ɍU���̃A�j���[�V������_���[�W������ǉ�
-	//////////	}
-	//////////	// Start is called once before the first execution of Update after the MonoBehaviour is created
-	//////////	void Start()
-	//////////	{
-
-	//////////	}
-
-	//////////	// Update is called once per frame
-	//////////}
 }
