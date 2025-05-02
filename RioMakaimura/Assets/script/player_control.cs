@@ -51,7 +51,7 @@ public class player_control : MonoBehaviour
 			//攻撃処理
 			GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
 
-			bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1); // プレイヤーの向きに合わせて反転
+			bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), bullet.transform.localScale.y, bullet.transform.localScale.z); // Y軸、Z軸のサイズを保持// プレイヤーの向きに合わせて反転
 		}
 
 	}
@@ -177,4 +177,5 @@ public class player_control : MonoBehaviour
 		return ret;
 	}
 }
+
 
