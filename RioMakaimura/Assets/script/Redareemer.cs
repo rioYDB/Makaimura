@@ -12,6 +12,9 @@ public class Redareemer : MonoBehaviour
 
 	public float radius = 3f;
 	public float angularSpeed = 2f; // ラジアン/秒
+	private bool isFlying = false;   //今飛んでいるかどうか
+
+	private Vector3 centerOffset;	//オフセット
 
 	private Rigidbody2D rb;
 	private Animator anim;               // 必要ならアニメーションも
@@ -26,6 +29,9 @@ public class Redareemer : MonoBehaviour
 	void Start()
 	{
 		rb = GetComponent<Rigidbody2D>();
+
+		centerOffset = transform.position - player.position;
+		centerOffset = centerOffset.normalized * radius;
 	}
 
 	void Update()
