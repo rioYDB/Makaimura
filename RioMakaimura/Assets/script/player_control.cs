@@ -10,20 +10,24 @@ public class player_control : MonoBehaviour
 	public float jumpPower;															//ジャンプ力
 	public LayerMask Ground;														//地面を判別するオブジェクトレイヤー
 	public GameObject bulletPrefab;												//槍のプレハブ
-	private float LastAttackTime;													//最後に攻撃した時間
 	public float AttackRate;															//攻撃感覚
-	private int AttackCount;															//攻撃をカウントする変数
-	public float CoolDown=2.0f;													//攻撃のクールダウン
-	private int HP = 2;																	//HP
+	public float CoolDown=2.0f;                                                 //攻撃のクールダウン
+	public float KnockbackForce;													//ノックバック
+	public float invincibleTime;														//無敵時間
 
 
 	public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //立ってる時のサイズ
-	public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);				//しゃがんだ時のサイズ
+	public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);             //しゃがんだ時のサイズ
 
+	private int HP = 2;                                                                 //HP
+	private int AttackCount;                                                            //攻撃をカウントする変数
 	private bool IsSquat = false;													//しゃがみ判定
 	private bool IsJumping;															//空中にいるか判定
-	private bool IsAttacking = true;
-	private float Moveinput;															//移動入力
+	private bool IsAttacking = true;												//攻撃できるか判定
+	private bool IsInvincible = false;												//無敵状態か判定
+	private float Moveinput;                                                          //移動入力
+	private float LastAttackTime;                                                   //最後に攻撃した時間
+	private float InvincibleTimer;													//無敵時間タイマー
 	private Vector2 Movedirection = Vector2.zero;							// 移動方向を記憶しておく
 
 	private Rigidbody2D rb;															//Rigidbody2Dの格納
@@ -34,7 +38,6 @@ public class player_control : MonoBehaviour
 		rb = GetComponent<Rigidbody2D>();
 		bc = GetComponent<BoxCollider2D>();
 		LastAttackTime = -AttackRate;											// 最初の発射が即時できるように設定
-
 	}
 
 	// Update is called once per frame
@@ -57,18 +60,33 @@ public class player_control : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Z))
 		{
 			// 発射可能かつ、発射回数が3回以下の場合に発射
-			if (IsAttacking && AttackCount < 3)
+			if (IsAttacking && AttackCount < 2)
 			{
 				Attack();
 			}
 			// 発射回数が3回に達した場合、制限をかける
-			else if (AttackCount >= 2)
+			else if (AttackCount >= 1)
 			{
 				StartCoroutine(AttackCoolDown());
 			}
 		}
 
-		if(HP==0)
+
+		//無敵タイマー
+		if (IsInvincible==true)
+		{
+			InvincibleTimer -= Time.deltaTime;
+			if (InvincibleTimer <= 0)
+			{
+				IsInvincible = false;
+			}
+		}
+
+
+
+
+		//死亡条件
+		if (HP==0)
 		{
 			//プレイヤーを破壊
 			Destroy(gameObject);
@@ -89,10 +107,58 @@ public class player_control : MonoBehaviour
 
 			HP -= 1;
 			Debug.Log("痛い");
+
+			
+	
+			if (collision.gameObject.CompareTag("Player")&&IsInvincible==true)
+			{
+					// 衝突を無視する
+					Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+			}
+			
+			// ノックバック処理
+			Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
+			GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
+
+			// 無敵状態を開始
+			StartInvincibility();
 		}
 	}
 
+
+
+	//関数名：StartInvincibility()
+	//用途：無敵時間処理
+	//引数：なし
+	//戻り値：なし
+	void StartInvincibility()
+	{
 	
+
+		IsInvincible = true;
+		InvincibleTimer = invincibleTime;
+		// プレイヤーを点滅させるためのコルーチンを開始
+		StartCoroutine(InvincibilityFlash());
+	}
+
+
+
+	//関数名：InvincibilityFlash()
+	//用途：点滅処理
+	//引数：なし
+	//戻り値：なし
+	// プレイヤーを点滅させるコルーチン
+	IEnumerator InvincibilityFlash()
+	{
+		SpriteRenderer sr = GetComponent<SpriteRenderer>();
+		while (IsInvincible)
+		{
+			sr.enabled = !sr.enabled; // 点滅（スプライトの表示・非表示切り替え）
+			yield return new WaitForSeconds(0.1f); // 点滅の間隔
+		}
+		sr.enabled = true; // 最後にスプライトを表示
+	}
+
 
 
 
