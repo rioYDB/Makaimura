@@ -2,37 +2,38 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 public class player_control : MonoBehaviour
 {
 	//変数宣言
-	public float moveSpeed;												//移動速度
-	public float jumpPower;												//ジャンプ力
-	public LayerMask Ground;											//地面を判別するオブジェクトレイヤー
-	public GameObject bulletPrefab;                                     //槍のプレハブ
-	private float LastAttackTime;										//最後に攻撃した時間
-	public float AttackRate;                                            //攻撃感覚
-	private int AttackCount;                                             //攻撃をカウントする変数
-	public float CoolDown=2.0f;												//攻撃のクールダウン
-
+	public float moveSpeed;															//移動速度
+	public float jumpPower;															//ジャンプ力
+	public LayerMask Ground;														//地面を判別するオブジェクトレイヤー
+	public GameObject bulletPrefab;												//槍のプレハブ
+	private float LastAttackTime;													//最後に攻撃した時間
+	public float AttackRate;															//攻撃感覚
+	private int AttackCount;															//攻撃をカウントする変数
+	public float CoolDown=2.0f;													//攻撃のクールダウン
+	private int HP = 2;																	//HP
 
 
 	public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //立ってる時のサイズ
 	public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);				//しゃがんだ時のサイズ
 
-	private bool IsSquat = false;                                       //しゃがみ判定
-	private bool IsJumping;                                             //空中にいるか判定
+	private bool IsSquat = false;													//しゃがみ判定
+	private bool IsJumping;															//空中にいるか判定
 	private bool IsAttacking = true;
-	private float Moveinput;											//移動入力
-	private Vector2 Movedirection = Vector2.zero;						// 移動方向を記憶しておく
+	private float Moveinput;															//移動入力
+	private Vector2 Movedirection = Vector2.zero;							// 移動方向を記憶しておく
 
-	private Rigidbody2D rb;												//Rigidbody2Dの格納
-	private BoxCollider2D bc;											//BoxCollider2Dの格納庫
+	private Rigidbody2D rb;															//Rigidbody2Dの格納
+	private BoxCollider2D bc;														//BoxCollider2Dの格納庫
 	void Start()
 	{
 		//アタッチされているComponentを取得
 		rb = GetComponent<Rigidbody2D>();
 		bc = GetComponent<BoxCollider2D>();
-		LastAttackTime = -AttackRate;  // 最初の発射が即時できるように設定
+		LastAttackTime = -AttackRate;											// 最初の発射が即時できるように設定
 
 	}
 
@@ -61,11 +62,23 @@ public class player_control : MonoBehaviour
 				Attack();
 			}
 			// 発射回数が3回に達した場合、制限をかける
-			else if (AttackCount >= 3)
+			else if (AttackCount >= 2)
 			{
 				StartCoroutine(AttackCoolDown());
 			}
 		}
+
+		if(HP==0)
+		{
+			//プレイヤーを破壊
+			Destroy(gameObject);
+
+			Debug.Log("死ぬwwwwwwwwww");
+
+			//Sceneをリセットする
+			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		}
+
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision)
@@ -73,32 +86,14 @@ public class player_control : MonoBehaviour
 		//EnemyとEnemyBulletに当たったらプレイヤーを破壊する
 		if ((collision.gameObject.tag=="Enemy"|| collision.gameObject.tag == "EnemyBullet"))
 		{
-			Destroy(gameObject);
 
-			//Sceneをリセットする
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+			HP -= 1;
+			Debug.Log("痛い");
 		}
 	}
 
-	// トリガーが発生した時の処理
-	//private void OnTriggerEnter2D(Collider2D collision)
-	//{
-	//	// 接触したオブジェクトのtag名がEnemyの場合は
-	//	if (collision.gameObject.tag == "Enemy")
-	//	{
+	
 
-	//		//// 最新スタイルの呼び出し
-	//		//GameManager.Instance.RespawnPlayer();
-
-	//		// Playerオブジェクトを消去する
-	//		Destroy(gameObject);
-
-	//		// 現在のシーンをリロード（最初からやり直し）
-	//		//SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-	//	}
-
-
-	//}
 
 
 
@@ -194,7 +189,7 @@ public class player_control : MonoBehaviour
 		LastAttackTime = Time.time;
 
 		// 3回目の発射後に発射制限をかける
-		if (AttackCount >= 3)
+		if (AttackCount >= 2)
 		{
 			StartCoroutine(AttackCoolDown());
 		}
