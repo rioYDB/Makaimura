@@ -33,9 +33,8 @@ public class player_control : MonoBehaviour
 	{
 
 		//移動処理
-		if (/*IsGrounded() == true && */IsSquat == false /*&& IsJumping == false*/)
+		if (/*IsGrounded() == true && */ IsSquat == false /*&& IsJumping == false*/)
 		{
-
 			Move();
 		}
 
@@ -50,10 +49,8 @@ public class player_control : MonoBehaviour
 		{
 			//攻撃処理
 			GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-
 			bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), bullet.transform.localScale.y, bullet.transform.localScale.z); // Y軸、Z軸のサイズを保持// プレイヤーの向きに合わせて反転
 		}
-
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision)
@@ -100,20 +97,12 @@ public class player_control : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Space))
 		{
 			rb.AddForce(Vector2.up * jumpPower);
-
 			//ジャンプ状態にする
 			IsJumping = true;
 
+			//ジャンプ中は移動速度を制限する
+			Moveinput *= 0.7f;
 		}
-
-
-		//ジャンプ前の移動を記憶させる
-		if (IsJumping == true)
-		{
-
-			rb.linearVelocity = new Vector2(Movedirection.x * moveSpeed, rb.linearVelocity.y);
-		}
-
 	}
 
 
@@ -124,20 +113,20 @@ public class player_control : MonoBehaviour
 	void Move()
 	{
 
-		Moveinput = Input.GetAxisRaw("Horizontal");
-
-
-		//横移動方向を記憶させる
-
+		//地上にいないときは入力を受け付けない
+		if (IsGrounded() == true)
+		{
+			Moveinput = Input.GetAxisRaw("Horizontal");
+		}
 
 
 		//プレイヤーを移動させる
 		transform.Translate(Moveinput * moveSpeed, 0.0f, 0.0f);
+
 		if (Moveinput != 0)
 		{
 			Movedirection = new Vector2(Moveinput, 0f);
 		}
-
 
 		//プレイヤーの向きを変更
 		if (Moveinput != 0)
@@ -149,11 +138,7 @@ public class player_control : MonoBehaviour
 			scale.x = Mathf.Abs(scale.x) * Mathf.Sign(Moveinput); // 左ならマイナス、右ならプラス
 			transform.localScale = scale;
 		}
-
-
 	}
-
-
 
 	//関数名：IsGrounded()
 	//用途：接地判定処理
