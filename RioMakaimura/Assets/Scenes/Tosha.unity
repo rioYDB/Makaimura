@@ -722,8 +722,8 @@ Transform:
   m_GameObject: {fileID: 1203691246}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 64.4, y: 2.59, z: 0}
-  m_LocalScale: {x: 3.6528, y: 3.6528, z: 3.6528}
+  m_LocalPosition: {x: 64.8573, y: 2.1327, z: 0}
+  m_LocalScale: {x: 2.738139, y: 2.738139, z: 2.738139}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -742,12 +742,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 971793897}
   jumpForce: 10
-  flySpeed: 6
-  flyDuration: 10
-  jumpCooldown: 5
+  flySpeed: 4
+  flyDuration: 2
+  moveSpeed: 5
+  duration: 3
+  jumpCooldown: 0
   lastJumpTime: 0
   flyTimer: 0
-  radius: 3
+  radius: 30
   angularSpeed: 2
 --- !u!58 &1203691250
 CircleCollider2D:
