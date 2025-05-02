@@ -47,8 +47,15 @@ public class enemy_control : MonoBehaviour
 			Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
 		}
 
-		
+		// ©•ª‚ªplayer‚É‘®‚µ‚Ä‚¢‚éê‡
+		if (collision.gameObject.CompareTag("Player"))
+		{
+			// Õ“Ë‚ğ–³‹‚·‚é
+			Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+		}
 	}
+
+
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
