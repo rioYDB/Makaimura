@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System.Diagnostics;
 public class player_control : MonoBehaviour
 {
 	//変数宣言
@@ -13,10 +14,11 @@ public class player_control : MonoBehaviour
 	public float AttackRate;															//攻撃感覚
 	public float CoolDown=2.0f;                                                 //攻撃のクールダウン
 	public float KnockbackForce;													//ノックバック
-	public float invincibleTime;														//無敵時間
+	public float invincibleTime;                                                        //無敵時間
+    public int maxBulletsOnScreen = 3;											//画面内に出るプレイヤー攻撃の最大の数
 
 
-	public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //立ってる時のサイズ
+    public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //立ってる時のサイズ
 	public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);             //しゃがんだ時のサイズ
 
 	private int HP = 2;                                                                 //HP
@@ -59,6 +61,11 @@ public class player_control : MonoBehaviour
 		//Zキーが押されたら
 		if (Input.GetKeyDown(KeyCode.Z))
 		{
+           
+			Attack();
+
+
+            /*
 			// 発射可能かつ、発射回数が3回以下の場合に発射
 			if (IsAttacking && AttackCount < 2)
 			{
@@ -69,11 +76,12 @@ public class player_control : MonoBehaviour
 			{
 				StartCoroutine(AttackCoolDown());
 			}
-		}
+			*/
+        }
 
 
-		//無敵タイマー
-		if (IsInvincible==true)
+        //無敵タイマー
+        if (IsInvincible==true)
 		{
 			InvincibleTimer -= Time.deltaTime;
 			if (InvincibleTimer <= 0)
@@ -91,7 +99,7 @@ public class player_control : MonoBehaviour
 			//プレイヤーを破壊
 			Destroy(gameObject);
 
-			Debug.Log("死ぬwwwwwwwwww");
+			//Debug.Log("死ぬwwwwwwwwww");
 
 			//Sceneをリセットする
 			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -106,7 +114,7 @@ public class player_control : MonoBehaviour
 		{
 
 			HP -= 1;
-			Debug.Log("痛い");
+			//Debug.Log("痛い");
 
 			
 	
@@ -245,24 +253,26 @@ public class player_control : MonoBehaviour
 		
 	}
 
-	//関数名：CoolDown()
+    //関数名：CoolDown()
 	//用途：攻撃間隔を設ける処理
 	//引数：なし
 	//戻り値：なし
-	private IEnumerator AttackCoolDown()
-	{
-		// 発射制限中の処理
-		IsAttacking = false;
-		Debug.Log("発射制限中...");
+	
+	
+	//private IEnumerator AttackCoolDown()
+	//{
+	//	// 発射制限中の処理
+	//	IsAttacking = false;
+	//	Debug.Log("発射制限中...");
 
-		// 制限時間を待つ
-		yield return new WaitForSeconds(CoolDown);
+	//	// 制限時間を待つ
+	//	yield return new WaitForSeconds(CoolDown);
 
-		// 発射制限解除
-		IsAttacking = true;
-		AttackCount = 0; // 発射回数をリセット
-		Debug.Log("発射再開！");
-	}
+	//	// 発射制限解除
+	//	IsAttacking = true;
+	//	AttackCount = 0; // 発射回数をリセット
+	//	Debug.Log("発射再開！");
+	//}
 
 
 	//関数名：Attack()
@@ -271,31 +281,39 @@ public class player_control : MonoBehaviour
 	//戻り値：なし
 	private void Attack()
 	{
+        /*
 		// 攻撃処理
 		GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
 		bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1); // プレイヤーの向きに合わせて反転
+		*/
 
-		// 発射回数をカウント
-		AttackCount++;
+		//槍オブジェクトをすべて取得するために配列を作成
+        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
 
-		// 最後に発射した時刻を更新
-		LastAttackTime = Time.time;
+        if (bullets.Length >= maxBulletsOnScreen)
+        {
+			// 画面の最大数に達しているので発射しない
+			
+            return;
+        }
 
-		// 3回目の発射後に発射制限をかける
-		if (AttackCount >= 2)
-		{
-			StartCoroutine(AttackCoolDown());
-		}
-	}
+        // 攻撃処理
+        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+
+        // プレイヤーの向きに合わせて反転
+        bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1); 
+
+
+    }
 
 
 
 
-	//関数名：IsGrounded()
-	//用途：接地判定処理
-	//引数：なし
-	//戻り値：接地している場合はtrue、していない場合はfalse
-	bool IsGrounded()
+    //関数名：IsGrounded()
+    //用途：接地判定処理
+    //引数：なし
+    //戻り値：接地している場合はtrue、していない場合はfalse
+    bool IsGrounded()
 	{
 		bool ret = false;
 		//下方向にrayを飛ばして、指定したレイヤーのオブジェクトと接触しているかどうか判別する
