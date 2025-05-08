@@ -6,81 +6,116 @@ using Unity.VisualScripting;
 using System.Diagnostics;
 public class player_control : MonoBehaviour
 {
-	//•Ï”éŒ¾
-	public float moveSpeed;															//ˆÚ“®‘¬“x
-	public float jumpPower;															//ƒWƒƒƒ“ƒv—Í
-	public LayerMask Ground;														//’n–Ê‚ğ”»•Ê‚·‚éƒIƒuƒWƒFƒNƒgƒŒƒCƒ„[
-	public GameObject bulletPrefab;												//‘„‚ÌƒvƒŒƒnƒu
-	public float AttackRate;															//UŒ‚Š´Šo
-	public float CoolDown=2.0f;                                                 //UŒ‚‚ÌƒN[ƒ‹ƒ_ƒEƒ“
-	public float KnockbackForce;													//ƒmƒbƒNƒoƒbƒN
-	public float invincibleTime;                                                        //–³“GŠÔ
-    public int maxBulletsOnScreen = 3;											//‰æ–Ê“à‚Éo‚éƒvƒŒƒCƒ„[UŒ‚‚ÌÅ‘å‚Ì”
+	//ï¿½Ïï¿½ï¿½éŒ¾
+	public float moveSpeed;															//ï¿½Ú“ï¿½ï¿½ï¿½ï¿½x
+	public float jumpPower;															//ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½
+	public LayerMask Ground;														//ï¿½nï¿½Ê‚ğ”»•Ê‚ï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[
+	public GameObject bulletPrefab;												//ï¿½ï¿½ï¿½Ìƒvï¿½ï¿½ï¿½nï¿½u
+	public float KnockbackForce;													//ï¿½mï¿½bï¿½Nï¿½oï¿½bï¿½N
+	public float invincibleTime;                                                        //ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½ï¿½
+    public int maxBulletsOnScreen = 3;                                          //ï¿½ï¿½Ê“ï¿½ï¿½Éoï¿½ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Uï¿½ï¿½ï¿½ÌÅ‘ï¿½Ìï¿½
+    public float ClimbSpeed = 0.0f;												//ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ÌˆÚ“ï¿½ï¿½Xï¿½sï¿½[ï¿½h
 
 
-    public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //—§‚Á‚Ä‚é‚ÌƒTƒCƒY
-	public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);             //‚µ‚á‚ª‚ñ‚¾‚ÌƒTƒCƒY
+    public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚éï¿½ÌƒTï¿½Cï¿½Y
+	public Vector3 CrouchSize = new Vector3(1.7f, 1.9f, 1f);             //ï¿½ï¿½ï¿½á‚ªï¿½ñ‚¾ï¿½ï¿½ÌƒTï¿½Cï¿½Y
 
 	private int HP = 2;                                                                 //HP
-	private int AttackCount;                                                            //UŒ‚‚ğƒJƒEƒ“ƒg‚·‚é•Ï”
-	private bool IsSquat = false;													//‚µ‚á‚ª‚İ”»’è
-	private bool IsJumping;															//‹ó’†‚É‚¢‚é‚©”»’è
-	private bool IsAttacking = true;												//UŒ‚‚Å‚«‚é‚©”»’è
-	private bool IsInvincible = false;												//–³“Gó‘Ô‚©”»’è
-	private float Moveinput;                                                          //ˆÚ“®“ü—Í
-	private float LastAttackTime;                                                   //ÅŒã‚ÉUŒ‚‚µ‚½ŠÔ
-	private float InvincibleTimer;													//–³“GŠÔƒ^ƒCƒ}[
-	private Vector2 Movedirection = Vector2.zero;							// ˆÚ“®•ûŒü‚ğ‹L‰¯‚µ‚Ä‚¨‚­
+	private int AttackCount;                                                            //ï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½Eï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½Ïï¿½
+	private bool IsSquat = false;													//ï¿½ï¿½ï¿½á‚ªï¿½İ”ï¿½ï¿½ï¿½
+	private bool IsJumping;															//ï¿½ó’†‚É‚ï¿½ï¿½é‚©ï¿½ï¿½ï¿½ï¿½
+	private bool IsAttacking = true;												//ï¿½Uï¿½ï¿½ï¿½Å‚ï¿½ï¿½é‚©ï¿½ï¿½ï¿½ï¿½
+	private bool IsInvincible = false;                                              //ï¿½ï¿½ï¿½Gï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½ï¿½
+    private bool IsClimbing = false;												//ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‚©
+    private bool IsOnLadder = false;												//ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ÉGï¿½ï¿½Ä‚ï¿½ï¿½é‚©
+    private bool IsCrouching = false;												//ï¿½ï¿½ï¿½á‚ªï¿½İ’ï¿½ï¿½ï¿½
+    private float Moveinput;                                                          //ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½
+	private float InvincibleTimer;													//ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Ôƒ^ï¿½Cï¿½}ï¿½[
+	private Vector2 Movedirection = Vector2.zero;							// ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 
-	private Rigidbody2D rb;															//Rigidbody2D‚ÌŠi”[
-	private BoxCollider2D bc;														//BoxCollider2D‚ÌŠi”[ŒÉ
+
+
+
+	private Rigidbody2D rb;															//Rigidbody2Dï¿½ÌŠiï¿½[
+	private BoxCollider2D bc;														//BoxCollider2Dï¿½ÌŠiï¿½[ï¿½ï¿½
 	void Start()
 	{
-		//ƒAƒ^ƒbƒ`‚³‚ê‚Ä‚¢‚éComponent‚ğæ“¾
+		//ï¿½Aï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Componentï¿½ï¿½ï¿½æ“¾
 		rb = GetComponent<Rigidbody2D>();
 		bc = GetComponent<BoxCollider2D>();
-		LastAttackTime = -AttackRate;											// Å‰‚Ì”­Ë‚ª‘¦‚Å‚«‚é‚æ‚¤‚Éİ’è
+		
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		////ï¿½ã‰ºï¿½ÌƒLï¿½[ï¿½Ì”ï¿½ï¿½ï¿½
+        //float vertical = Input.GetAxisRaw("Vertical");
 
-		//ˆÚ“®ˆ—
-		if (/*IsGrounded() == true && */ IsSquat == false /*&& IsJumping == false*/)
-		{
-			Move();
-		}
+        //ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½
+        if (/*IsGrounded() == true && */ IsSquat == false /*&& IsJumping == false*/)
+        {
+            Move();
+        }
 
-		//ƒWƒƒƒ“ƒvˆ—
-		if (IsGrounded() == true && IsSquat == false)
-		{
-			Jump();
-		}
+        ////ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½
+        //if (IsGrounded() == true && IsSquat == false)
+        //{
+        //	Jump();
+        //}
 
-		//ZƒL[‚ª‰Ÿ‚³‚ê‚½‚ç
-		if (Input.GetKeyDown(KeyCode.Z))
+        //      // ï¿½ï¿½ ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        //      if (IsOnLadder)
+        //      {
+        //          if (Mathf.Abs(vertical) > 0f)
+        //          {
+        //              IsClimbing = true;
+        //          }
+        //      }
+        //      else
+        //      {
+        //          IsClimbing = false;
+        //      }
+
+        //      if (IsClimbing)
+        //      {
+        //          rb.linearVelocity = new Vector2(rb.linearVelocity.x, vertical * ClimbSpeed);
+        //          rb.gravityScale = 0f;
+        //      }
+        //      else
+        //      {
+        //          rb.gravityScale = 1f;
+        //      }
+
+        //      // ï¿½ï¿½ ï¿½ï¿½ï¿½á‚ªï¿½İï¿½ï¿½ï¿½ï¿½iï¿½Í‚ï¿½ï¿½ï¿½ï¿½ÉGï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½Æ‚ï¿½ï¿½Ì‚İj
+        //      if (!IsOnLadder && vertical < 0)
+        //      {
+        //          if (!IsCrouching)
+        //          {
+        //              IsCrouching = true;
+        //              bc.size = CrouchSize; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        //          }
+        //      }
+        //      else
+        //      {
+        //          if (IsCrouching)
+        //          {
+        //              IsCrouching = false;
+        //              bc.size = StandSize; // ï¿½ï¿½ï¿½É–ß‚ï¿½
+        //          }
+        //      }
+
+
+
+        //Zï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½Uï¿½ï¿½
+        if (Input.GetKeyDown(KeyCode.Z))
 		{
            
 			Attack();
 
-
-            /*
-			// ”­Ë‰Â”\‚©‚ÂA”­Ë‰ñ”‚ª3‰ñˆÈ‰º‚Ìê‡‚É”­Ë
-			if (IsAttacking && AttackCount < 2)
-			{
-				Attack();
-			}
-			// ”­Ë‰ñ”‚ª3‰ñ‚É’B‚µ‚½ê‡A§ŒÀ‚ğ‚©‚¯‚é
-			else if (AttackCount >= 1)
-			{
-				StartCoroutine(AttackCoolDown());
-			}
-			*/
         }
 
-
-        //–³“Gƒ^ƒCƒ}[
+        //ï¿½ï¿½ï¿½Gï¿½^ï¿½Cï¿½}ï¿½[
         if (IsInvincible==true)
 		{
 			InvincibleTimer -= Time.deltaTime;
@@ -90,106 +125,218 @@ public class player_control : MonoBehaviour
 			}
 		}
 
-
-
-
-		//€–SğŒ
+		//ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½ï¿½
 		if (HP==0)
 		{
-			//ƒvƒŒƒCƒ„[‚ğ”j‰ó
+			//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½jï¿½ï¿½
 			Destroy(gameObject);
 
-			//Debug.Log("€‚Êwwwwwwwwww");
+			//Debug.Log("ï¿½ï¿½ï¿½ï¿½wwwwwwwwww");
 
-			//Scene‚ğƒŠƒZƒbƒg‚·‚é
+			//Sceneï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½
 			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 
 	}
 
-	private void OnCollisionEnter2D(Collision2D collision)
-	{
-		//Enemy‚ÆEnemyBullet‚É“–‚½‚Á‚½‚çƒvƒŒƒCƒ„[‚ğ”j‰ó‚·‚é
-		if ((collision.gameObject.tag=="Enemy"|| collision.gameObject.tag == "EnemyBullet"))
-		{
 
-			HP -= 1;
-			//Debug.Log("’É‚¢");
 
-			
-	
-			//if (collision.gameObject.CompareTag("Player")&&IsInvincible==true)
-			//{
-			//		// Õ“Ë‚ğ–³‹‚·‚é
-			//		Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
-			//}
-			
-			// ƒmƒbƒNƒoƒbƒNˆ—
-			Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
-			GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
-
-			// –³“Gó‘Ô‚ğŠJn
-			StartInvincibility();
-		}
-	}
+    
 
 
 
-	//ŠÖ”–¼FStartInvincibility()
-	//—p“rF–³“GŠÔˆ—
-	//ˆø”F‚È‚µ
-	//–ß‚è’lF‚È‚µ
-	void StartInvincibility()
+
+    //ï¿½Öï¿½ï¿½ï¿½ï¿½FJump()
+    //ï¿½pï¿½rï¿½Fï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Fï¿½È‚ï¿½
+    //ï¿½ß‚ï¿½lï¿½Fï¿½È‚ï¿½
+    void Jump()
+    {
+        //ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            rb.AddForce(Vector2.up * jumpPower);
+            //ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½Ô‚É‚ï¿½ï¿½ï¿½
+            IsJumping = true;
+
+            //ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ÍˆÚ“ï¿½ï¿½ï¿½ï¿½xï¿½ğ§Œï¿½ï¿½ï¿½ï¿½ï¿½
+            Moveinput *= 0.7f;
+        }
+    }
+
+
+    //ï¿½Öï¿½ï¿½ï¿½ï¿½FMove()
+    //ï¿½pï¿½rï¿½Fï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Fï¿½È‚ï¿½
+    //ï¿½ß‚ï¿½lï¿½Fï¿½È‚ï¿½
+    void Move()
+    {
+
+        //ï¿½nï¿½ï¿½É‚ï¿½ï¿½È‚ï¿½ï¿½Æ‚ï¿½ï¿½Í“ï¿½ï¿½Í‚ï¿½ï¿½ó‚¯•tï¿½ï¿½ï¿½È‚ï¿½
+        if (IsGrounded() == true)
+        {
+            Moveinput = Input.GetAxisRaw("Horizontal");
+
+            //ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÌŒï¿½ï¿½ï¿½ï¿½ï¿½ÏX
+            if (Moveinput != 0)
+            {
+                Movedirection = new Vector2(Moveinput, 0f);
+
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ğ”½“]ï¿½ï¿½ï¿½ï¿½ï¿½éˆï¿½ï¿½
+                Vector3 scale = transform.localScale;
+                scale.x = Mathf.Abs(scale.x) * Mathf.Sign(Moveinput); // ï¿½ï¿½ï¿½È‚ï¿½}ï¿½Cï¿½iï¿½Xï¿½Aï¿½Eï¿½È‚ï¿½vï¿½ï¿½ï¿½X
+                transform.localScale = scale;
+            }
+        }
+
+
+        //ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ú“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        transform.Translate(Moveinput * moveSpeed, 0.0f, 0.0f);
+
+        if (Moveinput != 0)
+        {
+            Movedirection = new Vector2(Moveinput, 0f);
+        }
+
+
+    }
+
+    //ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ÉGï¿½ï¿½Ä‚ï¿½ï¿½é‚©
+    //private void OnTriggerEnter2D(Collider2D other)
+    //{
+    //    if (other.CompareTag("Ladder"))
+    //    {
+    //        IsOnLadder = true;
+    //    }
+    //}
+
+    ////ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ç—£ï¿½ê‚½ï¿½ï¿½
+    //private void OnTriggerExit2D(Collider2D other)
+    //{
+    //    if (other.CompareTag("Ladder"))
+    //    {
+    //        IsOnLadder = false;
+    //        IsClimbing = false;
+    //    }
+    //}
+
+
+    //ï¿½Öï¿½ï¿½ï¿½ï¿½FAttack()
+    //ï¿½pï¿½rï¿½Fï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Fï¿½È‚ï¿½
+    //ï¿½ß‚ï¿½lï¿½Fï¿½È‚ï¿½
+    private void Attack()
+    {
+
+
+        //ï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½×‚Äæ“¾ï¿½ï¿½ï¿½é‚½ï¿½ß‚É”zï¿½ï¿½ï¿½ï¿½ì¬
+        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
+
+        if (bullets.Length >= maxBulletsOnScreen)
+        {
+            // ï¿½ï¿½Ê‚ÌÅ‘å”ï¿½É’Bï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚Å”ï¿½ï¿½Ë‚ï¿½ï¿½È‚ï¿½
+
+            return;
+        }
+
+        // ï¿½Uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+
+        // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÌŒï¿½ï¿½ï¿½ï¿½Éï¿½ï¿½í‚¹ï¿½Ä”ï¿½ï¿½]
+        bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);
+
+
+    }
+
+
+    //ï¿½ï¿½ÊŠOï¿½Éoï¿½ï¿½ï¿½ç‚±ï¿½ÌƒIï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½jï¿½ï¿½
+    private void OnBecameInvisible()
+    {
+        Destroy(gameObject);
+
+        //Sceneï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+
+
+    //ï¿½_ï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        //Enemyï¿½ï¿½EnemyBulletï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½jï¿½ó‚·‚ï¿½
+        if ((collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBullet"))
+        {
+
+            HP -= 1;
+            //Debug.Log("ï¿½É‚ï¿½");
+
+
+
+            // ï¿½mï¿½bï¿½Nï¿½oï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½
+            Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
+            GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
+
+            // ï¿½ï¿½ï¿½Gï¿½ï¿½Ô‚ï¿½ï¿½Jï¿½n
+            StartInvincibility();
+        }
+    }
+
+
+    //ï¿½Öï¿½ï¿½ï¿½ï¿½FStartInvincibility()
+    //ï¿½pï¿½rï¿½Fï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Ôï¿½ï¿½ï¿½
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Fï¿½È‚ï¿½
+    //ï¿½ß‚ï¿½lï¿½Fï¿½È‚ï¿½
+    void StartInvincibility()
 	{
 		IsInvincible = true;
 		InvincibleTimer = invincibleTime;
 
-		// –³“GA“G‚Æ‚ÌÕ“Ë‚ğ–³‹‚·‚é
+		// ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Aï¿½Gï¿½Æ‚ÌÕ“Ë‚ğ–³ï¿½ï¿½ï¿½ï¿½ï¿½
 		StartCoroutine(IgnoreEnemyCollisionDuringInvincibility());
 
-		// ƒvƒŒƒCƒ„[‚ğ“_–Å‚³‚¹‚é‚½‚ß‚ÌƒRƒ‹[ƒ`ƒ“‚ğŠJn
+		// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½_ï¿½Å‚ï¿½ï¿½ï¿½ï¿½é‚½ï¿½ß‚ÌƒRï¿½ï¿½ï¿½[ï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½n
 		StartCoroutine(InvincibilityFlash());
 	}
 
 
 
-	//ŠÖ”–¼FInvincibilityFlash()
-	//—p“rF“_–Åˆ—
-	//ˆø”F‚È‚µ
-	//–ß‚è’lF‚È‚µ
-	// ƒvƒŒƒCƒ„[‚ğ“_–Å‚³‚¹‚éƒRƒ‹[ƒ`ƒ“
+	//ï¿½Öï¿½ï¿½ï¿½ï¿½FInvincibilityFlash()
+	//ï¿½pï¿½rï¿½Fï¿½_ï¿½Åï¿½ï¿½ï¿½
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Fï¿½È‚ï¿½
+	//ï¿½ß‚ï¿½lï¿½Fï¿½È‚ï¿½
+	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½_ï¿½Å‚ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½[ï¿½`ï¿½ï¿½
 	IEnumerator InvincibilityFlash()
 	{
 		SpriteRenderer sr = GetComponent<SpriteRenderer>();
 		while (IsInvincible)
 		{
-			sr.enabled = !sr.enabled; // “_–ÅiƒXƒvƒ‰ƒCƒg‚Ì•\¦E”ñ•\¦Ø‚è‘Ö‚¦j
-			yield return new WaitForSeconds(0.1f); // “_–Å‚ÌŠÔŠu
+			sr.enabled = !sr.enabled; // ï¿½_ï¿½Åiï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½gï¿½Ì•\ï¿½ï¿½ï¿½Eï¿½ï¿½\ï¿½ï¿½ï¿½Ø‚ï¿½Ö‚ï¿½ï¿½j
+			yield return new WaitForSeconds(0.1f); // ï¿½_ï¿½Å‚ÌŠÔŠu
 		}
-		sr.enabled = true; // ÅŒã‚ÉƒXƒvƒ‰ƒCƒg‚ğ•\¦
+		sr.enabled = true; // ï¿½ÅŒï¿½ÉƒXï¿½vï¿½ï¿½ï¿½Cï¿½gï¿½ï¿½\ï¿½ï¿½
 	}
 
 
-	// –³“GŠÔ’†AƒvƒŒƒCƒ„[‚Æ“G‚ÌÕ“Ë‚ğ–³‹‚·‚é
+	// ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Ô’ï¿½ï¿½Aï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Æ“Gï¿½ÌÕ“Ë‚ğ–³ï¿½ï¿½ï¿½ï¿½ï¿½
 	IEnumerator IgnoreEnemyCollisionDuringInvincibility()
 	{
-		// –³“GŠÔ‚ªI—¹‚·‚é‚Ü‚ÅŒJ‚è•Ô‚µ
+		// ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Ô‚ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ÅŒJï¿½ï¿½Ô‚ï¿½
 		while (IsInvincible)
 		{
-			// "Enemy" ƒ^ƒO‚Ì‚Â‚¢‚½ƒIƒuƒWƒFƒNƒg‚ğ‚·‚×‚Äæ“¾
+			// "Enemy" ï¿½^ï¿½Oï¿½Ì‚Â‚ï¿½ï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½ï¿½×‚Äæ“¾
 			GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 
-			// “G‚Æ‚ÌÕ“Ë‚ğ–³‹
+			// ï¿½Gï¿½Æ‚ÌÕ“Ë‚ğ–³ï¿½
 			foreach (GameObject enemy in enemies)
 			{
 				Physics2D.IgnoreCollision(bc, enemy.GetComponent<Collider2D>(), true);
 			}
 
-			// –³“GŠÔ’†‚ÍÕ“Ë‚ğ–³‹‚µ‘±‚¯‚é
+			// ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Ô’ï¿½ï¿½ÍÕ“Ë‚ğ–³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			yield return null;
 		}
 
-		// –³“GŠÔ‚ªI—¹‚µ‚½‚çAÕ“Ë‚ğÄ‚Ñ—LŒø‚É‚·‚é
+		// ï¿½ï¿½ï¿½Gï¿½ï¿½ï¿½Ô‚ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Õ“Ë‚ï¿½ï¿½Ä‚Ñ—Lï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
 		GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
 		foreach (GameObject enemy in allEnemies)
 		{
@@ -198,127 +345,21 @@ public class player_control : MonoBehaviour
 	}
 
 
-	//ŠÖ”–¼FJump()
-	//—p“rFƒWƒƒƒ“ƒvˆ—
-	//ˆø”F‚È‚µ
-	//–ß‚è’lF‚È‚µ
-	void Jump()
-	{
-		//ƒWƒƒƒ“ƒvˆ—
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			rb.AddForce(Vector2.up * jumpPower);
-			//ƒWƒƒƒ“ƒvó‘Ô‚É‚·‚é
-			IsJumping = true;
-
-			//ƒWƒƒƒ“ƒv’†‚ÍˆÚ“®‘¬“x‚ğ§ŒÀ‚·‚é
-			Moveinput *= 0.7f;
-		}
-	}
-
-
-	//ŠÖ”–¼FMove()
-	//—p“rFˆÚ“®ˆ—
-	//ˆø”F‚È‚µ
-	//–ß‚è’lF‚È‚µ
-	void Move()
-	{
-
-		//’nã‚É‚¢‚È‚¢‚Æ‚«‚Í“ü—Í‚ğó‚¯•t‚¯‚È‚¢
-		if (IsGrounded() == true)
-		{
-			Moveinput = Input.GetAxisRaw("Horizontal");
-
-			//ƒvƒŒƒCƒ„[‚ÌŒü‚«‚ğ•ÏX
-			if (Moveinput != 0)
-			{
-				Movedirection = new Vector2(Moveinput, 0f);
-
-				// Œü‚«‚ğ”½“]‚³‚¹‚éˆ—
-				Vector3 scale = transform.localScale;
-				scale.x = Mathf.Abs(scale.x) * Mathf.Sign(Moveinput); // ¶‚È‚çƒ}ƒCƒiƒXA‰E‚È‚çƒvƒ‰ƒX
-				transform.localScale = scale;
-			}
-		}
-
-
-		//ƒvƒŒƒCƒ„[‚ğˆÚ“®‚³‚¹‚é
-		transform.Translate(Moveinput * moveSpeed, 0.0f, 0.0f);
-
-		if (Moveinput != 0)
-		{
-			Movedirection = new Vector2(Moveinput, 0f);
-		}
-
-		
-	}
-
-    //ŠÖ”–¼FCoolDown()
-	//—p“rFUŒ‚ŠÔŠu‚ğİ‚¯‚éˆ—
-	//ˆø”F‚È‚µ
-	//–ß‚è’lF‚È‚µ
 	
-	
-	//private IEnumerator AttackCoolDown()
-	//{
-	//	// ”­Ë§ŒÀ’†‚Ìˆ—
-	//	IsAttacking = false;
-	//	Debug.Log("”­Ë§ŒÀ’†...");
-
-	//	// §ŒÀŠÔ‚ğ‘Ò‚Â
-	//	yield return new WaitForSeconds(CoolDown);
-
-	//	// ”­Ë§ŒÀ‰ğœ
-	//	IsAttacking = true;
-	//	AttackCount = 0; // ”­Ë‰ñ”‚ğƒŠƒZƒbƒg
-	//	Debug.Log("”­ËÄŠJI");
-	//}
-
-
-	//ŠÖ”–¼FAttack()
-	//—p“rFUŒ‚ˆ—
-	//ˆø”F‚È‚µ
-	//–ß‚è’lF‚È‚µ
-	private void Attack()
-	{
-        /*
-		// UŒ‚ˆ—
-		GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-		bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1); // ƒvƒŒƒCƒ„[‚ÌŒü‚«‚É‡‚í‚¹‚Ä”½“]
-		*/
-
-		//‘„ƒIƒuƒWƒFƒNƒg‚ğ‚·‚×‚Äæ“¾‚·‚é‚½‚ß‚É”z—ñ‚ğì¬
-        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
-
-        if (bullets.Length >= maxBulletsOnScreen)
-        {
-			// ‰æ–Ê‚ÌÅ‘å”‚É’B‚µ‚Ä‚¢‚é‚Ì‚Å”­Ë‚µ‚È‚¢
-			
-            return;
-        }
-
-        // UŒ‚ˆ—
-        GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-
-        // ƒvƒŒƒCƒ„[‚ÌŒü‚«‚É‡‚í‚¹‚Ä”½“]
-        bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1); 
-
-
-    }
 
 
 
 
-    //ŠÖ”–¼FIsGrounded()
-    //—p“rFÚ’n”»’èˆ—
-    //ˆø”F‚È‚µ
-    //–ß‚è’lFÚ’n‚µ‚Ä‚¢‚éê‡‚ÍtrueA‚µ‚Ä‚¢‚È‚¢ê‡‚Ífalse
+    //ï¿½Öï¿½ï¿½ï¿½ï¿½FIsGrounded()
+    //ï¿½pï¿½rï¿½Fï¿½Ú’nï¿½ï¿½ï¿½èˆï¿½ï¿½
+    //ï¿½ï¿½ï¿½ï¿½ï¿½Fï¿½È‚ï¿½
+    //ï¿½ß‚ï¿½lï¿½Fï¿½Ú’nï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡ï¿½ï¿½trueï¿½Aï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ï¿½false
     bool IsGrounded()
 	{
 		bool ret = false;
-		//‰º•ûŒü‚Éray‚ğ”ò‚Î‚µ‚ÄAw’è‚µ‚½ƒŒƒCƒ„[‚ÌƒIƒuƒWƒFƒNƒg‚ÆÚG‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©”»•Ê‚·‚é
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½rayï¿½ï¿½ï¿½Î‚ï¿½ï¿½ÄAï¿½wï¿½è‚µï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ÌƒIï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ÆÚGï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‚©ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê‚ï¿½ï¿½ï¿½
 		RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.4f, Ground);
-		//ƒqƒbƒg‚µ‚Ä‚¢‚È‚¢ê‡‚Ínull‚ª•Ô‚³‚ê‚é
+		//ï¿½qï¿½bï¿½gï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ï¿½nullï¿½ï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½
 		if (hit.collider != null)
 		{
 			ret = true;
