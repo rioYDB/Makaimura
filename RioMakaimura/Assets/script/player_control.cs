@@ -57,7 +57,7 @@ public class player_control : MonoBehaviour
 		}
 
 		//Zキーが押されたら
-		if (Input.GetButtonDown("Fire1"))
+		if (Input.GetKeyDown(KeyCode.Z)||Input.GetButtonDown("Fire1"))
 		{
 				Attack();
 		}
@@ -187,7 +187,7 @@ public class player_control : MonoBehaviour
 	void Jump()
 	{
 		//ジャンプ処理
-		if (Input.GetButtonDown("Jump"))
+		if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
 		{
 			rb.AddForce(Vector2.up * jumpPower);
 			//ジャンプ状態にする
