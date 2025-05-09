@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-public class player_control : MonoBehaviour
+public class control1 : MonoBehaviour
 {
 	//変数宣言
 	public float moveSpeed;                                                         //移動速度
