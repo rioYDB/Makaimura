@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\script\player_control.cs" />
+    <Compile Include="Assets\script\control1.cs" />
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\karasu.cs" />
     <Compile Include="Assets\script\Redareemer.cs" />
