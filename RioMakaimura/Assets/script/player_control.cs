@@ -10,6 +10,8 @@ public class player_control : MonoBehaviour
 	public float jumpPower;                                                         //ジャンプ力
 	public LayerMask Ground;                                                        //地面を判別するオブジェクトレイヤー
 	public GameObject bulletPrefab;                                             //槍のプレハブ
+	public float AttackRate;                                                            //攻撃感覚
+	public float CoolDown = 2.0f;                                                 //攻撃のクールダウン
 	public float KnockbackForce;                                                    //ノックバック
 	public float invincibleTime;                                                        //無敵時間
 	public int maxBulletsOnScreen = 3;                                          //画面内に出るプレイヤー攻撃の最大の数
@@ -24,6 +26,7 @@ public class player_control : MonoBehaviour
 	private bool IsAttacking = true;                                                //攻撃できるか判定
 	private bool IsInvincible = false;                                              //無敵状態か判定
 	private float Moveinput;                                                          //移動入力
+	private float LastAttackTime;                                                   //最後に攻撃した時間
 	private float InvincibleTimer;                                                  //無敵時間タイマー
 	private Vector2 Movedirection = Vector2.zero;                           // 移動方向を記憶しておく
 
@@ -34,7 +37,7 @@ public class player_control : MonoBehaviour
 		//アタッチされているComponentを取得
 		rb = GetComponent<Rigidbody2D>();
 		bc = GetComponent<BoxCollider2D>();
-		
+		LastAttackTime = -AttackRate;                                           // 最初の発射が即時できるように設定
 	}
 
 	// Update is called once per frame
@@ -56,9 +59,7 @@ public class player_control : MonoBehaviour
 		//Zキーが押されたら
 		if (Input.GetKeyDown(KeyCode.Z))
 		{
-			
 				Attack();
-		
 		}
 
 
@@ -87,20 +88,13 @@ public class player_control : MonoBehaviour
 			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 
+
+
 	}
 
 
-	//画面外に出たらこのオブジェクトを破壊
-	private void OnBecameInvisible()
-	{
-		Destroy(gameObject);
+	
 
-		//Sceneをリセットする
-		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-	}
-
-
-	//EnemyとEnemyBulletに当たったらプレイヤーを破壊する
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
 		//EnemyとEnemyBulletに当たったらプレイヤーを破壊する
@@ -109,6 +103,7 @@ public class player_control : MonoBehaviour
 
 			HP -= 1;
 			Debug.Log("痛い");
+
 
 
 			// ノックバック処理
@@ -240,6 +235,7 @@ public class player_control : MonoBehaviour
 
 	}
 
+	
 
 
 	//関数名：Attack()
@@ -248,8 +244,6 @@ public class player_control : MonoBehaviour
 	//戻り値：なし
 	private void Attack()
 	{
-
-
 		//槍オブジェクトをすべて取得するために配列を作成
 		GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
 
@@ -265,8 +259,6 @@ public class player_control : MonoBehaviour
 
 		// プレイヤーの向きに合わせて反転
 		bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);
-
-
 	}
 
 
