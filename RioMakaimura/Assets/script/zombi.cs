@@ -24,6 +24,9 @@ public class enemy_control : MonoBehaviour
 		{
 			moveDirection = (player.position - transform.position).normalized;
 		}
+
+		// 3•bŒã‚ÉŽ©•ª‚ð”j‰ó‚·‚é
+		Destroy(gameObject, 3f);
 	}
 
 	// Update is called once per frame
