@@ -9,6 +9,8 @@ TagManager:
   - Ladder
   - Haka
   - EnemyBullet
+  - Ground
+  - Okami
   layers:
   - Default
   - TransparentFX
