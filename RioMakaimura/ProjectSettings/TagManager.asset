@@ -9,6 +9,7 @@ TagManager:
   - Ladder
   - Haka
   - EnemyBullet
+  - Goal
   layers:
   - Default
   - TransparentFX

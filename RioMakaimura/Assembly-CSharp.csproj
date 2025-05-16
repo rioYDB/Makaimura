@@ -72,6 +72,7 @@
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\zombi.cs" />
     <Compile Include="Assets\script\bullet.cs" />
+    <Compile Include="Assets\script\LoadScene.cs" />
     <Compile Include="Assets\script\GameManager.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -93,9 +93,18 @@ public class player_control : MonoBehaviour
 	}
 
 
-	
+    //ゴールオブジェクトに触れたらゴールシーンに切り替わる
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if( collision.gameObject.tag =="Goal" )
+		{
+			SceneManager.LoadScene("Goal");
+		}
+    }
 
-	private void OnCollisionEnter2D(Collision2D collision)
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
 	{
 		//EnemyとEnemyBulletに当たったらプレイヤーを破壊する
 		if ((collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBullet"))
