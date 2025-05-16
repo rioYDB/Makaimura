@@ -13,7 +13,9 @@ public class LoadScene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+
+        //RキーかLの手前トリガーでリスポーン
+        if (Input.GetKeyDown(KeyCode.R) ||Input.GetButtonDown("Respawn"))
         {
             SceneManager.LoadScene("Ayabe3");
         }

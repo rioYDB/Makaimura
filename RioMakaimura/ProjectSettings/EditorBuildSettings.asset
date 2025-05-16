@@ -11,7 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Ayabe3.unity
     guid: c9630fe6c91f55d42b5549a185260396
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Takahashi.unity
     guid: afa2a159f477fba43a4b5040ec4a33d5
   - enabled: 1

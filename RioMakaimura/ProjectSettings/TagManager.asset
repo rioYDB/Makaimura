@@ -10,6 +10,7 @@ TagManager:
   - Haka
   - EnemyBullet
   - Goal
+  - Activearea
   layers:
   - Default
   - TransparentFX
