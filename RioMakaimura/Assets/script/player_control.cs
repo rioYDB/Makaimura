@@ -32,12 +32,16 @@ public class player_control : MonoBehaviour
 
 	private Rigidbody2D rb;                                                         //Rigidbody2Dの格納
 	private BoxCollider2D bc;                                                       //BoxCollider2Dの格納庫
-	void Start()
+	private SpriteRenderer SpriteRenderer;                                          //SpriteRendererを扱うための格納庫
+
+    void Start()
 	{
 		//アタッチされているComponentを取得
 		rb = GetComponent<Rigidbody2D>();
 		bc = GetComponent<BoxCollider2D>();
-		LastAttackTime = -AttackRate;                                           // 最初の発射が即時できるように設定
+        SpriteRenderer = GetComponent<SpriteRenderer>();
+        LastAttackTime = -AttackRate;                                           // 最初の発射が即時できるように設定
+		SpriteRenderer.color = Color.green;										//プレイヤーの色を緑色にする
 	}
 
 	// Update is called once per frame
@@ -93,9 +97,18 @@ public class player_control : MonoBehaviour
 	}
 
 
-	
+    //ゴールオブジェクトに触れたらゴールシーンに切り替わる
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if( collision.gameObject.tag =="Goal" )
+		{
+			SceneManager.LoadScene("Goal");
+		}
+    }
 
-	private void OnCollisionEnter2D(Collision2D collision)
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
 	{
 		//EnemyとEnemyBulletに当たったらプレイヤーを破壊する
 		if ((collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBullet"))
@@ -104,7 +117,7 @@ public class player_control : MonoBehaviour
 			HP -= 1;
 			Debug.Log("痛い");
 
-
+			PlayerColor();
 
 			// ノックバック処理
 			Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
@@ -112,6 +125,11 @@ public class player_control : MonoBehaviour
 
 			// 無敵状態を開始
 			StartInvincibility();
+		}
+
+		if( collision.gameObject.tag == "Activearea")
+		{
+			HP = 0;
 		}
 	}
 
@@ -176,6 +194,39 @@ public class player_control : MonoBehaviour
 		foreach (GameObject enemy in allEnemies)
 		{
 			Physics2D.IgnoreCollision(bc, enemy.GetComponent<Collider2D>(), false);
+		}
+	}
+
+    //関数名：PlayerColor()
+    //用途：プレイヤーのHPによる色の変更
+    //引数：なし
+    //戻り値：なし
+    void PlayerColor()
+	{
+		switch(HP)
+		{
+			case 3:
+			
+			//プレイヤーのHPが2の時
+			case 2:
+
+                //プレイヤーの色を緑色にする
+                SpriteRenderer.color = Color.green; 
+				break;
+
+            //プレイヤーのHPが2の時
+            case 1:
+
+                //プレイヤーの色を黄色にする
+                SpriteRenderer.color = Color.yellow;
+				break;
+
+            //プレイヤーのHPが2の時
+            case 0:
+
+                //プレイヤーの色を赤色にする
+                SpriteRenderer.color = Color.red;
+				break;
 		}
 	}
 
