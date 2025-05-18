@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      halloween_chara4_ookamiotoko_0: -663318431616833003
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
