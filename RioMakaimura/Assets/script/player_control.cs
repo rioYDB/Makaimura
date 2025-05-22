@@ -47,6 +47,7 @@ public class player_control : MonoBehaviour
 
     // 画像描画用のコンポーネント
     SpriteRenderer sr;
+    private int Human;
 
     void Start()
 	{
@@ -55,8 +56,13 @@ public class player_control : MonoBehaviour
 		bc = GetComponent<BoxCollider2D>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
         LastAttackTime = -AttackRate;                                           // 最初の発射が即時できるように設定
-		SpriteRenderer.color = Color.green;										//プレイヤーの色を緑色にする
-	}
+		SpriteRenderer.color = Color.green;                                     //プレイヤーの色を緑色にする
+
+        // SpriteRendererコンポーネントを取得します
+        image = GetComponent<Image>();
+        // SpriteのSpriteRendererコンポーネントを取得
+        sr = gameObject.GetComponent<SpriteRenderer>();
+    }
 
 	// Update is called once per frame
 	void Update()
@@ -138,13 +144,20 @@ public class player_control : MonoBehaviour
                 // ノックバック処理
                 Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
                 GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
-
+				// 無敵状態を開始
+				StartInvincibility();
             }
+            
+        }
+		if (collision.gameObject.tag == "Okami")
+            {
 
-            // 無敵状態を開始
-            StartInvincibility();
-		}
+                sr.sprite = Okami;
 
+                Debug.Log("ooooooooooooo");
+
+                Destroy(collision.gameObject);
+            }
 		if( collision.gameObject.tag == "Activearea")
 		{
 			HP = 0;

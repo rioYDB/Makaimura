@@ -1160,6 +1160,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
+      propertyPath: Okami
+      value: 
+      objectReference: {fileID: -663318431616833003, guid: aa98a928f0c4e1847acd2ddaaf93b5ec, type: 3}
+    - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: CoolDown
       value: 0.5
       objectReference: {fileID: 0}
@@ -1190,9 +1194,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 546252856951616740, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1583815689}
-    - targetCorrespondingSourceObject: {fileID: 546252856951616740, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1583815695}
   m_SourcePrefab: {fileID: 100100000, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
 --- !u!1001 &1253876649
 PrefabInstance:
@@ -1371,20 +1372,6 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 2.84, y: 4.39}
   m_Direction: 0
---- !u!114 &1583815695
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1583815677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c52304f166a83c47a7414ed6fd60979, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Okami: {fileID: -663318431616833003, guid: aa98a928f0c4e1847acd2ddaaf93b5ec, type: 3}
-  Which: {fileID: 0}
 --- !u!1 &1748226409
 GameObject:
   m_ObjectHideFlags: 0
