@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +10,11 @@ public class player_control : MonoBehaviour
 	public float moveSpeed;                                                         //移動速度
 	public float jumpPower;                                                         //ジャンプ力
 	public LayerMask Ground;                                                        //地面を判別するオブジェクトレイヤー
-	public GameObject bulletPrefab;                                             //槍のプレハブ
-	public float AttackRate;                                                            //攻撃感覚
+	public GameObject HumanWeapon;                                             //人状態で攻撃する（槍）のプレハブ
+    public GameObject OkamiWeapon;                                             //狼男状態で攻撃する（爪）のプレハブ
+    public GameObject WhichWeapon;                                             //魔女状態で攻撃する（魔法）のプレハブ
+
+    public float AttackRate;                                                            //攻撃感覚
 	public float CoolDown = 2.0f;                                                 //攻撃のクールダウン
 	public float KnockbackForce;                                                    //ノックバック
 	public float invincibleTime;                                                        //無敵時間
@@ -33,6 +37,16 @@ public class player_control : MonoBehaviour
 	private Rigidbody2D rb;                                                         //Rigidbody2Dの格納
 	private BoxCollider2D bc;                                                       //BoxCollider2Dの格納庫
 	private SpriteRenderer SpriteRenderer;                                          //SpriteRendererを扱うための格納庫
+//-----------------------------------------------------------------------------------------------------------------------
+//仮想チェンジ用
+    public Sprite Okami;        //当たった時に画像を変えるため
+    public Sprite Which;        //当たった時に画像を変えるため
+
+    private Image image;            //画像の管理
+    bool text1enableKey = true;
+
+    // 画像描画用のコンポーネント
+    SpriteRenderer sr;
 
     void Start()
 	{
@@ -113,18 +127,22 @@ public class player_control : MonoBehaviour
 		//EnemyとEnemyBulletに当たったらプレイヤーを破壊する
 		if ((collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBullet"))
 		{
+			if (!IsInvincible)
+			{
+				HP -= 1;
+				Debug.Log("痛い");
 
-			HP -= 1;
-			Debug.Log("痛い");
 
-			PlayerColor();
+				PlayerColor();
 
-			// ノックバック処理
-			Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
-			GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
+                // ノックバック処理
+                Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
+                GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
 
-			// 無敵状態を開始
-			StartInvincibility();
+            }
+
+            // 無敵状態を開始
+            StartInvincibility();
 		}
 
 		if( collision.gameObject.tag == "Activearea")
@@ -146,6 +164,7 @@ public class player_control : MonoBehaviour
 
 		// 無敵時、敵との衝突を無視する
 		StartCoroutine(IgnoreEnemyCollisionDuringInvincibility());
+
 
 		// プレイヤーを点滅させるためのコルーチンを開始
 		StartCoroutine(InvincibilityFlash());
@@ -306,7 +325,7 @@ public class player_control : MonoBehaviour
 		}
 
 		// 攻撃処理
-		GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
+		GameObject bullet = Instantiate(HumanWeapon, transform.position, Quaternion.identity);
 
 		// プレイヤーの向きに合わせて反転
 		bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);

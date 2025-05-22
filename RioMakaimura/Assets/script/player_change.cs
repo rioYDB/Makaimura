@@ -40,6 +40,8 @@ public class player_change : MonoBehaviour
             sr.sprite = Okami;
 
             Debug.Log("ooooooooooooo");
+
+            Destroy(collision.gameObject);
         }
     }
 

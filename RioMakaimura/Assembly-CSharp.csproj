@@ -70,6 +70,7 @@
     <Compile Include="Assets\script\enemy_Flower.cs" />
     <Compile Include="Assets\script\CameraMove.cs" />
     <Compile Include="Assets\script\ZonbiSpawner.cs" />
+    <Compile Include="Assets\script\RioAreemer.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\zombi.cs" />
     <Compile Include="Assets\script\bullet.cs" />
