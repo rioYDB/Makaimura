@@ -25,6 +25,7 @@ public class player_control : MonoBehaviour
     public GameObject HumanWeapon;                                             //人状態で攻撃する（槍）のプレハブ
     public GameObject OkamiWeapon;                                             //狼男状態で攻撃する（爪）のプレハブ
     public GameObject WhichWeapon;                                             //魔女状態で攻撃する（魔法）のプレハブ
+	private GameObject spearToShoot;
 
     public float AttackRate;                                                            //攻撃感覚
 	public float CoolDown = 2.0f;                                                 //攻撃のクールダウン
@@ -77,6 +78,7 @@ public class player_control : MonoBehaviour
         image = GetComponent<Image>();
         // SpriteのSpriteRendererコンポーネントを取得
         sr = gameObject.GetComponent<SpriteRenderer>();
+		BulletChange("Human");
     }
 
 	// Update is called once per frame
@@ -144,8 +146,8 @@ public class player_control : MonoBehaviour
         if (collision.gameObject.tag == "Okami")
         {
 
-
             sr.sprite = Okami;
+			BulletChange("Okami");
 
             Debug.Log("ooooooooooooo");
 
@@ -153,6 +155,8 @@ public class player_control : MonoBehaviour
         }
 
     }
+
+
 
 
     //接触判定（敵やアイテム）
@@ -347,28 +351,17 @@ public class player_control : MonoBehaviour
 	private void Attack()
 	{
 		////槍オブジェクトをすべて取得するために配列を作成
-		//GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
+		GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
 
-		//if (bullets.Length >= maxBulletsOnScreen)
-		//{
-		//	// 画面の最大数に達しているので発射しない
+		if (bullets.Length >= maxBulletsOnScreen)
+		{
+			// 画面の最大数に達しているので発射しない
 
-		//	return;
-		//}
-		//発射する弾の種類を管理する（switchで）
-        GameObject spearToShoot = HumanWeapon;
+			return;
+		}
 
-        switch (currentAttack)
-        {
-            case AttackType.Okami:
-                spearToShoot = OkamiWeapon;
-                break;
-            case AttackType.Which:
-                spearToShoot = WhichWeapon;
-                break;
-        }
-        // 攻撃処理
-        GameObject bullet = Instantiate(spearToShoot, transform.position, Quaternion.identity);
+		// 攻撃処理
+		GameObject bullet = Instantiate(spearToShoot, transform.position, Quaternion.identity);
 
 		// プレイヤーの向きに合わせて反転
 		bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);
@@ -380,8 +373,19 @@ public class player_control : MonoBehaviour
     //戻り値：なし
     private void BulletChange(string BulletName)
 	{
+        //発射する弾の種類を管理する（switchで）
+        spearToShoot = HumanWeapon;
 
-	}
+        switch (BulletName)
+        {
+            case "Okami":
+                spearToShoot = OkamiWeapon;
+                break;
+            case "Which":
+                spearToShoot = WhichWeapon;
+                break;
+        }
+    }
 
 
     //関数名：IsGrounded()

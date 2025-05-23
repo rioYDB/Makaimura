@@ -524,7 +524,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -881,8 +881,8 @@ Transform:
   m_GameObject: {fileID: 522799133}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 38.139576, y: 1.3158185, z: -0.11119185}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 37.74, y: 1.3158185, z: -0.11119185}
+  m_LocalScale: {x: 2.1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1165,16 +1165,20 @@ PrefabInstance:
       objectReference: {fileID: -663318431616833003, guid: aa98a928f0c4e1847acd2ddaaf93b5ec, type: 3}
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: CoolDown
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: AttackRate
-      value: 0.8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: HumanWeapon
       value: 
       objectReference: {fileID: 2492583762915154637, guid: 0e0b79291ec686a40b4a93847d81455c, type: 3}
+    - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
+      propertyPath: OkamiWeapon
+      value: 
+      objectReference: {fileID: 1352860625203202504, guid: 7cbbae4f67b3abe4a9ee8f5316673c25, type: 3}
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: bulletPrefab
       value: 
@@ -1185,7 +1189,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: invincibleTime
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
