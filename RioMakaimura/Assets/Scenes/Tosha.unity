@@ -1050,8 +1050,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c52304f166a83c47a7414ed6fd60979, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Okami: {fileID: -663318431616833003, guid: aa98a928f0c4e1847acd2ddaaf93b5ec, type: 3}
-  Which: {fileID: 0}
 --- !u!1001 &1712395234
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1445,6 +1443,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
+      propertyPath: Okami
+      value: 
+      objectReference: {fileID: -663318431616833003, guid: aa98a928f0c4e1847acd2ddaaf93b5ec, type: 3}
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: m_Enabled
       value: 1

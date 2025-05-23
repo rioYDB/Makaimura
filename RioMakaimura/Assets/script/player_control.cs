@@ -4,13 +4,25 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+public enum AttackType {Human,Okami,Which };                                //攻撃種類を管理する
+
 public class player_control : MonoBehaviour
 {
 	//変数宣言
 	public float moveSpeed;                                                         //移動速度
 	public float jumpPower;                                                         //ジャンプ力
 	public LayerMask Ground;                                                        //地面を判別するオブジェクトレイヤー
-	public GameObject HumanWeapon;                                             //人状態で攻撃する（槍）のプレハブ
+	//---------------------------------------------------------------------------------------------------------------
+	//攻撃判定の変数
+    private AttackType currentAttack = AttackType.Human;                        //攻撃する種類がはじめは人間状態の攻撃にするため
+    public void ChangeAttack(AttackType newType)
+    {
+        currentAttack = newType;
+    }
+
+    public AttackType attackType;
+
+    public GameObject HumanWeapon;                                             //人状態で攻撃する（槍）のプレハブ
     public GameObject OkamiWeapon;                                             //狼男状態で攻撃する（爪）のプレハブ
     public GameObject WhichWeapon;                                             //魔女状態で攻撃する（魔法）のプレハブ
 
@@ -19,7 +31,7 @@ public class player_control : MonoBehaviour
 	public float KnockbackForce;                                                    //ノックバック
 	public float invincibleTime;                                                        //無敵時間
 	public int maxBulletsOnScreen = 3;                                          //画面内に出るプレイヤー攻撃の最大の数
-
+//-------------------------------------------------------------------------------------------------------------------
 	public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //立ってる時のサイズ
 	public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);             //しゃがんだ時のサイズ
 
@@ -42,12 +54,15 @@ public class player_control : MonoBehaviour
     public Sprite Okami;        //当たった時に画像を変えるため
     public Sprite Which;        //当たった時に画像を変えるため
 
+	private bool HumanChange = true;		//人間状態の判定をする
+	private bool OkamiChange = false;       //狼男状態の判定をする
+    private bool WhichChange = false;		//魔女状態の判定をする
+
     private Image image;            //画像の管理
     bool text1enableKey = true;
 
     // 画像描画用のコンポーネント
     SpriteRenderer sr;
-    private int Human;
 
     void Start()
 	{
@@ -124,10 +139,23 @@ public class player_control : MonoBehaviour
 		{
 			SceneManager.LoadScene("Goal");
 		}
+
+        //狼男アイテムに触れたら自分が狼男になる
+        if (collision.gameObject.tag == "Okami")
+        {
+
+
+            sr.sprite = Okami;
+
+            Debug.Log("ooooooooooooo");
+
+            Destroy(collision.gameObject);
+        }
+
     }
 
 
-
+    //接触判定（敵やアイテム）
     private void OnCollisionEnter2D(Collision2D collision)
 	{
 		//EnemyとEnemyBulletに当たったらプレイヤーを破壊する
@@ -149,15 +177,6 @@ public class player_control : MonoBehaviour
             }
             
         }
-		if (collision.gameObject.tag == "Okami")
-            {
-
-                sr.sprite = Okami;
-
-                Debug.Log("ooooooooooooo");
-
-                Destroy(collision.gameObject);
-            }
 		if( collision.gameObject.tag == "Activearea")
 		{
 			HP = 0;
@@ -327,31 +346,49 @@ public class player_control : MonoBehaviour
 	//戻り値：なし
 	private void Attack()
 	{
-		//槍オブジェクトをすべて取得するために配列を作成
-		GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
+		////槍オブジェクトをすべて取得するために配列を作成
+		//GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
 
-		if (bullets.Length >= maxBulletsOnScreen)
-		{
-			// 画面の最大数に達しているので発射しない
+		//if (bullets.Length >= maxBulletsOnScreen)
+		//{
+		//	// 画面の最大数に達しているので発射しない
 
-			return;
-		}
+		//	return;
+		//}
+		//発射する弾の種類を管理する（switchで）
+        GameObject spearToShoot = HumanWeapon;
 
-		// 攻撃処理
-		GameObject bullet = Instantiate(HumanWeapon, transform.position, Quaternion.identity);
+        switch (currentAttack)
+        {
+            case AttackType.Okami:
+                spearToShoot = OkamiWeapon;
+                break;
+            case AttackType.Which:
+                spearToShoot = WhichWeapon;
+                break;
+        }
+        // 攻撃処理
+        GameObject bullet = Instantiate(spearToShoot, transform.position, Quaternion.identity);
 
 		// プレイヤーの向きに合わせて反転
 		bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);
 	}
 
+    //関数名：BulletChange()
+    //用途：攻撃処理
+    //引数：string
+    //戻り値：なし
+    private void BulletChange(string BulletName)
+	{
+
+	}
 
 
-
-	//関数名：IsGrounded()
-	//用途：接地判定処理
-	//引数：なし
-	//戻り値：接地している場合はtrue、していない場合はfalse
-	bool IsGrounded()
+    //関数名：IsGrounded()
+    //用途：接地判定処理
+    //引数：なし
+    //戻り値：接地している場合はtrue、していない場合はfalse
+    bool IsGrounded()
 	{
 		bool ret = false;
 		//下方向にrayを飛ばして、指定したレイヤーのオブジェクトと接触しているかどうか判別する
