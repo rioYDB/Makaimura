@@ -5,26 +5,47 @@ public class Bullet_Which : bullet
 
     public float HormingSpeed = 2.0f;   //  ホーミングの回転速度
     private Transform EnemyTarget;      //ホーミング対象のエネミー
-
+    private Vector3 currentMoveDirection;
 
     protected override void Start()
     {
-        base.Start(); //親クラスのStart()を開始
+        //base.Start(); //親クラスのStart()を開始
 
         //子クラスのStart()内容も処理する
         FindEnemy(); //一番近いエネミーを探す関数の呼び出し
 
+        // ターゲットが見つかったら初期の移動方向をセット
+        if (EnemyTarget != null)
+        {
+            // 親クラスの movespeed を使って初期の移動方向を決定
+            currentMoveDirection = (EnemyTarget.position - transform.position).normalized * movespeed;
+        }
+        else
+        {
+            // ターゲットが見つからない場合は、一旦弾を止めるか、特定の方向へ進ませるか
+            // 停止させて、Updateで再探索を試みる
+            currentMoveDirection = Vector3.zero;
+        }
 
     }
 
     // Update is called once per frame
     protected override void Update()
     {
-        base.Update();//親クラスのUpdate()を開始
-
-        
+        //base.Update();//親クラスのUpdate()を開始
 
         Horming(); //ホーミング処理の呼び出し
+
+        // 計算された移動方向で実際に弾を移動させる
+        transform.Translate(currentMoveDirection * Time.deltaTime, Space.World);
+        // Space.World を指定することで、弾のローカル座標ではなくワールド座標で移動します。
+
+        // 弾の見た目の向きを進行方向（X軸）に合わせる
+        // currentMoveDirectionの方向に弾のX軸（右方向）を向かせます。
+        if (currentMoveDirection != Vector3.zero) // 無駄な回転を防ぐため
+        {
+            transform.right = currentMoveDirection;
+        }
     }
 
 
@@ -45,6 +66,9 @@ public class Bullet_Which : bullet
     //戻り値：なし
     private void FindEnemy()
     {
+
+       
+
         GameObject[] enemy = GameObject.FindGameObjectsWithTag("Enemy");        //シーン内のEnemyのタグをすべて取得する
 
         float ClosestDistanceEnemy = Mathf.Infinity;                            //最も近いEnemyを探すための初期設定。Mathf.Infinityはまだ見つかっていない状態
@@ -56,6 +80,9 @@ public class Bullet_Which : bullet
 
         foreach (GameObject enemeis in enemy)                                   //最も近いエネミーを見つける処理
         {
+
+            // 対象となる敵が有効なゲームオブジェクトであるかチェック
+            if (enemeis == null) continue; // もし敵が既に破壊されていたらスキップ
 
             Vector3 DirectionEnemy = enemeis.transform.position - CurrentPosition;      //現在の弾の位置からエネミーの距離を引いたベクトル
 
@@ -85,21 +112,26 @@ public class Bullet_Which : bullet
     //戻り値：なし
     private void Horming()
     {
-        //もしホーミングするターゲットが見つかってないとき
-        if (EnemyTarget == null)
+        // もしホーミングするターゲットが見つかってない、またはターゲットが消滅していたら
+        if (EnemyTarget == null || (EnemyTarget != null && EnemyTarget.gameObject == null))
         {
-            FindEnemy();
-            return;
+            // 現在の移動方向を保持したまま、新しいターゲットを探す
+            // ★ここを変更★
+            // ターゲットが見つからなくても、現在の移動方向は変更しない
+            Vector3 lastMoveDirection = currentMoveDirection; // 最後に追っていた方向を保持
+            FindEnemy(); // 新しいターゲットを探す
+
+            if (EnemyTarget == null) // 新しいターゲットも見つからなければ、最後の方向へ進み続ける
+            {
+                currentMoveDirection = lastMoveDirection; // 保持していた方向を維持
+                return;
+            }
         }
 
-        Vector3 Direction =(EnemyTarget.position - transform.position).normalized;          //ターゲット方向のベクトルを計算
-
-        float RotateStep =HormingSpeed*Time.deltaTime;                                      //
-
-        Vector3 NewDirection = Vector3.RotateTowards(transform.position,Direction, RotateStep,0.0f);
-
-        transform.right = NewDirection;
+        // ターゲットの方向を計算し、親クラスの movespeed を使って移動方向に設定する
+        currentMoveDirection = (EnemyTarget.position - transform.position).normalized * movespeed;
     }
-
 }
+
+
 
