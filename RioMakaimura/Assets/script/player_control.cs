@@ -65,6 +65,14 @@ public class player_control : MonoBehaviour
     // 画像描画用のコンポーネント
     SpriteRenderer sr;
 
+    //-----------------------------------------------------------------------------------------------------------------------
+    //はしご登り関連の追加変数
+    public float ladderClimbSpeed = 3.0f; // はしごを登る速度
+    private bool isClimbingLadder = false; // はしごを登っている最中かどうか
+    private bool canClimbLadder = false;   // はしごに触れていて、登れる状態にあるかどうか
+    private float originalGravityScale;    // 元の重力値を保持
+
+
     void Start()
 	{
 		//アタッチされているComponentを取得
@@ -78,15 +86,25 @@ public class player_control : MonoBehaviour
         image = GetComponent<Image>();
         // SpriteのSpriteRendererコンポーネントを取得
         sr = gameObject.GetComponent<SpriteRenderer>();
-		BulletChange("Human");
+
+		//元の重力値を保持
+        originalGravityScale = rb.gravityScale;
+        BulletChange("Human");
     }
 
 	// Update is called once per frame
 	void Update()
 	{
 
-		//移動処理
-		if (/*IsGrounded() == true && */ IsSquat == false /*&& IsJumping == false*/)
+        // はしごを登る処理を最優先
+        if (isClimbingLadder)
+        {
+            ClimbLadder(); // はしごを登る処理
+            return; // はしごを登っている間は他の動作をスキップ
+        }
+
+        //移動処理
+        if (/*IsGrounded() == true && */ IsSquat == false /*&& IsJumping == false*/)
 		{
 			Move();
 		}
@@ -104,8 +122,14 @@ public class player_control : MonoBehaviour
 		}
 
 
-		//無敵タイマー
-		if (IsInvincible == true)
+        // はしごに触れていて、かつ上方向の入力がある場合
+        if (canClimbLadder && (Input.GetAxisRaw("Vertical") > 0.1f || Input.GetAxis("Vertical") > 0.1f))
+        {
+            StartClimbingLadder();
+        }
+
+        //無敵タイマー
+        if (IsInvincible == true)
 		{
 			InvincibleTimer -= Time.deltaTime;
 			if (InvincibleTimer <= 0)
@@ -149,24 +173,46 @@ public class player_control : MonoBehaviour
             sr.sprite = Okami;
 			BulletChange("Okami");
 
-            Debug.Log("ooooooooooooo");
+            Debug.Log("狼男に変身");
 
             Destroy(collision.gameObject);
         }
 
 
-        //狼男アイテムに触れたら自分が狼男になる
+        //魔女アイテムに触れたら自分が魔女になる
         if (collision.gameObject.tag == "Which")
         {
 
             sr.sprite = Which;
             BulletChange("Which");
 
-            Debug.Log("ooooooooooooo");
+            Debug.Log("魔女に変身");
 
             Destroy(collision.gameObject);
         }
 
+        //はしごに触れたら登れるようになる
+        if (collision.gameObject.CompareTag("Ladder"))
+        {
+            canClimbLadder = true;
+        }
+
+
+    }
+
+    //はしごから離れた処理
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ladder"))
+        {
+            canClimbLadder = false;
+            // はしごのコライダーから完全に離れたら、はしご登り状態を強制終了する
+            // これで、横に移動してはしごから外れた場合も対応できる
+            if (isClimbingLadder)
+            {
+                StopClimbingLadder();
+            }
+        }
     }
 
 
@@ -422,4 +468,72 @@ public class player_control : MonoBehaviour
 
 		return ret;
 	}
+
+    //関数名：StartClimbingLadder()
+    //用途：はしごを登り始める処理
+    //引数：void
+    //戻り値：なし
+    void StartClimbingLadder()
+    {
+        isClimbingLadder = true;
+        rb.gravityScale = 0f; // 重力を無効にする
+        rb.linearVelocity = Vector2.zero; // 現在の移動をリセット
+
+    }
+
+    //関数名：ClimbLadder()
+    //用途：はしごを登る処理
+    //引数：void
+    //戻り値：なし
+    void ClimbLadder()
+    {
+        // Y軸の入力（上矢印キーまたはLスティックの上下）を取得
+        float verticalInput = Input.GetAxisRaw("Vertical");
+
+        // はしご登り中の移動
+        rb.linearVelocity = new Vector2(0f, verticalInput * ladderClimbSpeed);
+
+        if (IsGrounded() && isClimbingLadder && verticalInput >= 0) // 上方向入力をしている間も乗り切りたいので、等号を追加
+        {
+            StopClimbingLadder();
+            // 接地した際に少しだけ上に押し出すことで、はしごのコライダーから抜けやすくする
+            // rb.position = new Vector2(rb.position.x, rb.position.y + 0.1f); 
+            // これは状況によっては不要かもしれません。
+            return; // 処理を終了
+        }
+
+
+        // はしごから降りる条件
+        // 1. 下方向入力があり、かつ地面にいる場合
+        // 2. はしごに触れていない場合 (OnTriggerExit2Dで処理済みだが念のため)
+
+        if ((verticalInput < -0.1f && IsGrounded()) )
+        {
+            StopClimbingLadder();
+        }
+    }
+
+
+    //関数名：StopClimbingLadder()
+    //用途：はしご登り終了処理
+    //引数：void
+    //戻り値：なし
+    void StopClimbingLadder()
+    {
+        isClimbingLadder = false;
+        rb.gravityScale = originalGravityScale; // 重力を元に戻す
+
+        // 停止時の速度をリセット（滑り落ち防止）だが、
+        // はしごから降りた直後にジャンプや移動に移行したい場合、
+        // rb.velocity.x を維持する必要があるかもしれない。
+        // rb.velocity = Vector2.zero; // ここをコメントアウトして、X軸速度を維持するか検討
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f); // X軸速度は維持し、Y軸速度のみ0にする
+
+        // 地面にいる場合は、IsJumpingをfalseにリセット
+        if (IsGrounded())
+        {
+            IsJumping = false;
+        }
+    }
+
 }
