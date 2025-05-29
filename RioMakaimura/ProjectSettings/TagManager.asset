@@ -11,6 +11,9 @@ TagManager:
   - EnemyBullet
   - Ground
   - Okami
+  - Activearea
+  - Goal
+  - Which
   layers:
   - Default
   - TransparentFX

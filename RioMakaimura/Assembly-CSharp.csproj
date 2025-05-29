@@ -62,19 +62,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\script\player_control.cs" />
+    <Compile Include="Assets\script\ememy\enemy_Flower.cs" />
+    <Compile Include="Assets\script\bullet\Bullet_Human.cs" />
     <Compile Include="Assets\script\control1.cs" />
     <Compile Include="Assets\script\SetGravity.cs" />
-    <Compile Include="Assets\script\karasu.cs" />
-    <Compile Include="Assets\script\Redareemer.cs" />
-    <Compile Include="Assets\script\enemy_Flower.cs" />
+    <Compile Include="Assets\script\bullet\bullet.cs" />
     <Compile Include="Assets\script\CameraMove.cs" />
-    <Compile Include="Assets\script\ZonbiSpawner.cs" />
-    <Compile Include="Assets\script\RioAreemer.cs" />
+    <Compile Include="Assets\script\ememy\karasu.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
-    <Compile Include="Assets\script\zombi.cs" />
-    <Compile Include="Assets\script\bullet.cs" />
+    <Compile Include="Assets\script\bullet\Bullet_Which.cs" />
+    <Compile Include="Assets\script\ememy\RioAreemer.cs" />
     <Compile Include="Assets\script\LoadScene.cs" />
+    <Compile Include="Assets\script\bullet\Bullet_Okami.cs" />
     <Compile Include="Assets\script\GameManager.cs" />
+    <Compile Include="Assets\script\ememy\Redareemer.cs" />
+    <Compile Include="Assets\script\ememy\ZonbiSpawner.cs" />
+    <Compile Include="Assets\script\ememy\zombi.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1260555488104619514}
   - component: {fileID: 603361057626906277}
-  - component: {fileID: -7872454218616318740}
   - component: {fileID: 8400176357666203515}
   - component: {fileID: -8540690050937449423}
+  - component: {fileID: -4157923075304443665}
   m_Layer: 7
   m_Name: game_ken_0
   m_TagString: Spear
@@ -90,19 +90,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-7872454218616318740
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1352860625203202504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40a577d7bf196d347af9f75e5a4c7824, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movespeed: 0.5
 --- !u!50 &8400176357666203515
 Rigidbody2D:
   serializedVersion: 5
@@ -176,3 +163,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.1, y: 1.2566667}
   m_EdgeRadius: 0
+--- !u!114 &-4157923075304443665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1352860625203202504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9341b8497cb19c498d81550e7080800, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

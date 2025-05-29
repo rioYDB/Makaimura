@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 6845302627644294520}
   - component: {fileID: 6141240830981904679}
-  - component: {fileID: 2856517605219369129}
   - component: {fileID: 6823826752577399508}
   - component: {fileID: 5070788154846250043}
+  - component: {fileID: 3350172953983017510}
   m_Layer: 7
   m_Name: yari_0
   m_TagString: Spear
@@ -90,19 +90,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2856517605219369129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2492583762915154637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40a577d7bf196d347af9f75e5a4c7824, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  movespeed: 0.3
 --- !u!68 &6823826752577399508
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -180,3 +167,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &3350172953983017510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2492583762915154637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b688cc4afa532154aa3d67259ee2ba7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
