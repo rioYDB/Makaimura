@@ -154,6 +154,19 @@ public class player_control : MonoBehaviour
             Destroy(collision.gameObject);
         }
 
+
+        //狼男アイテムに触れたら自分が狼男になる
+        if (collision.gameObject.tag == "Which")
+        {
+
+            sr.sprite = Which;
+            BulletChange("Which");
+
+            Debug.Log("ooooooooooooo");
+
+            Destroy(collision.gameObject);
+        }
+
     }
 
 
