@@ -14,10 +14,19 @@ public class LoadScene : MonoBehaviour
     void Update()
     {
 
-        //RキーかLの手前トリガーでリスポーン
+        //RキーかLの手前トリガーでタイトルへ
         if (Input.GetKeyDown(KeyCode.R) ||Input.GetButtonDown("Respawn"))
         {
-            SceneManager.LoadScene("Ayabe3");
+            SceneManager.LoadScene("Title");
+            Debug.Log("title");
         }
+
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("LetsPlay"))
+        {
+            SceneManager.LoadScene("Ayabe3");
+
+            Debug.Log("main");
+        }
+
     }
 }

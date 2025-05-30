@@ -154,9 +154,9 @@ public class player_control : MonoBehaviour
 
 			Debug.Log("死ぬwwwwwwwwww");
 
-			//Sceneをリセットする
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-		}
+            //Sceneをリセットする
+            SceneManager.LoadScene("GameOver");
+        }
 
 
 
