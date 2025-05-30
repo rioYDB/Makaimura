@@ -181,9 +181,23 @@ MonoBehaviour:
   Ground:
     serializedVersion: 2
     m_Bits: 8
-  bulletPrefab: {fileID: 0}
+  LadderLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  attackType: 0
+  HumanWeapon: {fileID: 0}
+  OkamiWeapon: {fileID: 0}
+  WhichWeapon: {fileID: 0}
+  AttackRate: 0
+  CoolDown: 2
+  KnockbackForce: 0
+  invincibleTime: 0
+  maxBulletsOnScreen: 3
   StandSize: {x: 3.4, y: 3.8, z: 1}
   SquatSize: {x: 1.7, y: 1.9, z: 1}
+  Okami: {fileID: 0}
+  Which: {fileID: 0}
+  ladderClimbSpeed: 3
 --- !u!114 &7479501954726402567
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,9 +11,12 @@ public class player_control : MonoBehaviour
 	//変数宣言
 	public float moveSpeed;                                                         //移動速度
 	public float jumpPower;                                                         //ジャンプ力
-	public LayerMask Ground;                                                        //地面を判別するオブジェクトレイヤー
-	//---------------------------------------------------------------------------------------------------------------
-	//攻撃判定の変数
+    public LayerMask Ground;                                                        //地面を判別するオブジェクトレイヤー
+    public LayerMask LadderLayer;                                                   //地面を判別するオブジェクトレイヤー
+
+    //---------------------------------------------------------------------------------------------------------------
+
+                                                                                //攻撃判定の変数
     private AttackType currentAttack = AttackType.Human;                        //攻撃する種類がはじめは人間状態の攻撃にするため
     public void ChangeAttack(AttackType newType)
     {
@@ -109,8 +112,10 @@ public class player_control : MonoBehaviour
 			Move();
 		}
 
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.4f, LadderLayer);
+        
 		//ジャンプ処理
-		if (IsGrounded() == true && IsSquat == false)
+        if ((IsGrounded() == true || hit.collider != null ) && IsSquat == false)
 		{
 			Jump();
 		}
@@ -123,7 +128,7 @@ public class player_control : MonoBehaviour
 
 
         // はしごに触れていて、かつ上方向の入力がある場合
-        if (canClimbLadder && (Input.GetAxisRaw("Vertical") > 0.1f || Input.GetAxis("Vertical") > 0.1f))
+        if (canClimbLadder && (Input.GetAxisRaw("Vertical") > 0.3f ))
         {
             StartClimbingLadder();
         }
@@ -370,9 +375,36 @@ public class player_control : MonoBehaviour
 	//戻り値：なし
 	void Move()
 	{
+		//足元が梯子かどうかチェック
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.4f, LadderLayer);
+		bool onLadder = false;
 
-		//地上にいないときは入力を受け付けない
-		if (IsGrounded() == true)
+		//真下に梯子がある
+        if (hit.collider != null && !canClimbLadder)
+        {
+			onLadder = true;
+            GetComponent<SetGravity>().IsEnable = false;
+            rb.gravityScale = 0f; // 重力を無効にする
+			rb.linearVelocityY = 0.0f;
+
+			//下キーが押されている
+			if(Input.GetAxisRaw("Vertical") < -0.3f)
+			{
+				//梯子モードに遷移
+				StartClimbingLadder();
+				return;
+
+			}
+
+		}
+		else
+		{
+            GetComponent<SetGravity>().IsEnable = true;
+			rb.gravityScale = originalGravityScale;
+        }
+
+        //地上にいないときは入力を受け付けない
+        if (IsGrounded() == true || onLadder)
 		{
 			Moveinput = Input.GetAxisRaw("Horizontal");
 
@@ -479,6 +511,8 @@ public class player_control : MonoBehaviour
         rb.gravityScale = 0f; // 重力を無効にする
         rb.linearVelocity = Vector2.zero; // 現在の移動をリセット
 
+		//Gravityのスクリプトも止める
+		GetComponent<SetGravity>().IsEnable = false;
     }
 
     //関数名：ClimbLadder()
@@ -487,30 +521,24 @@ public class player_control : MonoBehaviour
     //戻り値：なし
     void ClimbLadder()
     {
+		if (!isClimbingLadder)
+		{
+			return;
+		}
+
         // Y軸の入力（上矢印キーまたはLスティックの上下）を取得
         float verticalInput = Input.GetAxisRaw("Vertical");
 
-        // はしご登り中の移動
+		//地上にいる、かつ、下方向に入力したら、梯子を解除してよい
+		//もしくはジャンプボタンを押したら梯子を解除
+        if ((verticalInput < -0.1f && IsGrounded()) || Input.GetButtonDown("Jump"))
+        {
+            StopClimbingLadder();
+			return;
+        }
+
+		Debug.Log("Input = " + verticalInput + " velocity = "+ rb.linearVelocity + " verticalInput * ladderClimbSpeed= " + verticalInput * ladderClimbSpeed);
         rb.linearVelocity = new Vector2(0f, verticalInput * ladderClimbSpeed);
-
-        if (IsGrounded() && isClimbingLadder && verticalInput >= 0) // 上方向入力をしている間も乗り切りたいので、等号を追加
-        {
-            StopClimbingLadder();
-            // 接地した際に少しだけ上に押し出すことで、はしごのコライダーから抜けやすくする
-            // rb.position = new Vector2(rb.position.x, rb.position.y + 0.1f); 
-            // これは状況によっては不要かもしれません。
-            return; // 処理を終了
-        }
-
-
-        // はしごから降りる条件
-        // 1. 下方向入力があり、かつ地面にいる場合
-        // 2. はしごに触れていない場合 (OnTriggerExit2Dで処理済みだが念のため)
-
-        if ((verticalInput < -0.1f && IsGrounded()) )
-        {
-            StopClimbingLadder();
-        }
     }
 
 
@@ -529,11 +557,11 @@ public class player_control : MonoBehaviour
         // rb.velocity = Vector2.zero; // ここをコメントアウトして、X軸速度を維持するか検討
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f); // X軸速度は維持し、Y軸速度のみ0にする
 
-        // 地面にいる場合は、IsJumpingをfalseにリセット
-        if (IsGrounded())
-        {
-            IsJumping = false;
-        }
+		// 地面にいる場合は、IsJumpingをfalseにリセット
+		IsJumping = !IsGrounded();
+
+		//Gravityのスクリプトは再開
+		GetComponent<SetGravity>().IsEnable = true;
     }
 
 }
