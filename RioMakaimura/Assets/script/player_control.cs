@@ -74,6 +74,12 @@ public class player_control : MonoBehaviour
     private bool isClimbingLadder = false; // はしごを登っている最中かどうか
     private bool canClimbLadder = false;   // はしごに触れていて、登れる状態にあるかどうか
     private float originalGravityScale;    // 元の重力値を保持
+	//-----------------------------------------------------------------------------------------------------------------------
+	//しゃがむ処理の変数
+	private Vector2 OriginColliderSize;
+	private Vector2 OriginClliderOffset;
+	private Vector3 OriginLocalScale;
+
 
 
     void Start()
@@ -92,6 +98,13 @@ public class player_control : MonoBehaviour
 
 		//元の重力値を保持
         originalGravityScale = rb.gravityScale;
+
+		//しゃがみ機能の初期設定
+		OriginColliderSize =bc.size;
+		OriginClliderOffset = bc.offset;
+
+		OriginLocalScale =transform.localScale;
+
         BulletChange("Human");
     }
 
