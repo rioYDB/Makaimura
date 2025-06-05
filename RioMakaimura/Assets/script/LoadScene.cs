@@ -14,12 +14,7 @@ public class LoadScene : MonoBehaviour
     void Update()
     {
 
-        //RキーかLの手前トリガーでタイトルへ
-        if (Input.GetKeyDown(KeyCode.R) ||Input.GetButtonDown("Respawn"))
-        {
-            SceneManager.LoadScene("Title");
-            Debug.Log("title");
-        }
+    
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("LetsPlay"))
         {

@@ -79,6 +79,7 @@
     <Compile Include="Assets\script\ememy\Redareemer.cs" />
     <Compile Include="Assets\script\ememy\ZonbiSpawner.cs" />
     <Compile Include="Assets\script\ememy\zombi.cs" />
+    <Compile Include="Assets\script\GameOver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
