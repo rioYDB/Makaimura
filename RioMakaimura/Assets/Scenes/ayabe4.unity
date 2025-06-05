@@ -454,6 +454,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9acfdb680e4e31e4b8bdb196ce9d5459, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Ground:
+    serializedVersion: 2
+    m_Bits: 0
   player: {fileID: 1609065527}
   enemyPrefab: {fileID: 2918432746249519020, guid: f36d59e249b93da438dc7a918853e72b, type: 3}
   spawnDistance: 5
@@ -1598,7 +1601,7 @@ Transform:
   m_GameObject: {fileID: 1748226409}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.36, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

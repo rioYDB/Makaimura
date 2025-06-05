@@ -12,7 +12,7 @@ public class player_control : MonoBehaviour
 	public float moveSpeed;                                                         //移動速度
 	public float jumpPower;                                                         //ジャンプ力
     public LayerMask Ground;                                                        //地面を判別するオブジェクトレイヤー
-    public LayerMask LadderLayer;                                                   //地面を判別するオブジェクトレイヤー
+    public LayerMask LadderLayer;                                                   //hasigoを判別するオブジェクトレイヤー
 
     //---------------------------------------------------------------------------------------------------------------
 
@@ -496,7 +496,7 @@ public class player_control : MonoBehaviour
     //用途：接地判定処理
     //引数：なし
     //戻り値：接地している場合はtrue、していない場合はfalse
-    bool IsGrounded()
+    public bool IsGrounded()
 	{
 		bool ret = false;
 		//下方向にrayを飛ばして、指定したレイヤーのオブジェクトと接触しているかどうか判別する
