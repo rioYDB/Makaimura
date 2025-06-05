@@ -71,6 +71,7 @@
     <Compile Include="Assets\script\ememy\karasu.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Which.cs" />
+    <Compile Include="Assets\script\BackGround.cs" />
     <Compile Include="Assets\script\ememy\RioAreemer.cs" />
     <Compile Include="Assets\script\LoadScene.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Okami.cs" />
