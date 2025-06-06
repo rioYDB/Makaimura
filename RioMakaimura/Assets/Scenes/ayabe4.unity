@@ -324,7 +324,7 @@ PrefabInstance:
     - target: {fileID: 6421705384241635079, guid: 93bc6002c4fb06e499c7857840b08516, type: 3}
       propertyPath: player
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1609065527}
     - target: {fileID: 6421705384241635079, guid: 93bc6002c4fb06e499c7857840b08516, type: 3}
       propertyPath: fireRate
       value: 2
@@ -332,6 +332,14 @@ PrefabInstance:
     - target: {fileID: 6421705384241635079, guid: 93bc6002c4fb06e499c7857840b08516, type: 3}
       propertyPath: bulletSpeed
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925753499958189273, guid: 93bc6002c4fb06e499c7857840b08516, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925753499958189273, guid: 93bc6002c4fb06e499c7857840b08516, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -454,12 +462,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9acfdb680e4e31e4b8bdb196ce9d5459, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Ground:
-    serializedVersion: 2
-    m_Bits: 0
   player: {fileID: 1609065527}
   enemyPrefab: {fileID: 2918432746249519020, guid: f36d59e249b93da438dc7a918853e72b, type: 3}
-  spawnDistance: 5
+  spawnDistance: 4
   spawnInterval: 6.5
   spawnWidthVariation: 1
 --- !u!4 &318889354
@@ -4279,7 +4284,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.0620122
+      value: -3.097
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: m_LocalPosition.z
