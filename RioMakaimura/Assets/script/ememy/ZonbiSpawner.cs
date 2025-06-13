@@ -69,6 +69,20 @@ public class ZonbiSpawner : MonoBehaviour
 
                 // 敵を生成
                 GameObject newEnemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+
+                //  ここでプレイヤーの方向を向かせる（左右反転）
+                Vector3 enemyScale = newEnemy.transform.localScale;
+                if (spawnPos.x < player.position.x)
+                {
+                    // プレイヤーの左に出現 → 右を向かせる
+                    enemyScale.x = Mathf.Abs(enemyScale.x);
+                }
+                else
+                {
+                    // プレイヤーの右に出現 → 左を向かせる
+                    enemyScale.x = -Mathf.Abs(enemyScale.x);
+                }
+                newEnemy.transform.localScale = enemyScale;
                 newEnemy.GetComponent<enemy_control>().mOnDestly += (GameObject g) =>
                 {
                     spawnedEnemies.Remove(g);

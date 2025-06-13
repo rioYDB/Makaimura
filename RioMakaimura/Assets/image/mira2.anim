@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mira
+  m_Name: mira2
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,9 +21,9 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 4657468156247895156, guid: dfab907bf2aa4e14a80396b88d16cc72, type: 3}
+      value: {fileID: -2939256901731451847, guid: 0a8424a40c52039479d90cd884461e22, type: 3}
     - time: 0.083333336
-      value: {fileID: -624120107974560691, guid: 6f78fedbfe599364bbec8e2ef4581613, type: 3}
+      value: {fileID: 4657468156247895156, guid: dfab907bf2aa4e14a80396b88d16cc72, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -46,8 +46,8 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
+    - {fileID: -2939256901731451847, guid: 0a8424a40c52039479d90cd884461e22, type: 3}
     - {fileID: 4657468156247895156, guid: dfab907bf2aa4e14a80396b88d16cc72, type: 3}
-    - {fileID: -624120107974560691, guid: 6f78fedbfe599364bbec8e2ef4581613, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
