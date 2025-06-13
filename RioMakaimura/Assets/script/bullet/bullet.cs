@@ -3,7 +3,7 @@ using UnityEngine;
 public abstract class bullet : MonoBehaviour　　　//抽象クラス(継承前提のクラス)
 {
     public float movespeed;     //攻撃アイテムの移動速度
-    private float direction;    // 発射方向
+    protected float direction;    // 発射方向
 
     // Start is called before the first frame update
     protected virtual void Start()

@@ -160,20 +160,20 @@ public class enemy_control : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
 	{
-		// 自分が敵レイヤーに属している場合
-		//if (collision.gameObject.CompareTag("Enemy"))
-		//{
-		//	// 衝突を無視する
-		//	Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
-		//}
+        // 自分が敵レイヤーに属している場合
+        //if (collision.gameObject.CompareTag("Enemy"))
+        //{
+        //	// 衝突を無視する
+        //	Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
+        //}
 
-		// 自分がplayerに属している場合
-		//if (collision.gameObject.CompareTag("Player"))
-		//{
-		//	// 衝突を無視する
-		//	Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
-		//}
-	}
+        // 自分がplayerに属している場合
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            // 衝突を無視する
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
+        }
+    }
 
 
 

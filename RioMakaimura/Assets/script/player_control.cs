@@ -250,9 +250,9 @@ public class player_control : MonoBehaviour
 
 				PlayerColor();
 
-                // ノックバック処理
-                Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
-                GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
+                //// ノックバック処理
+                //Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
+                //GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
 				// 無敵状態を開始
 				StartInvincibility();
             }
