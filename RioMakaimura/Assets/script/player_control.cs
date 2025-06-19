@@ -464,12 +464,19 @@ public class player_control : MonoBehaviour
 			return;
 		}
 
-		// 攻撃処理
-		GameObject bullet = Instantiate(spearToShoot, transform.position, Quaternion.identity);
+        float Offsetx = 1.0f;
+        Vector3 SpwanPos = transform.position + new Vector3(transform.localScale.x > 0 ? Offsetx : -Offsetx, 0, 0);
 
-		// プレイヤーの向きに合わせて反転
-		bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);
-	}
+
+
+        // 攻撃処理
+        GameObject bullet = Instantiate(spearToShoot, SpwanPos, Quaternion.identity);
+
+
+
+        // プレイヤーの向きに合わせて反転
+        bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);
+    }
 
     //関数名：BulletChange()
     //用途：攻撃処理

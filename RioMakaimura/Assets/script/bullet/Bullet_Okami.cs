@@ -24,7 +24,7 @@ public class Bullet_Okami : bullet
 
     protected override void Update()
     {
-        base.Update();//親クラスのUpdate()を開始
+        //base.Update();//親クラスのUpdate()を開始
 
 
         Destroy(gameObject, lifetime); // 自動で削除
