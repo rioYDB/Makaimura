@@ -6,6 +6,8 @@ public class Bullet_Which : bullet
     public float HormingSpeed = 2.0f;   //  ホーミングの回転速度
     private Transform EnemyTarget;      //ホーミング対象のエネミー
     private Vector3 currentMoveDirection;
+    public LayerMask Ground;            //地面を判定するレイヤー
+
 
     protected override void Start()
     {
@@ -45,6 +47,25 @@ public class Bullet_Which : bullet
         if (currentMoveDirection != Vector3.zero) // 無駄な回転を防ぐため
         {
             transform.right = currentMoveDirection;
+        }
+    }
+
+
+    protected override void OnTriggerEnter2D(Collider2D collision)
+    {
+        base.OnTriggerEnter2D(collision);
+
+        if (((1 << collision.gameObject.layer) & Ground) != 0)
+        {
+            Debug.Log("ホーミング弾が地面に！");
+            Destroy(gameObject); // 地面にトリガーしたらホーミング弾を消す
+        }
+
+        else if (collision.gameObject.CompareTag("Enemy"))
+        {
+
+            BulletMoves(collision.gameObject);
+
         }
     }
 

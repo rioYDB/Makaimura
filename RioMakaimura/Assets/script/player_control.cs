@@ -724,10 +724,6 @@ public class player_control : MonoBehaviour
         return instance;
     }
 
-    //IEnumerator SpwanFirepillarRoutine(Vector3 baseposition,float playerDirection,int count,float delay,float spread)
-    //{
-
-    //}
 
 
 }
