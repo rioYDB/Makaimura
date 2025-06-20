@@ -4356,9 +4356,29 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6829769663980341737, guid: 3c84da3e88e05564297b4957ab68d15c, type: 3}
     - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: FirePillarCnt
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: VampireWeapon
       value: 
-      objectReference: {fileID: 8381159016650497577, guid: 27a0d7c85ced201439f0be58eed021e3, type: 3}
+      objectReference: {fileID: 5938814873354149408, guid: 340a3c0d02d307347965593d41dc4869, type: 3}
+    - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: FirePillarDelay
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: FirePillarOffset
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: FirePillarSpread
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: maxFirePillarOnScreen
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.6987461

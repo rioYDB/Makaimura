@@ -32,16 +32,16 @@ public class player_control : MonoBehaviour
 
     private GameObject spearToShoot;
 
-    public float AttackRate;                                                            //攻撃感覚
-	public float CoolDown = 2.0f;                                                 //攻撃のクールダウン
+   
 	public float KnockbackForce;                                                    //ノックバック
 	public float invincibleTime;                                                        //無敵時間
 	public int maxBulletsOnScreen = 3;                                          //画面内に出るプレイヤー攻撃の最大の数
 
 	public int FirePillarCnt = 0;												//火柱を何連させるか
 	public float FirePillarDelay = 0.0f;										//火柱の出現間隔
-	public float FirePillarSplead = 0.0f;										//火柱がどのくらい広がるか
+	public float FirePillarSpread = 0.0f;										//火柱がどのくらい広がるか
 	public float FirePillarOffset = 0.0f;										//プレイヤーから火柱を出現させる距離
+	public int maxFirePillarOnScreen = 0;										//火柱の最大出現数
 
 //-------------------------------------------------------------------------------------------------------------------
 	public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //立ってる時のサイズ
@@ -99,7 +99,6 @@ public class player_control : MonoBehaviour
 		rb = GetComponent<Rigidbody2D>();
 		bc = GetComponent<BoxCollider2D>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
-        LastAttackTime = -AttackRate;                                           // 最初の発射が即時できるように設定
 		SpriteRenderer.color = Color.green;                                     //プレイヤーの色を緑色にする
 
         // SpriteRendererコンポーネントを取得します
@@ -482,9 +481,16 @@ public class player_control : MonoBehaviour
 		////槍オブジェクトをすべて取得するために配列を作成
 		GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
 
+
+        // プレイヤーの向きを取得
+        float playerDirection = transform.localScale.x > 0 ? 1f : -1f;
+
         //発射位置を制御
         float Offsetx = 1.0f;
         Vector3 SpwanPos = transform.position + new Vector3(transform.localScale.x > 0 ? Offsetx : -Offsetx, 0, 0);
+
+		//火柱の位置を設定
+        Vector3 spawnPosition = transform.position + new Vector3(playerDirection * FirePillarOffset, 0f, 0f);
 
 
         if (currentAttack == AttackType.Vampire)
@@ -492,6 +498,14 @@ public class player_control : MonoBehaviour
 			//火柱の処理
 			//数の制限
 			GameObject[] Pillars =GameObject.FindGameObjectsWithTag(VampireWeapon.tag);
+			if (Pillars.Length > maxFirePillarOnScreen)
+			{
+				Debug.Log("火柱出すぎてアチアチやでぇ...");
+				return;
+			}
+
+			//火柱を出力
+			StartCoroutine(SpawnFirePillarsRoutine(spawnPosition, playerDirection, FirePillarCnt, FirePillarDelay, FirePillarSpread));
 
 		}
 
@@ -632,5 +646,57 @@ public class player_control : MonoBehaviour
 		//Gravityのスクリプトは再開
 		GetComponent<SetGravity>().IsEnable = true;
     }
+
+
+
+    IEnumerator SpawnFirePillarsRoutine(Vector3 basePosition, float playerDirection, int count, float delay, float spread)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            float offsetX = (i - (count - 1) / 2.0f) * spread * playerDirection;
+            Vector3 firePillarSpawnPos = new Vector3(basePosition.x + offsetX, basePosition.y, basePosition.z);
+
+            GameObject pillarInstance = Instantiate(VampireWeapon, firePillarSpawnPos, Quaternion.identity);
+
+            SpriteRenderer pillarSr = pillarInstance.GetComponent<SpriteRenderer>();
+            if (pillarSr != null)
+            {
+                pillarSr.flipX = (playerDirection == -1);
+            }
+            else
+            {
+                Vector3 pillarScale = pillarInstance.transform.localScale;
+                pillarScale.x = Mathf.Abs(pillarScale.x) * playerDirection;
+                pillarInstance.transform.localScale = pillarScale;
+            }
+
+            yield return new WaitForSeconds(delay);
+        }
+    }
+
+    
+    private GameObject CreateAttackInstance(GameObject prefab, Vector3 spawnPosition, float playerDirection)
+    {
+        GameObject instance = Instantiate(prefab, spawnPosition, Quaternion.identity);
+
+        SpriteRenderer instanceSr = instance.GetComponent<SpriteRenderer>();
+        if (instanceSr != null)
+        {
+            instanceSr.flipX = (playerDirection == -1);
+        }
+        else
+        {
+            Vector3 instanceScale = instance.transform.localScale;
+            instanceScale.x = Mathf.Abs(instanceScale.x) * playerDirection;
+            instance.transform.localScale = instanceScale;
+        }
+        return instance;
+    }
+
+    //IEnumerator SpwanFirepillarRoutine(Vector3 baseposition,float playerDirection,int count,float delay,float spread)
+    //{
+
+    //}
+
 
 }
