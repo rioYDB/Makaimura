@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-public enum AttackType {Human,Okami,Which };                                //攻撃種類を管理する
+public enum AttackType {Human,Okami,Which,Vampire };                                //攻撃種類を管理する
 
 public class player_control : MonoBehaviour
 {
@@ -15,7 +15,7 @@ public class player_control : MonoBehaviour
     public LayerMask LadderLayer;                                                   //hasigoを判別するオブジェクトレイヤー
 
     //---------------------------------------------------------------------------------------------------------------
-
+	//攻撃パターンと変身
                                                                                 //攻撃判定の変数
     private AttackType currentAttack = AttackType.Human;                        //攻撃する種類がはじめは人間状態の攻撃にするため
     public void ChangeAttack(AttackType newType)
@@ -37,6 +37,12 @@ public class player_control : MonoBehaviour
 	public float KnockbackForce;                                                    //ノックバック
 	public float invincibleTime;                                                        //無敵時間
 	public int maxBulletsOnScreen = 3;                                          //画面内に出るプレイヤー攻撃の最大の数
+
+	public int FirePillarCnt = 0;												//火柱を何連させるか
+	public float FirePillarDelay = 0.0f;										//火柱の出現間隔
+	public float FirePillarSplead = 0.0f;										//火柱がどのくらい広がるか
+	public float FirePillarOffset = 0.0f;										//プレイヤーから火柱を出現させる距離
+
 //-------------------------------------------------------------------------------------------------------------------
 	public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //立ってる時のサイズ
 	public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);             //しゃがんだ時のサイズ
@@ -476,25 +482,40 @@ public class player_control : MonoBehaviour
 		////槍オブジェクトをすべて取得するために配列を作成
 		GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
 
-		if (bullets.Length >= maxBulletsOnScreen)
-		{
-			// 画面の最大数に達しているので発射しない
-
-			return;
-		}
-
+        //発射位置を制御
         float Offsetx = 1.0f;
         Vector3 SpwanPos = transform.position + new Vector3(transform.localScale.x > 0 ? Offsetx : -Offsetx, 0, 0);
 
 
+        if (currentAttack == AttackType.Vampire)
+		{
+			//火柱の処理
+			//数の制限
+			GameObject[] Pillars =GameObject.FindGameObjectsWithTag(VampireWeapon.tag);
 
-        // 攻撃処理
-        GameObject bullet = Instantiate(spearToShoot, SpwanPos, Quaternion.identity);
+		}
+
+		else　//ヴァンパイア以外の状態の攻撃
+		{
+
+			if (bullets.Length >= maxBulletsOnScreen)
+			{
+				// 画面の最大数に達しているので発射しない
+
+				return;
+			}
 
 
+            // 攻撃処理
+            GameObject bullet = Instantiate(spearToShoot, SpwanPos, Quaternion.identity);
 
-        // プレイヤーの向きに合わせて反転
-        bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);
+            // プレイヤーの向きに合わせて反転
+            bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);
+
+        }
+        
+		
+        
     }
 
     //関数名：BulletChange()
@@ -518,8 +539,10 @@ public class player_control : MonoBehaviour
             case "Vampire":
                 spearToShoot = VampireWeapon;
                 break;
-                spearToShoot = WhichWeapon;
-                break;
+
+			default:
+				spearToShoot = HumanWeapon;
+				break;
 
         }
     }
