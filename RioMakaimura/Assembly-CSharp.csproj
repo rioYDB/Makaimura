@@ -77,6 +77,7 @@
     <Compile Include="Assets\script\bullet\Bullet_Okami.cs" />
     <Compile Include="Assets\script\GameManager.cs" />
     <Compile Include="Assets\script\ememy\Redareemer.cs" />
+    <Compile Include="Assets\script\bullet\Bullet_Vampire.cs" />
     <Compile Include="Assets\script\ememy\ZonbiSpawner.cs" />
     <Compile Include="Assets\script\GameOver.cs" />
     <Compile Include="Assets\script\ememy\zombi.cs" />

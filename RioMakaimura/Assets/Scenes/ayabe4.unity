@@ -119,6 +119,67 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &131687877
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3132421608089692810, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291185282778024207, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.2607193
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291185282778024207, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.4852328
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291185282778024207, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291185282778024207, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291185282778024207, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291185282778024207, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291185282778024207, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291185282778024207, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291185282778024207, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4291185282778024207, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5634412137975383994, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
+      propertyPath: m_Name
+      value: vampire_Change
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: eb63e89ac19fd504e868c12fadfa67b7, type: 3}
 --- !u!1001 &138727536
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4287,9 +4348,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: a6df0d63695cdc445a4aabdcde5f532a, type: 3}
     - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: Vampire
+      value: 
+      objectReference: {fileID: 21300000, guid: cc65c314ad4af2e4d9636c55955a7a0d, type: 3}
+    - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: OkamiWeapon
       value: 
       objectReference: {fileID: 6829769663980341737, guid: 3c84da3e88e05564297b4957ab68d15c, type: 3}
+    - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: VampireWeapon
+      value: 
+      objectReference: {fileID: 8381159016650497577, guid: 27a0d7c85ced201439f0be58eed021e3, type: 3}
     - target: {fileID: 7324508348279022390, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.6987461
@@ -4431,3 +4500,4 @@ SceneRoots:
   - {fileID: 1898536116}
   - {fileID: 837763582}
   - {fileID: 1056457134}
+  - {fileID: 131687877}

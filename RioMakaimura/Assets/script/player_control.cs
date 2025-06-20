@@ -28,7 +28,9 @@ public class player_control : MonoBehaviour
     public GameObject HumanWeapon;                                             //人状態で攻撃する（槍）のプレハブ
     public GameObject OkamiWeapon;                                             //狼男状態で攻撃する（爪）のプレハブ
     public GameObject WhichWeapon;                                             //魔女状態で攻撃する（魔法）のプレハブ
-	private GameObject spearToShoot;
+	public GameObject VampireWeapon;										   //ヴァンパイア状態で攻撃する(火柱)のプレハブ
+
+    private GameObject spearToShoot;
 
     public float AttackRate;                                                            //攻撃感覚
 	public float CoolDown = 2.0f;                                                 //攻撃のクールダウン
@@ -57,10 +59,13 @@ public class player_control : MonoBehaviour
 //仮想チェンジ用
     public Sprite Okami;        //当たった時に画像を変えるため
     public Sprite Which;        //当たった時に画像を変えるため
+	public Sprite Vampire;		//当たった時に画像を変えるため
 
-	private bool HumanChange = true;		//人間状態の判定をする
+
+    private bool HumanChange = true;		//人間状態の判定をする
 	private bool OkamiChange = false;       //狼男状態の判定をする
     private bool WhichChange = false;		//魔女状態の判定をする
+
 
     private Image image;            //画像の管理
     bool text1enableKey = true;
@@ -208,6 +213,20 @@ public class player_control : MonoBehaviour
 
             Destroy(collision.gameObject);
         }
+
+        //ヴァンパイアアイテムに触れたら自分が魔女になる
+        if (collision.gameObject.tag == "Vampire")
+        {
+
+            sr.sprite = Vampire;
+            BulletChange("Vampire");
+
+            Debug.Log("ヴァンパイアに変身");
+
+            Destroy(collision.gameObject);
+        }
+
+
 
         //はしごに触れたら登れるようになる
         if (collision.gameObject.CompareTag("Ladder"))
@@ -495,6 +514,13 @@ public class player_control : MonoBehaviour
             case "Which":
                 spearToShoot = WhichWeapon;
                 break;
+
+            case "Vampire":
+                spearToShoot = VampireWeapon;
+                break;
+                spearToShoot = WhichWeapon;
+                break;
+
         }
     }
 
