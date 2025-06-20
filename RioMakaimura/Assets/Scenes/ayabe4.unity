@@ -4475,11 +4475,11 @@ PrefabInstance:
       objectReference: {fileID: 5938814873354149408, guid: 340a3c0d02d307347965593d41dc4869, type: 3}
     - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: FirePillarDelay
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: FirePillarOffset
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: FirePillarSpread
