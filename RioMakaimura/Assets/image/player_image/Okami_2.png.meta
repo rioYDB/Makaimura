@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Okami_2_0: -8646320061983074359
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
