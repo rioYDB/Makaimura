@@ -178,4 +178,4 @@ MonoBehaviour:
   movespeed: 0.5
   BounceMoveSpeed: 5
   BounceHeight: 2
-  BounceDuration: 0.01
+  BounceDuration: 5

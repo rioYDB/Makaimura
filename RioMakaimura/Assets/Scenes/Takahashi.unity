@@ -186,7 +186,7 @@ PrefabInstance:
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: HumanWeapon
       value: 
-      objectReference: {fileID: 2492583762915154637, guid: 0e0b79291ec686a40b4a93847d81455c, type: 3}
+      objectReference: {fileID: 6748977133201327798, guid: c8df5f8b59fa6424abe4a0a213ab0a9d, type: 3}
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: OkamiWeapon
       value: 
