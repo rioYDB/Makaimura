@@ -57,6 +57,15 @@ public class Zombi_default : MonoBehaviour
     void Update()
     {
 
+        // 敵キャラクターが画面内にいるか確認
+        Vector3 screenPos = Camera.main.WorldToViewportPoint(transform.position);
+        if (screenPos.x < 0 || screenPos.x > 1 || screenPos.y < 0 || screenPos.y > 1)
+        {
+            // 画面外にいる場合は岸辺露伴は動かない
+            return;
+        }
+
+
         // 方向転換をしないようにするため、回転処理は無効化
         transform.rotation = Quaternion.identity; // 常に回転をリセット（固定）
 

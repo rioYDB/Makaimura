@@ -3,23 +3,21 @@ using UnityEngine;
 public class Bullet_Human : bullet
 {
 
-    public float BounceMoveSpeed = 5.0f;  //ˆÚ“®‘¬“x
-    public float Bounceforce = 2.0f;     //ƒoƒEƒ“ƒh‚·‚é‚‚³
-    public float Initialup = 1.0f;          //ƒoƒEƒ“ƒh‚·‚é‚Ü‚Å‚ÌŠÔ
+    public float BounceMoveSpeed = 0.0f;  //æ¨ªæ–¹å‘ã®ç§»å‹•é€Ÿåº¦
+    public float Bounceforce = 0.0f;     //ãƒã‚¦ãƒ³ãƒ‰ã™ã‚‹åŠ›
+    public float Initialup = 0.0f;          //æ‰“ã¡å‡ºã—ãŸæ™‚ã®ä¸Šæ–¹å‘ã¸ã®åŠ›
 
-    public LayerMask Ground;              //’n–Ê”»’è‚·‚é•Ï”
+    public LayerMask Ground;              //åœ°é¢åˆ¤å®š
 
-    private Rigidbody2D rb;               //Rigitbody2D
+    private Rigidbody2D rb;               //Rigitbody2Dã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
 
 
-    //private Vector3 StartPos;             //’e‚ª”­Ë‚³‚ê‚½ˆÊ’u
-    //private float StartTime;              //’e‚Ì¶¬‚³‚ê‚½ŠÔ
-    //private float XDirection;             //’e‚ÌX•ûŒü
+    
 
 
     protected override void BulletMoves(GameObject Enemy)
     {
-        Debug.Log("’Êíó‘Ô‚ÅƒAƒ^ƒbƒNIII");
+        Debug.Log("é€šå¸¸æ”»æ’ƒã§ã‚¢ã‚¿ãƒƒã‚¯");
         Destroy(Enemy);
         Destroy(gameObject);
     }
@@ -28,19 +26,13 @@ public class Bullet_Human : bullet
 
     protected override void Start()
     {
-        base.Start();                       //eƒNƒ‰ƒX‚ÌStart()‚ğŒÄ‚Ño‚·
+        base.Start();                       //è¦ªã‚¯ãƒ©ã‚¹ã®Start()ã‚’å‘¼ã³å‡ºã™
 
-        //rb = GetComponent<Rigidbody2D>();   //Rigidbody2D‚ğæ“¾‚·‚é
-
-
-        //‰Šú‘¬“x‚ğİ’è
-        //rb.linearVelocity = new Vector2 (direction * BounceMoveSpeed,Initialup);
+        rb = GetComponent<Rigidbody2D>();   //Rigidbody2D
 
 
-
-        ////StartPos = transform.position;  //”­Ë‚³‚ê‚½ˆÊ’u‚ğ”cˆ¬‚·‚é
-        ////StartTime = Time.time;          //’e‚Ì¶¬‚³‚ê‚½ŠÔ‚ğ‹L‰¯‚·‚é
-
+        //åˆæœŸé€Ÿåº¦ã‚’è¨­å®šã™ã‚‹
+        rb.linearVelocity = new Vector2(direction * BounceMoveSpeed, Initialup);
 
     }
 
@@ -48,26 +40,32 @@ public class Bullet_Human : bullet
 
     protected override void Update()
     {
-        //Y²‚Ì“®‚«‚ÍRigidbody2D‚É”C‚¹‚é
-        //rb.linearVelocity = new Vector2(direction * BounceMoveSpeed, rb.linearVelocity.y);
+        //Yè»¸ã®å‹•ãã¯Rigidbody2D
+        rb.linearVelocity = new Vector2(direction * BounceMoveSpeed, rb.linearVelocity.y);
 
 
-
-
-        base.Update(); //©ˆÚ“®‚ğ§Œä‚µ‚½‚¢‚©‚çeƒNƒ‰ƒX‚ÌUpdate()‚ÍŒÄ‚Ño‚³‚È‚¢
-
-
-
+        //å¼¾ã®è¦‹ãŸç›®ã®å‘ãã¯ã€Xè»¸æ–¹å‘ã§å›ºå®šã—ã¨ã
+        transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * direction, transform.localScale.y, transform.localScale.z);
 
     }
 
-    //protected override void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    //base.OnTriggerEnter2D(collision);
 
-    //    if(collision.gameObject.CompareTag("Enemy"))
-    //    {
-    //        BulletMoves(collision.gameObject);
-    //    }
-    //}
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        
+        //åœ°é¢ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«è¨­å®šã•ã‚ŒãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«å½“ãŸã£ãŸã‹ã©ã†ã‹ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹
+        if (((1 << collision.gameObject.layer) & Ground) != 0)
+        {
+            //ä¸Šæ–¹å‘ã¸ã®åŠ›ã‚’åŠ ãˆã¦ãƒã‚¦ãƒ³ãƒ‰ã•ã›ã‚‹
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Bounceforce);
+            Debug.Log("åœ°é¢ã«è§¦ã‚ŒãŸã‚ˆğŸ‘ç¬‘");
+        }
+        
+        if(collision.gameObject.CompareTag("Enemy"))
+        {
+            BulletMoves(collision.gameObject);
+        }
+    }
+
 }

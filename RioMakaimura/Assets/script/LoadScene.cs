@@ -18,7 +18,7 @@ public class LoadScene : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("LetsPlay"))
         {
-            SceneManager.LoadScene("ayabe4");
+            SceneManager.LoadScene("Stage1");
 
             Debug.Log("main");
         }

@@ -120,7 +120,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -176,6 +176,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movespeed: 0.5
-  BounceMoveSpeed: 5
-  BounceHeight: 2
-  BounceDuration: 5
+  BounceMoveSpeed: 3
+  Bounceforce: 5
+  Initialup: 1
+  Ground:
+    serializedVersion: 2
+    m_Bits: 8
