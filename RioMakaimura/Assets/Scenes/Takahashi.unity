@@ -180,6 +180,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 62d8dfe5335f9b54b91ecefa7a6e259f, type: 3}
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
+      propertyPath: Vampire
+      value: 
+      objectReference: {fileID: 21300000, guid: cc65c314ad4af2e4d9636c55955a7a0d, type: 3}
+    - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: AttackRate
       value: 0.5
       objectReference: {fileID: 0}
@@ -199,6 +203,10 @@ PrefabInstance:
       propertyPath: bulletPrefab
       value: 
       objectReference: {fileID: 2492583762915154637, guid: 0e0b79291ec686a40b4a93847d81455c, type: 3}
+    - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
+      propertyPath: VampireWeapon
+      value: 
+      objectReference: {fileID: 5938814873354149408, guid: 340a3c0d02d307347965593d41dc4869, type: 3}
     - target: {fileID: 9194161931938265673, guid: 2be8db20e065b084f8d267e88cb829f9, type: 3}
       propertyPath: KnockbackForce
       value: 12
