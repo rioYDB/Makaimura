@@ -17,7 +17,7 @@ public class CameraMove : MonoBehaviour
         if(playerInfo != null)
         {
             // X座標だけプレイヤーの位置に合わせる
-            transform.position = new Vector3(playerInfo.transform.position.x, 0.0f, transform.position.z);
+            transform.position = new Vector3(playerInfo.transform.position.x, playerInfo.transform.position.y + 2.5f, transform.position.z); 
         }
         
     }

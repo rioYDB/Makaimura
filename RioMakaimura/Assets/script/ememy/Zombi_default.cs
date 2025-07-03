@@ -95,7 +95,7 @@ public class Zombi_default : MonoBehaviour
     {
         // ‰æ–ÊŠO‚Éo‚½‚ç©“®“I‚É“G‚ğ”j‰ó‚·‚é
 
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 
 
