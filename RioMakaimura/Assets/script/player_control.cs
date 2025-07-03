@@ -658,30 +658,30 @@ public class player_control : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             float offsetX = (i - (count - 1) / 2.0f) * spread * playerDirection;
-            // 火柱を生成するX座標は、プレイヤーの目の前を中心に広がるように計算するで
+            // 火柱を生成するX座標は、プレイヤーの目の前を中心に広がるように計算する
             float targetX = basePosition.x + offsetX;
 
-            // ★★★ ここでRaycastを使って地面のY座標を取得するで！ ★★★
+          
             float groundY = basePosition.y; // 一旦プレイヤーのY座標を仮の地面として設定
 
-            // 弾を真下（Vector2.down）に飛ばして、地面（groundLayer）に当たるかをチェックするで
+            // 弾を真下（Vector2.down）に飛ばして、地面（groundLayer）に当たるかをチェックする
             // ここでのRaycastの長さ（例: 10f）は、プレイヤーの高さから確実に地面に届くように長めにする
             RaycastHit2D hit = Physics2D.Raycast(new Vector2(targetX, basePosition.y + 10f), Vector2.down, 20f,Ground); // ★Raycastの開始位置と長さを調整
 
             if (hit.collider != null)
             {
-                // 地面が見つかったら、その地面の上端のY座標を取得するで
+                // 地面が見つかったら、その地面の上端のY座標を取得する
                 groundY = hit.point.y; // Raycastが当たった場所のY座標
             }
             else
             {
                 // もし地面が見つからへんかったら（空中にRaycastが届かんとか）、デバッグログを出して、
-                // 元のプレイヤーのY座標を使うとか、何らかのフォールバック処理を考えるで。
+                // 元のプレイヤーのY座標を使うとか、何らかのフォールバック処理を考える
                 // 今回はDebug.Logしとくわ。
                 Debug.LogWarning("火柱の足元に地面が見つかりませんでした！ 火柱はプレイヤーの高さから出ます。", this);
             }
 
-            // 火柱を生成する最終的な位置やで！Y座標は地面の高さを使うんや。
+            // 火柱を生成する最終的な位置やで！Y座標は地面の高さを使う
             Vector3 firePillarSpawnPos = new Vector3(targetX, groundY, basePosition.z);
 
             // 火柱を生成するで
@@ -700,7 +700,7 @@ public class player_control : MonoBehaviour
                 pillarInstance.transform.localScale = pillarScale;
             }
 
-            // 次の火柱が出るまで少し待つで
+            // 次の火柱が出るまで少し待つ
             yield return new WaitForSeconds(delay);
         }
     }
