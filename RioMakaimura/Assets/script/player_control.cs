@@ -416,7 +416,7 @@ public class player_control : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.4f, LadderLayer);
         bool onLadder = false;
 
-        //真下に梯子がある
+        //真下に梯子（はしご）がある
         if (hit.collider != null && !canClimbLadder)
         {
             onLadder = true;
@@ -427,7 +427,7 @@ public class player_control : MonoBehaviour
             //下キーが押されている
             if (Input.GetAxisRaw("Vertical") < -0.3f)
             {
-                //梯子モードに遷移
+                //梯子（はしご）モードに遷移
                 StartClimbingLadder();
                 return;
 
@@ -464,6 +464,58 @@ public class player_control : MonoBehaviour
         if (Moveinput != 0)
         {
             Movedirection = new Vector2(Moveinput, 0f);
+        }
+
+        //狼男になった時に急な坂を登れるようになる
+        if (currentAttack == AttackType.Okami)
+        {
+            //移動速度アップ
+            moveSpeed += 200;
+
+            float rayLength = 0.7f; // Rayの長さ
+                                    // Raycastの開始点をプレイヤーの中心の少し下、進行方向に
+            Vector2 rayPosition = new Vector2(transform.position.x + Movedirection.x * 0.1f, transform.position.y - bc.size.y / 2f + 0.1f);
+            RaycastHit2D slopeHit = Physics2D.Raycast(rayPosition, Movedirection.normalized, rayLength, Ground); // 進む方向
+
+            //坂かどうか判断する
+            if (slopeHit.collider != null)
+            {
+                // slopeHit.normal.y は床の傾きのY成分。1に近いほど平坦、0に近いほど垂直。
+                // 例えば、0.7未満なら急傾斜とみなす (cos(45度) = 約0.707)
+                if (slopeHit.normal.y < 0.9f && slopeHit.normal.y > 0.1f) // 急傾斜で、完全に垂直ではない
+                {
+                    // 急傾斜ならY軸方向にも力を加える（登る）
+                    // 登る速度は移動速度に比例させる
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, moveSpeed * 0.5f); // 速度に応じて上に押し上げる
+                }
+            }
+
+
+
+        }
+
+
+        //魔女になった時に魔女限定で動かしたい時に使う
+        else if (currentAttack == AttackType.Which)
+        {
+
+        }
+
+        //ヴァンパイアになったときに飛べるようになる
+        else if (currentAttack == AttackType.Vampire)
+        {
+            // スペースキー長押しで飛行モードに入る例
+            if (Input.GetKey(KeyCode.W) && !isClimbingLadder) // はしご登り中は飛ばない
+            {
+                rb.gravityScale = 0f; // 重力を無効にする
+                // 左右の移動は水平方向の入力、上下の移動は垂直方向の入力で制御
+                float verticalInput = Input.GetAxisRaw("Vertical");
+                rb.linearVelocity = new Vector2(Moveinput * moveSpeed, verticalInput * moveSpeed);
+            }
+            else // スペースキーを離したら重力を元に戻す
+            {
+                rb.gravityScale = originalGravityScale;
+            }
         }
 
 
