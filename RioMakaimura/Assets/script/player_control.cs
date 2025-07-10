@@ -501,7 +501,7 @@ public class player_control : MonoBehaviour
         else if (currentAttack == AttackType.Vampire)
         {
             // スペースキー長押しで飛行モードに入る例
-            if (Input.GetKey(KeyCode.W) && !isClimbingLadder) // はしご登り中は飛ばない
+            if (Input.GetKey(KeyCode.Q) && !isClimbingLadder) // はしご登り中は飛ばない
             {
                 rb.gravityScale = 0f; // 重力を無効にする
                 // 左右の移動は水平方向の入力、上下の移動は垂直方向の入力で制御
