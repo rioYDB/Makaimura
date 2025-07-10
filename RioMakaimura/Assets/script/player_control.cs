@@ -458,22 +458,18 @@ public class player_control : MonoBehaviour
         }
 
 
-        //プレイヤーを移動させる
-        transform.Translate(Moveinput * moveSpeed, 0.0f, 0.0f);
+        
 
-        if (Moveinput != 0)
-        {
-            Movedirection = new Vector2(Moveinput, 0f);
-        }
+        float currentMoveSpeed = moveSpeed;  //moveSpeedを一時的な変数に保管
 
         //狼男になった時に急な坂を登れるようになる
         if (currentAttack == AttackType.Okami)
         {
             //移動速度アップ
-            moveSpeed += 200;
+            currentMoveSpeed *= 1.5f;
 
+            // プレイヤーの足元から進行方向に向かってRaycastを飛ばし、急な坂を検知する
             float rayLength = 0.7f; // Rayの長さ
-                                    // Raycastの開始点をプレイヤーの中心の少し下、進行方向に
             Vector2 rayPosition = new Vector2(transform.position.x + Movedirection.x * 0.1f, transform.position.y - bc.size.y / 2f + 0.1f);
             RaycastHit2D slopeHit = Physics2D.Raycast(rayPosition, Movedirection.normalized, rayLength, Ground); // 進む方向
 
@@ -485,8 +481,8 @@ public class player_control : MonoBehaviour
                 if (slopeHit.normal.y < 0.9f && slopeHit.normal.y > 0.1f) // 急傾斜で、完全に垂直ではない
                 {
                     // 急傾斜ならY軸方向にも力を加える（登る）
-                    // 登る速度は移動速度に比例させる
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, moveSpeed * 0.5f); // 速度に応じて上に押し上げる
+                    // 登る速度は計算した currentMoveSpeed に比例させる
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, currentMoveSpeed * 0.5f); // 速度に応じて上に押し上げる
                 }
             }
 
@@ -505,12 +501,12 @@ public class player_control : MonoBehaviour
         else if (currentAttack == AttackType.Vampire)
         {
             // スペースキー長押しで飛行モードに入る例
-            if (Input.GetKey(KeyCode.W) && !isClimbingLadder) // はしご登り中は飛ばない
+            if (Input.GetKey(KeyCode.Q) && !isClimbingLadder) // はしご登り中は飛ばない
             {
                 rb.gravityScale = 0f; // 重力を無効にする
                 // 左右の移動は水平方向の入力、上下の移動は垂直方向の入力で制御
                 float verticalInput = Input.GetAxisRaw("Vertical");
-                rb.linearVelocity = new Vector2(Moveinput * moveSpeed, verticalInput * moveSpeed);
+                rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, verticalInput * currentMoveSpeed);
             }
             else // スペースキーを離したら重力を元に戻す
             {
@@ -518,6 +514,16 @@ public class player_control : MonoBehaviour
             }
         }
 
+
+        //プレイヤーを移動させる
+        rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, rb.linearVelocity.y);
+
+        
+
+        if (Moveinput != 0)
+        {
+            Movedirection = new Vector2(Moveinput, 0f);
+        }
 
     }
 
