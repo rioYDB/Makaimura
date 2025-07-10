@@ -468,8 +468,8 @@ public class player_control : MonoBehaviour
             //移動速度アップ
             currentMoveSpeed *= 1.5f;
 
+            // プレイヤーの足元から進行方向に向かってRaycastを飛ばし、急な坂を検知する
             float rayLength = 0.7f; // Rayの長さ
-                                    // Raycastの開始点をプレイヤーの中心の少し下、進行方向に
             Vector2 rayPosition = new Vector2(transform.position.x + Movedirection.x * 0.1f, transform.position.y - bc.size.y / 2f + 0.1f);
             RaycastHit2D slopeHit = Physics2D.Raycast(rayPosition, Movedirection.normalized, rayLength, Ground); // 進む方向
 
@@ -481,7 +481,7 @@ public class player_control : MonoBehaviour
                 if (slopeHit.normal.y < 0.9f && slopeHit.normal.y > 0.1f) // 急傾斜で、完全に垂直ではない
                 {
                     // 急傾斜ならY軸方向にも力を加える（登る）
-                    // 登る速度は移動速度に比例させる
+                    // 登る速度は計算した currentMoveSpeed に比例させる
                     rb.linearVelocity = new Vector2(rb.linearVelocity.x, currentMoveSpeed * 0.5f); // 速度に応じて上に押し上げる
                 }
             }
@@ -516,7 +516,9 @@ public class player_control : MonoBehaviour
 
 
         //プレイヤーを移動させる
-        transform.Translate(Moveinput * currentMoveSpeed, 0.0f, 0.0f);
+        rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, rb.linearVelocity.y);
+
+        
 
         if (Moveinput != 0)
         {
