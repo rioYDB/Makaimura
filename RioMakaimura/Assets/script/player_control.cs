@@ -458,15 +458,7 @@ public class player_control : MonoBehaviour
         }
 
 
-        //プレイヤーを移動させる
-        transform.Translate(Moveinput * moveSpeed, 0.0f, 0.0f);
-
-        if (Moveinput != 0)
-        {
-            Movedirection = new Vector2(Moveinput, 0f);
-        }
-
-
+        
 
         float currentMoveSpeed = moveSpeed;  //moveSpeedを一時的な変数に保管
 
@@ -522,6 +514,14 @@ public class player_control : MonoBehaviour
             }
         }
 
+
+        //プレイヤーを移動させる
+        transform.Translate(Moveinput * currentMoveSpeed, 0.0f, 0.0f);
+
+        if (Moveinput != 0)
+        {
+            Movedirection = new Vector2(Moveinput, 0f);
+        }
 
     }
 
