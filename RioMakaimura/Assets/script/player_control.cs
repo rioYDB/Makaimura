@@ -466,11 +466,15 @@ public class player_control : MonoBehaviour
             Movedirection = new Vector2(Moveinput, 0f);
         }
 
+
+
+        float currentMoveSpeed = moveSpeed;  //moveSpeedを一時的な変数に保管
+
         //狼男になった時に急な坂を登れるようになる
         if (currentAttack == AttackType.Okami)
         {
             //移動速度アップ
-            moveSpeed += 200;
+            currentMoveSpeed *= 1.5f;
 
             float rayLength = 0.7f; // Rayの長さ
                                     // Raycastの開始点をプレイヤーの中心の少し下、進行方向に
@@ -486,7 +490,7 @@ public class player_control : MonoBehaviour
                 {
                     // 急傾斜ならY軸方向にも力を加える（登る）
                     // 登る速度は移動速度に比例させる
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, moveSpeed * 0.5f); // 速度に応じて上に押し上げる
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, currentMoveSpeed * 0.5f); // 速度に応じて上に押し上げる
                 }
             }
 
@@ -510,7 +514,7 @@ public class player_control : MonoBehaviour
                 rb.gravityScale = 0f; // 重力を無効にする
                 // 左右の移動は水平方向の入力、上下の移動は垂直方向の入力で制御
                 float verticalInput = Input.GetAxisRaw("Vertical");
-                rb.linearVelocity = new Vector2(Moveinput * moveSpeed, verticalInput * moveSpeed);
+                rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, verticalInput * currentMoveSpeed);
             }
             else // スペースキーを離したら重力を元に戻す
             {
