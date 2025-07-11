@@ -1134,7 +1134,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1387704532291652410, guid: 1e1249b815ba97d4fbdb04f4e8c042bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 31.36
+      value: -2.77
       objectReference: {fileID: 0}
     - target: {fileID: 1387704532291652410, guid: 1e1249b815ba97d4fbdb04f4e8c042bd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3376,6 +3376,14 @@ PrefabInstance:
       propertyPath: m_Offset.y
       value: -0.06
       objectReference: {fileID: 0}
+    - target: {fileID: 2112780738487003576, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: m_GravityScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4921942773722063416, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: Okami
       value: 
@@ -3388,6 +3396,10 @@ PrefabInstance:
       propertyPath: Vampire
       value: 
       objectReference: {fileID: 21300000, guid: cc65c314ad4af2e4d9636c55955a7a0d, type: 3}
+    - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: jumpPower
+      value: 600
+      objectReference: {fileID: 0}
     - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: moveSpeed
       value: 6.5
@@ -3488,6 +3500,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1609065527}
+    - target: {fileID: 4931174407343601529, guid: f49370dda4fdb6d4c825a32385d52e88, type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6552731082205260735, guid: f49370dda4fdb6d4c825a32385d52e88, type: 3}
       propertyPath: m_Name
       value: Spider
