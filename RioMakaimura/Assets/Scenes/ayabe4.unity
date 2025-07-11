@@ -4648,6 +4648,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: cc65c314ad4af2e4d9636c55955a7a0d, type: 3}
     - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: moveSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5708774463391587881, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: HumanWeapon
       value: 
       objectReference: {fileID: 6748977133201327798, guid: c8df5f8b59fa6424abe4a0a213ab0a9d, type: 3}
