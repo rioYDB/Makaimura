@@ -396,6 +396,23 @@ public class player_control : MonoBehaviour
         //ジャンプ処理
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
         {
+            //プレイヤーの状態に併せてジャンプ力を変更する
+            float currentJumpPower = jumpPower;
+
+            //狼男の状態だとジャンプ力が上がる
+            if(currentAttack == AttackType.Okami)
+            {
+                currentJumpPower *= 1.3f;
+            }
+
+            //ヴァンパイア状態だとジャンプ力が少し上がる
+            if (currentAttack == AttackType.Vampire)
+            {
+                currentJumpPower *= 1.15f;
+            }
+
+
+
             rb.AddForce(Vector2.up * jumpPower);
             //ジャンプ状態にする
             IsJumping = true;
@@ -461,32 +478,36 @@ public class player_control : MonoBehaviour
         
 
         float currentMoveSpeed = moveSpeed;  //moveSpeedを一時的な変数に保管
+        float PlayerDirection = transform.localScale.x > 0 ? 1f : -1f; // Move()内で使うplayerDirectionを定義
 
-        //狼男になった時に急な坂を登れるようになる
+
+        //狼男になった時に壁を登れるようになる
         if (currentAttack == AttackType.Okami)
         {
             //移動速度アップ
             currentMoveSpeed *= 1.5f;
 
-            // プレイヤーの足元から進行方向に向かってRaycastを飛ばし、急な坂を検知する
-            float rayLength = 0.7f; // Rayの長さ
-            Vector2 rayPosition = new Vector2(transform.position.x + Movedirection.x * 0.1f, transform.position.y - bc.size.y / 2f + 0.1f);
-            RaycastHit2D slopeHit = Physics2D.Raycast(rayPosition, Movedirection.normalized, rayLength, Ground); // 進む方向
+            //横方向にレイを飛ばし、壁があるか判定する
+            float WallCheck = 0.3f; //壁を判定する距離
 
-            //坂かどうか判断する
-            if (slopeHit.collider != null)
+            Vector2 wallRayOrigin = (Vector2)transform.position + bc.offset + new Vector2(bc.size.x / 2f * PlayerDirection, 0f);
+            RaycastHit2D wallHit = Physics2D.Raycast(wallRayOrigin, Vector2.right * PlayerDirection, WallCheck, Ground); // 進行方向へRayを飛ばす
+
+
+            Debug.DrawRay(wallRayOrigin, Vector2.right * PlayerDirection * WallCheck, Color.blue); // デバッグ用
+
+            // 壁に触れていて、かつ上方向の入力がある場合
+            if (wallHit.collider != null && Input.GetAxisRaw("Vertical") > 0.1f)
             {
-                // slopeHit.normal.y は床の傾きのY成分。1に近いほど平坦、0に近いほど垂直。
-                // 例えば、0.7未満なら急傾斜とみなす (cos(45度) = 約0.707)
-                if (slopeHit.normal.y < 0.9f && slopeHit.normal.y > 0.1f) // 急傾斜で、完全に垂直ではない
-                {
-                    // 急傾斜ならY軸方向にも力を加える（登る）
-                    // 登る速度は計算した currentMoveSpeed に比例させる
-                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, currentMoveSpeed * 0.5f); // 速度に応じて上に押し上げる
-                }
+                // 壁に沿って登るようにY軸速度を調整
+                // climbSpeedは移動速度currentMoveSpeedに比例させると良い
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, currentMoveSpeed * 0.8f); // 登る速度を調整
             }
-
-
+            else
+            {
+                // 壁に触れていないか、上入力がない場合は重力に従う
+                rb.gravityScale = originalGravityScale;
+            }
 
         }
 
@@ -500,15 +521,18 @@ public class player_control : MonoBehaviour
         //ヴァンパイアになったときに飛べるようになる
         else if (currentAttack == AttackType.Vampire)
         {
-            // スペースキー長押しで飛行モードに入る例
-            if (Input.GetKey(KeyCode.Q) && !isClimbingLadder) // はしご登り中は飛ばない
+            currentMoveSpeed *= 1.2f;
+
+            // Wキー長押しで飛行モードに入る例
+            if (Input.GetKey(KeyCode.W) && !isClimbingLadder) // はしご登り中は飛ばない
             {
                 rb.gravityScale = 0f; // 重力を無効にする
-                // 左右の移動は水平方向の入力、上下の移動は垂直方向の入力で制御
-                float verticalInput = Input.GetAxisRaw("Vertical");
-                rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, verticalInput * currentMoveSpeed);
+
+                // ★★★修正：Y軸の速度は0に固定するで！★★★
+                // 左右の移動はMoveinputで制御、Y軸はInput.GetAxisRaw("Vertical")の影響を受けないようにする
+                rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, 0f); // Y軸の速度を0に固定！
             }
-            else // スペースキーを離したら重力を元に戻す
+            else // Wキーを離したら重力を元に戻す
             {
                 rb.gravityScale = originalGravityScale;
             }
