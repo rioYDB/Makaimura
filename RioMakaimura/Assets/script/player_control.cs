@@ -500,15 +500,16 @@ public class player_control : MonoBehaviour
         //ヴァンパイアになったときに飛べるようになる
         else if (currentAttack == AttackType.Vampire)
         {
-            // スペースキー長押しで飛行モードに入る例
-            if (Input.GetKey(KeyCode.Q) && !isClimbingLadder) // はしご登り中は飛ばない
+            // Wキー長押しで飛行モードに入る例
+            if (Input.GetKey(KeyCode.W) && !isClimbingLadder) // はしご登り中は飛ばない
             {
                 rb.gravityScale = 0f; // 重力を無効にする
-                // 左右の移動は水平方向の入力、上下の移動は垂直方向の入力で制御
-                float verticalInput = Input.GetAxisRaw("Vertical");
-                rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, verticalInput * currentMoveSpeed);
+
+                // ★★★修正：Y軸の速度は0に固定するで！★★★
+                // 左右の移動はMoveinputで制御、Y軸はInput.GetAxisRaw("Vertical")の影響を受けないようにする
+                rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, 0f); // Y軸の速度を0に固定！
             }
-            else // スペースキーを離したら重力を元に戻す
+            else // Wキーを離したら重力を元に戻す
             {
                 rb.gravityScale = originalGravityScale;
             }
