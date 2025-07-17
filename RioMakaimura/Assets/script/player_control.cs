@@ -138,7 +138,7 @@ public class player_control : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.4f, LadderLayer);
 
         //ジャンプ処理
-        if ((IsGrounded() == true || hit.collider != null) && IsSquat == false)
+        if ((IsGrounded() == true || hit.collider != null) && IsSquat == false&& !isClimbingLadder)
         {
             Jump();
         }
@@ -733,16 +733,15 @@ public class player_control : MonoBehaviour
     void StopClimbingLadder()
     {
         isClimbingLadder = false;
-        rb.gravityScale = originalGravityScale; // 重力を元に戻す
+        rb.gravityScale = originalGravityScale; // 重力を元に戻す (この変数は使われないが念のため残す)
 
-        // 停止時の速度をリセット（滑り落ち防止）だが、
-        // はしごから降りた直後にジャンプや移動に移行したい場合、
-        // rb.velocity.x を維持する必要があるかもしれない。
-        // rb.velocity = Vector2.zero; // ここをコメントアウトして、X軸速度を維持するか検討
-        rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f); // X軸速度は維持し、Y軸速度のみ0にする
+        // ★★★修正：X軸の速度も0にリセットするで！★★★
+        rb.linearVelocity = Vector2.zero; // X軸速度もY軸速度も0にする
 
         // 地面にいる場合は、IsJumpingをfalseにリセット
         IsJumping = !IsGrounded();
+
+        
 
         //Gravityのスクリプトは再開
         GetComponent<SetGravity>().IsEnable = true;
