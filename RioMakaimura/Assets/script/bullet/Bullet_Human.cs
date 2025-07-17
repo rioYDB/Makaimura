@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bullet_Human : bullet
 {
-    // ★★★ Inspectorで設定する変数 ★★★
+    
     public float BounceMoveSpeed = 5.0f;  // 横方向の初期速度（初速のみに使う）
     public float BounceForceY = 8.0f;     // 地面からのバウンドする上方向の力
     public float InitialUpForce = 5.0f;   // 最初に弾を撃ち出した時の上方向の力
@@ -55,7 +55,7 @@ public class Bullet_Human : bullet
             Debug.LogWarning("'Player'タグのオブジェクトが見つかりません。");
         }
 
-        // ★★★修正：初期速度を設定する。Updateで速度を固定しない！★★★
+        
         // X方向にはInitialUpForceの代わりにBounceMoveSpeedを直接加える
         rb.linearVelocity = new Vector2(direction * BounceMoveSpeed, InitialUpForce);
 
@@ -65,7 +65,7 @@ public class Bullet_Human : bullet
 
     protected override void Update()
     {
-        // ★★★修正：Update()では速度を直接固定しない！★★★
+        
         // 物理的な跳ね返りを優先するため、rb.velocity.x を毎フレーム上書きするのをやめる。
         // rb.velocity = new Vector2(direction * BounceMoveSpeed, rb.linearVelocity.y); // この行を削除
 
@@ -83,6 +83,12 @@ public class Bullet_Human : bullet
         // 地面レイヤーに設定されたオブジェクトに当たったかどうかをチェックする
         if (((1 << collision.gameObject.layer) & Ground) != 0)
         {
+
+            // ★★★ここを追加して、何に当たってるか見てみるんや★★★
+            Debug.Log("カボチャが衝突した相手: " + collision.gameObject.name + " (Layer: " + LayerMask.LayerToName(collision.gameObject.layer) + ")");
+
+
+
             currentBounces++; // バウンド回数をカウントアップ
             Debug.Log("地面/壁に触れたよ👍笑 - バウンド回数: " + currentBounces + " (Max: " + MaxBounces + ")");
 
@@ -93,7 +99,7 @@ public class Bullet_Human : bullet
                 return; // これ以上バウンドさせない
             }
 
-            // ★★★修正：壁・地面からの跳ね返りロジックを強化する！★★★
+            
             // 当たった面の法線ベクトルを取得
             Vector2 surfaceNormal = collision.contacts[0].normal;
 
@@ -137,7 +143,7 @@ public class Bullet_Human : bullet
         }
     }
 
-    // ★★★修正：OnTriggerEnter2Dをオーバーライドして、親のDestroyを呼ばないようにする★★★
+    
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
         // base.OnTriggerEnter2D(collision); // 親のDestroy(gameObject)が呼ばれるのを防ぐ
