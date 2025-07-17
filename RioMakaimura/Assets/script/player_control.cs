@@ -501,6 +501,8 @@ public class player_control : MonoBehaviour
             if (wallHit.collider != null && Input.GetAxisRaw("Vertical") > 0.1f)
             {
 
+                //梯子（はしご）モードに遷移
+                StartClimbingLadder();
 
 
                 // 壁に沿って登るようにY軸速度を調整
@@ -509,6 +511,8 @@ public class player_control : MonoBehaviour
             }
             else
             {
+                GetComponent<SetGravity>().IsEnable = true;
+
                 // 壁に触れていないか、上入力がない場合は重力に従う
                 rb.gravityScale = originalGravityScale;
 
@@ -743,6 +747,9 @@ public class player_control : MonoBehaviour
         //Gravityのスクリプトは再開
         GetComponent<SetGravity>().IsEnable = true;
     }
+
+
+
 
 
 
