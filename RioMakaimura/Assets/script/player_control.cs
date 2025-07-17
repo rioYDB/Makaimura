@@ -487,8 +487,9 @@ public class player_control : MonoBehaviour
             //移動速度アップ
             currentMoveSpeed *= 1.5f;
 
+
             //横方向にレイを飛ばし、壁があるか判定する
-            float WallCheck = 0.3f; //壁を判定する距離
+            float WallCheck = 0.01f; //壁を判定する距離
 
             Vector2 wallRayOrigin = (Vector2)transform.position + bc.offset + new Vector2(bc.size.x / 2f * PlayerDirection, 0f);
             RaycastHit2D wallHit = Physics2D.Raycast(wallRayOrigin, Vector2.right * PlayerDirection, WallCheck, Ground); // 進行方向へRayを飛ばす
@@ -499,6 +500,9 @@ public class player_control : MonoBehaviour
             // 壁に触れていて、かつ上方向の入力がある場合
             if (wallHit.collider != null && Input.GetAxisRaw("Vertical") > 0.1f)
             {
+
+
+
                 // 壁に沿って登るようにY軸速度を調整
                 // climbSpeedは移動速度currentMoveSpeedに比例させると良い
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, currentMoveSpeed * 0.8f); // 登る速度を調整
@@ -507,6 +511,9 @@ public class player_control : MonoBehaviour
             {
                 // 壁に触れていないか、上入力がない場合は重力に従う
                 rb.gravityScale = originalGravityScale;
+
+
+
             }
 
         }
@@ -526,9 +533,13 @@ public class player_control : MonoBehaviour
             // Wキー長押しで飛行モードに入る例
             if (Input.GetKey(KeyCode.W) && !isClimbingLadder) // はしご登り中は飛ばない
             {
+
+                //Gravityのスクリプトも止める
+                GetComponent<SetGravity>().IsEnable = false;
+
                 rb.gravityScale = 0f; // 重力を無効にする
 
-                // ★★★修正：Y軸の速度は0に固定するで！★★★
+                // Y軸の速度は0に固定する
                 // 左右の移動はMoveinputで制御、Y軸はInput.GetAxisRaw("Vertical")の影響を受けないようにする
                 rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, 0f); // Y軸の速度を0に固定！
             }

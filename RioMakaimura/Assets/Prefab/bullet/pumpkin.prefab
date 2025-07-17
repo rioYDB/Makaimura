@@ -100,7 +100,7 @@ BoxCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 95232c483be4312499e0b0d20961f147, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -177,8 +177,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movespeed: 0.5
   BounceMoveSpeed: 3
-  Bounceforce: 5
-  Initialup: 1
+  BounceForceY: 8
+  InitialUpForce: 5
   Ground:
     serializedVersion: 2
     m_Bits: 8
+  TotalLifetime: 5
+  MaxBounces: 15
