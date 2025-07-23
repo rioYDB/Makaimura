@@ -21,7 +21,7 @@ public class Clown_Projectile : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         // ©•ª‚ªplayer‚É‘®‚µ‚Ä‚¢‚éê‡
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Enemy"))
         {
             // Õ“Ë‚ğ–³‹‚·‚é
             Physics2D.IgnoreCollision(collision.collider, GetComponent<CircleCollider2D>());

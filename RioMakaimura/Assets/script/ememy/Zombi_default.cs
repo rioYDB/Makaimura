@@ -83,12 +83,12 @@ public class Zombi_default : MonoBehaviour
     {
        
 
-        // ©•ª‚ªplayer‚É‘®‚µ‚Ä‚¢‚éê‡
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            // Õ“Ë‚ğ–³‹‚·‚é
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
-        }
+        //// ©•ª‚ªplayer‚É‘®‚µ‚Ä‚¢‚éê‡
+        //if (collision.gameObject.CompareTag("Player"))
+        //{
+        //    // Õ“Ë‚ğ–³‹‚·‚é
+        //    Physics2D.IgnoreCollision(collision.collider, GetComponent<CapsuleCollider2D>());
+        //}
     }
 
     void OnBecameInvisible()
