@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      yurei_youngman3_sad_0: -6116493342151758137
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
