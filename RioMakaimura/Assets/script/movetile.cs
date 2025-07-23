@@ -1,6 +1,6 @@
-using System.Diagnostics;
+//using System.Diagnostics;
 using UnityEngine;
-using static System.Net.Mime.MediaTypeNames;
+//using static System.Net.Mime.MediaTypeNames;
 
 public class movetile : MonoBehaviour
 {
