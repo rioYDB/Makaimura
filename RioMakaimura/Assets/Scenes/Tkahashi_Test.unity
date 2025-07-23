@@ -1417,6 +1417,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80f3af01af75d9a4396cc3e3b1a23748, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leftEndPoint: {x: 63, y: 0, z: 0}
+  rightEndPoint: {x: 80, y: 0, z: 0}
+  moveSpeed: 2
 --- !u!1 &1056457132
 GameObject:
   m_ObjectHideFlags: 0
