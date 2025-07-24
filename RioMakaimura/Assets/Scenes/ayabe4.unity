@@ -6103,30 +6103,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\u30D4\u30A8\u30ED "
       objectReference: {fileID: 0}
-    - target: {fileID: 1028765756849333471, guid: f41b0fe6fda31504695499b34be069c9, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4233994886147623481, guid: f41b0fe6fda31504695499b34be069c9, type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1609065527}
-    - target: {fileID: 4233994886147623481, guid: f41b0fe6fda31504695499b34be069c9, type: 3}
-      propertyPath: axePrefab
-      value: 
-      objectReference: {fileID: 184761242970778605, guid: 62aee6c1312562248b3bbdd3b78978df, type: 3}
-    - target: {fileID: 4233994886147623481, guid: f41b0fe6fda31504695499b34be069c9, type: 3}
-      propertyPath: axeSpeedX
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4233994886147623481, guid: f41b0fe6fda31504695499b34be069c9, type: 3}
-      propertyPath: axeSpeedY
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 4233994886147623481, guid: f41b0fe6fda31504695499b34be069c9, type: 3}
-      propertyPath: fireInterval
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 6138662895967447474, guid: f41b0fe6fda31504695499b34be069c9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.63
