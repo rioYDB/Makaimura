@@ -65,30 +65,29 @@
     <Compile Include="Assets\script\ememy\enemy_Flower.cs" />
     <Compile Include="Assets\script\stage\Gimmick\magmagimmick.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Human.cs" />
-    <Compile Include="Assets\script\control1.cs" />
-    <Compile Include="Assets\script\FallingPlatform.cs" />
     <Compile Include="Assets\script\ememy\Clown_default.cs" />
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\bullet\bullet.cs" />
     <Compile Include="Assets\script\ememy\Zombi_default.cs" />
+    <Compile Include="Assets\script\stage\movetile.cs" />
     <Compile Include="Assets\script\CameraMove.cs" />
     <Compile Include="Assets\script\bullet\firepillar.cs" />
     <Compile Include="Assets\script\ememy\karasu.cs" />
+    <Compile Include="Assets\script\stage\doorcontroller.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Which.cs" />
+    <Compile Include="Assets\script\stage\FallingPlatform.cs" />
     <Compile Include="Assets\script\ememy\Spider_default.cs" />
     <Compile Include="Assets\script\BackGround.cs" />
     <Compile Include="Assets\script\ememy\Clown_Projectile.cs" />
-    <Compile Include="Assets\script\switchcontroller.cs" />
-    <Compile Include="Assets\script\movetile.cs" />
     <Compile Include="Assets\script\LoadScene.cs" />
-    <Compile Include="Assets\script\doorcontroller.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Okami.cs" />
     <Compile Include="Assets\script\GameManager.cs" />
     <Compile Include="Assets\script\ememy\Redareemer.cs" />
     <Compile Include="Assets\script\ememy\ZonbiSpawner.cs" />
     <Compile Include="Assets\script\GameOver.cs" />
     <Compile Include="Assets\script\ememy\zombi.cs" />
+    <Compile Include="Assets\script\stage\switchcontroller.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
