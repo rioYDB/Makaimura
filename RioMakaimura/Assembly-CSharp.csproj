@@ -78,7 +78,7 @@
     <Compile Include="Assets\script\bullet\Bullet_Which.cs" />
     <Compile Include="Assets\script\ememy\Spider_default.cs" />
     <Compile Include="Assets\script\BackGround.cs" />
-    <Compile Include="Assets\Clown_Projectile.cs" />
+    <Compile Include="Assets\script\ememy\Clown_Projectile.cs" />
     <Compile Include="Assets\script\switchcontroller.cs" />
     <Compile Include="Assets\script\movetile.cs" />
     <Compile Include="Assets\script\LoadScene.cs" />

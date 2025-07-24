@@ -3,13 +3,16 @@ using UnityEngine;
 public class Clown_default : MonoBehaviour
 {
     public Transform player;                   // プレイヤーの位置を取得するため
-    public GameObject projectilePrefab;        // 弾のPrefab（プレハブ）
+    public GameObject projectilePrefab;        // 横方向の弾
+    public GameObject axePrefab;            // 斧（放物線用）
     public Transform shootPoint;               // 弾を発射する位置
 
     public float moveSpeed = 2f;               // 左右に動く速さ
     public float moveRange = 3f;               // 左右の移動範囲（中心からどれだけ離れるか）
     public float fireInterval = 2f;            // 弾を撃つ間隔（秒）
     public float projectileSpeed = 5f;         // 弾のスピード
+    public float axeSpeedX = 4f;            // 斧の横速度
+    public float axeSpeedY = 6f;            // 斧の縦初速
     public float stopBeforeShootTime = 0.5f; // 撃つ前に止まる時間
 
     private Vector2 startPos;                  // 敵が初期にいた位置（移動の中心）
@@ -18,6 +21,14 @@ public class Clown_default : MonoBehaviour
 
     private bool isShooting = false;
     private float stopTimer = 0f;
+
+    // 攻撃タイプ列挙（通常 or 斧）
+    enum AttackType 
+    {
+        Bullet,
+      　Axe 
+    }
+    private AttackType currentAttack;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -41,7 +52,7 @@ public class Clown_default : MonoBehaviour
             // カウント終了で弾を撃つ
             if (stopTimer <= 0f)
             {
-                Shoot();                   // 弾を発射
+                PerformAttack();         // ランダムな攻撃を実行
                 isShooting = false;       // 発射完了（再び移動開始）
                 timer = fireInterval;     // 次の発射までの時間をリセット
             }
@@ -58,8 +69,13 @@ public class Clown_default : MonoBehaviour
         // 一定時間ごとに止まって撃つ準備に入る
         if (timer <= 0f)
         {
+            // 攻撃準備（止まってランダム選択）
             isShooting = true;                      // 停止モードに入る
             stopTimer = stopBeforeShootTime;        // 停止時間を設定
+
+            // 攻撃タイプをランダムに決定
+            currentAttack = (Random.value < 0.5f) ? AttackType.Bullet : AttackType.Axe;
+
         }
     }
 
@@ -72,19 +88,27 @@ public class Clown_default : MonoBehaviour
         if (Mathf.Abs(transform.position.x - startPos.x) > moveRange)
         {
             direction *= -1f; // 向きを逆にする
-            Flip();           // 見た目も反転させる（画像が左右向きに変わる）
+            
         }
     }
 
-    void Flip()
+    // 実際に攻撃を実行
+    void PerformAttack()
     {
-        // 左右のスケールを反転して見た目を反転させる
-        Vector3 scale = transform.localScale;
-        scale.x *= -1f;
-        transform.localScale = scale;
+        switch (currentAttack)
+        {
+            case AttackType.Bullet:
+                ShootBullet();
+                break;
+            case AttackType.Axe:
+                ThrowAxe();
+                break;
+        }
     }
 
-    void Shoot()
+
+
+    void ShootBullet()
     {
         // プレイヤーがいなければ撃たない
         if (player == null) return;
@@ -104,9 +128,29 @@ public class Clown_default : MonoBehaviour
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
         rb.linearVelocity = dir * projectileSpeed;
 
-        //// プレイヤーのColliderと弾のColliderを無視するように設定
-        //Collider2D playerCol = player.GetComponent<Collider2D>();
-        //Collider2D projCol = projectile.GetComponent<Collider2D>();
-        //Physics2D.IgnoreCollision(projCol, playerCol);
+       
+    }
+
+    // 斧を放物線で投げる
+    void ThrowAxe()
+    {
+        if (player == null) return;
+
+        // プレイヤーへの方向ベクトル（左右方向）
+        Vector2 dir = (player.position - transform.position).normalized;
+
+        // 発射位置を少し前にずらす
+        float offset = 0.5f;
+        Vector2 shootPos = (Vector2)transform.position + dir * offset;
+
+        GameObject axe = Instantiate(axePrefab, shootPos, Quaternion.identity);
+
+        // Rigidbody に放物線の速度を与える（横：dir.x * speedX、縦：speedY）
+        Rigidbody2D rb = axe.GetComponent<Rigidbody2D>();
+        rb.linearVelocity = new Vector2(dir.x * axeSpeedX, axeSpeedY);
+
+        // 斧を回転させる（角速度を設定）
+        float spinSpeed = 360f; // 角速度（°/秒） 正で時計回り、負で反時計回り
+        rb.angularVelocity = -spinSpeed; // 好みで反転
     }
 }
