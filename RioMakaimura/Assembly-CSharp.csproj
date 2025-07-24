@@ -69,6 +69,7 @@
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\bullet\bullet.cs" />
     <Compile Include="Assets\script\ememy\Zombi_default.cs" />
+    <Compile Include="Assets\script\ememy\FlyingEnemy.cs" />
     <Compile Include="Assets\script\stage\movetile.cs" />
     <Compile Include="Assets\script\CameraMove.cs" />
     <Compile Include="Assets\script\bullet\firepillar.cs" />
