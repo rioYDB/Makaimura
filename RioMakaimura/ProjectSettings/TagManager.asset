@@ -17,6 +17,7 @@ TagManager:
   - Vampire
   - SecretArea
   - Fadewall
+  - AttackZone
   layers:
   - Default
   - TransparentFX

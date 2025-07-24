@@ -262,7 +262,25 @@ public class player_control : MonoBehaviour
             canClimbLadder = true;
         }
 
+        //EnemyとEnemyBulletに当たったらプレイヤーを破壊する
+        if ((collision.gameObject.tag == "AttackZone" || collision.gameObject.tag == "EnemyBullet"))
+        {
+            if (!IsInvincible)
+            {
+                HP -= 1;
+                Debug.Log("痛い");
 
+
+                PlayerColor();
+
+                //// ノックバック処理
+                //Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
+                //GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
+                // 無敵状態を開始
+                StartInvincibility();
+            }
+
+        }
     }
 
     //はしごから離れた処理
@@ -308,25 +326,7 @@ public class player_control : MonoBehaviour
     //接触判定（敵やアイテム）
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //EnemyとEnemyBulletに当たったらプレイヤーを破壊する
-        if ((collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBullet"))
-        {
-            if (!IsInvincible)
-            {
-                HP -= 1;
-                Debug.Log("痛い");
-
-
-                PlayerColor();
-
-                //// ノックバック処理
-                //Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
-                //GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
-                // 無敵状態を開始
-                StartInvincibility();
-            }
-
-        }
+        
         if (collision.gameObject.tag == "Activearea")
         {
             HP = 0;
