@@ -15,6 +15,8 @@ TagManager:
   - Goal
   - Which
   - Vampire
+  - SecretArea
+  - Fadewall
   layers:
   - Default
   - TransparentFX
@@ -26,7 +28,7 @@ TagManager:
   - Bullet
   - Ladder
   - Enemy
-  - 
+  - SecretArea
   - 
   - 
   - 

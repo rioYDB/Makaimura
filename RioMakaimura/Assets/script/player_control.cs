@@ -1,9 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI; // UnityEngine.UI.Imageを使うためこれは残す
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+// using Unity.VisualScripting; // 使っていない場合は削除してOK
+using System; // ★この行が原因で'Image'が曖昧になるため、削除します (必要なければ)
 public enum AttackType { Human, Okami, Which, Vampire };                                //攻撃種類を管理する
 
 public class player_control : MonoBehaviour
@@ -57,7 +58,7 @@ public class player_control : MonoBehaviour
     private float LastAttackTime;                                                   //最後に攻撃した時間
     private float InvincibleTimer;                                                  //無敵時間タイマー
     private Vector2 Movedirection = Vector2.zero;                           // 移動方向を記憶しておく
-
+    private float FlyingTime = 0.0f;   //滑空時間を制限する変数
     private Rigidbody2D rb;                                                         //Rigidbody2Dの格納
     private BoxCollider2D bc;                                                       //BoxCollider2Dの格納庫
     private SpriteRenderer SpriteRenderer;                                          //SpriteRendererを扱うための格納庫
@@ -72,6 +73,9 @@ public class player_control : MonoBehaviour
     private bool OkamiChange = false;       //狼男状態の判定をする
     private bool WhichChange = false;		//魔女状態の判定をする
 
+
+    // ★追加：SetGravityコンポーネントへの参照
+    private SetGravity setGravityComponent;
 
     private Image image;            //画像の管理
     bool text1enableKey = true;
@@ -90,6 +94,14 @@ public class player_control : MonoBehaviour
     private Vector2 OriginColliderSize;
     private Vector2 OriginClliderOffset;
     private Vector3 OriginLocalScale;
+    //-----------------------------------------------------------------------------------------------------------------------
+    //魔女の能力（隠しエリアに入れる）処理の変数
+    public LayerMask SecretArea;
+    public string FadeWallTag = "Fadewall";
+    public float FadeDuration;
+    private bool InSecretArea;
+    //-----------------------------------------------------------------------------------------------------------------------
+
 
 
 
@@ -138,7 +150,7 @@ public class player_control : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.4f, LadderLayer);
 
         //ジャンプ処理
-        if ((IsGrounded() == true || hit.collider != null) && IsSquat == false&& !isClimbingLadder)
+        if ((IsGrounded() == true || hit.collider != null) && IsSquat == false && !isClimbingLadder)
         {
             Jump();
         }
@@ -219,6 +231,17 @@ public class player_control : MonoBehaviour
             Destroy(collision.gameObject);
         }
 
+        //魔女が隠し空間に入れるようにする
+        if (currentAttack == AttackType.Which && ((1 << collision.gameObject.layer) & SecretArea) != 0)
+        {
+            Debug.Log("隠しエリアクランクインです");
+            if (!InSecretArea) // 既に入っている状態ではない場合のみ実行
+            {
+                InSecretArea = true;
+                StartCoroutine(FadeWalls(true)); // 壁を透かすコルーチンを開始
+            }
+        }
+
         //ヴァンパイアアイテムに触れたら自分が魔女になる
         if (collision.gameObject.tag == "Vampire")
         {
@@ -255,6 +278,28 @@ public class player_control : MonoBehaviour
                 StopClimbingLadder();
             }
         }
+
+
+
+
+        //隠しエリアから出る
+
+        // 衝突したオブジェクトのレイヤーがSecretAreaに含まれているかチェック
+        if (((1 << collision.gameObject.layer) & SecretArea) != 0)
+        {
+            Debug.Log("隠しエリアクランクアップ！");
+            InSecretArea = false;
+            // ★修正: コルーチンを開始する前にGameObjectがアクティブか確認
+            if (gameObject.activeInHierarchy) // 親を含めてHierarchy上でアクティブか
+            {
+                StartCoroutine(FadeWalls(false)); // 壁を元に戻すコルーチンを開始
+            }
+            else
+            {
+                Debug.LogWarning("コルーチンを開始できませんでした: プレイヤーオブジェクトが非アクティブです。", this);
+            }
+        }
+
     }
 
 
@@ -400,7 +445,7 @@ public class player_control : MonoBehaviour
             float currentJumpPower = jumpPower;
 
             //狼男の状態だとジャンプ力が上がる
-            if(currentAttack == AttackType.Okami)
+            if (currentAttack == AttackType.Okami)
             {
                 currentJumpPower *= 1.3f;
             }
@@ -433,6 +478,8 @@ public class player_control : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.4f, LadderLayer);
         bool onLadder = false;
 
+
+
         //真下に梯子（はしご）がある
         if (hit.collider != null && !canClimbLadder)
         {
@@ -460,7 +507,14 @@ public class player_control : MonoBehaviour
         //地上にいないときは入力を受け付けない
         if (IsGrounded() == true || onLadder)
         {
+
+
+            //地面についたら滑空時間をリセットする
+            FlyingTime = 0.0f;
+
             Moveinput = Input.GetAxisRaw("Horizontal");
+
+
 
             //プレイヤーの向きを変更
             if (Moveinput != 0)
@@ -475,7 +529,7 @@ public class player_control : MonoBehaviour
         }
 
 
-        
+
 
         float currentMoveSpeed = moveSpeed;  //moveSpeedを一時的な変数に保管
         float PlayerDirection = transform.localScale.x > 0 ? 1f : -1f; // Move()内で使うplayerDirectionを定義
@@ -534,22 +588,43 @@ public class player_control : MonoBehaviour
         {
             currentMoveSpeed *= 1.2f;
 
+
+
             // Wキー長押しで飛行モードに入る例
             if (Input.GetKey(KeyCode.W) && !isClimbingLadder) // はしご登り中は飛ばない
             {
+
+                FlyingTime += Time.deltaTime;
+                Debug.Log(("経過") + FlyingTime);
 
                 //Gravityのスクリプトも止める
                 GetComponent<SetGravity>().IsEnable = false;
 
                 rb.gravityScale = 0f; // 重力を無効にする
 
+
+
                 // Y軸の速度は0に固定する
                 // 左右の移動はMoveinputで制御、Y軸はInput.GetAxisRaw("Vertical")の影響を受けないようにする
                 rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, 0f); // Y軸の速度を0に固定！
             }
-            else // Wキーを離したら重力を元に戻す
+
+            if (FlyingTime >= 2.0f) //3秒たったら重力を元に戻し徐々に下降していく
             {
+                SpriteRenderer.color = Color.magenta;   //プレイヤーに下降している状態とわかりやすく伝えるために色を変える
+
+                GetComponent<SetGravity>().IsEnable = true;
                 rb.gravityScale = originalGravityScale;
+            }
+
+            else if (Input.GetKeyUp(KeyCode.W)) // Wキーを離したら重力を元に戻す
+            {
+                PlayerColor();                 //元の体力状態の色に戻す
+                GetComponent<SetGravity>().IsEnable = true;
+                rb.gravityScale = originalGravityScale;
+
+
+
             }
         }
 
@@ -557,7 +632,7 @@ public class player_control : MonoBehaviour
         //プレイヤーを移動させる
         rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, rb.linearVelocity.y);
 
-        
+
 
         if (Moveinput != 0)
         {
@@ -671,7 +746,7 @@ public class player_control : MonoBehaviour
     {
         bool ret = false;
         //下方向にrayを飛ばして、指定したレイヤーのオブジェクトと接触しているかどうか判別する
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.4f, Ground);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.8f, Ground);
         //ヒットしていない場合はnullが返される
         if (hit.collider != null)
         {
@@ -741,7 +816,7 @@ public class player_control : MonoBehaviour
         // 地面にいる場合は、IsJumpingをfalseにリセット
         IsJumping = !IsGrounded();
 
-        
+
 
         //Gravityのスクリプトは再開
         GetComponent<SetGravity>().IsEnable = true;
@@ -751,7 +826,7 @@ public class player_control : MonoBehaviour
 
 
 
-
+    //火柱を放つ
     IEnumerator SpawnFirePillarsRoutine(Vector3 basePosition, float playerDirection, int count, float delay, float spread, LayerMask Ground)
     {
         for (int i = 0; i < count; i++)
@@ -804,25 +879,40 @@ public class player_control : MonoBehaviour
         }
     }
 
-
-    private GameObject CreateAttackInstance(GameObject prefab, Vector3 spawnPosition, float playerDirection)
+    //魔女の隠しエリアのかべのコルーチン
+    IEnumerator FadeWalls(bool FadeOut)
     {
-        GameObject instance = Instantiate(prefab, spawnPosition, Quaternion.identity);
+        GameObject[] walls = GameObject.FindGameObjectsWithTag(FadeWallTag); // FadingWallタグの壁を全て取得
 
-        SpriteRenderer instanceSr = instance.GetComponent<SpriteRenderer>();
-        if (instanceSr != null)
+        foreach (GameObject wall in walls)
         {
-            instanceSr.flipX = (playerDirection == -1);
+            SpriteRenderer wallRenderer = wall.GetComponent<SpriteRenderer>();
+            if (wallRenderer != null)
+            {
+                Color startColor = wallRenderer.color;
+                Color targetColor = startColor;
+
+                if (FadeOut) // 透かす場合
+                {
+                    targetColor.a = 0.3f; // 完全に透明にせず、少しだけ見えるように (0.0fで完全透明)
+                }
+                else // 元に戻す場合
+                {
+                    targetColor.a = 1.0f; // 不透明に戻す
+                }
+
+                float timer = 0f;
+                while (timer < FadeDuration)
+                {
+                    timer += Time.deltaTime;
+                    float progress = timer / FadeDuration;
+                    wallRenderer.color = Color.Lerp(startColor, targetColor, progress); // 色を徐々に変化させる
+                    yield return null; // 1フレーム待つ
+                }
+                wallRenderer.color = targetColor; // 最終的な色を確実に適用
+            }
+
         }
-        else
-        {
-            Vector3 instanceScale = instance.transform.localScale;
-            instanceScale.x = Mathf.Abs(instanceScale.x) * playerDirection;
-            instance.transform.localScale = instanceScale;
-        }
-        return instance;
+
     }
-
-
-
 }
