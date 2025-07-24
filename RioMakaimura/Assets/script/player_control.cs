@@ -142,7 +142,7 @@ public class player_control : MonoBehaviour
         }
 
         //移動処理
-        if (/*IsGrounded() == true && */ IsSquat == false /*&& IsJumping == false*/)
+        if (IsSquat == false )
         {
             Move();
         }
@@ -265,21 +265,8 @@ public class player_control : MonoBehaviour
         //EnemyとEnemyBulletに当たったらプレイヤーを破壊する
         if ((collision.gameObject.tag == "AttackZone" || collision.gameObject.tag == "EnemyBullet"))
         {
-            if (!IsInvincible)
-            {
-                HP -= 1;
-                Debug.Log("痛い");
 
-
-                PlayerColor();
-
-                //// ノックバック処理
-                //Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
-                //GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
-                // 無敵状態を開始
-                StartInvincibility();
-            }
-
+            playerHP(1);
         }
     }
 
@@ -307,7 +294,7 @@ public class player_control : MonoBehaviour
         {
             Debug.Log("隠しエリアクランクアップ！");
             InSecretArea = false;
-            // ★修正: コルーチンを開始する前にGameObjectがアクティブか確認
+            
             if (gameObject.activeInHierarchy) // 親を含めてHierarchy上でアクティブか
             {
                 StartCoroutine(FadeWalls(false)); // 壁を元に戻すコルーチンを開始
@@ -822,11 +809,30 @@ public class player_control : MonoBehaviour
         GetComponent<SetGravity>().IsEnable = true;
     }
 
+    //関数名：playerHP()
+    //用途：はしご登り終了処理
+    //引数：void
+    //戻り値：なし
+   public void  playerHP(int Damege)
+    {
+        if (!IsInvincible)
+        {
+            HP -= Damege;
+            Debug.Log("痛い");
 
 
+            PlayerColor();
+
+            //// ノックバック処理
+            //Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
+            //GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
+            // 無敵状態を開始
+            StartInvincibility();
+        }
+    }
 
 
-    //火柱を放つ
+    //火柱を放つコルーチン
     IEnumerator SpawnFirePillarsRoutine(Vector3 basePosition, float playerDirection, int count, float delay, float spread, LayerMask Ground)
     {
         for (int i = 0; i < count; i++)
