@@ -142,7 +142,7 @@ public class player_control : MonoBehaviour
         }
 
         //移動処理
-        if (/*IsGrounded() == true && */ IsSquat == false /*&& IsJumping == false*/)
+        if (IsSquat == false )
         {
             Move();
         }
@@ -265,21 +265,8 @@ public class player_control : MonoBehaviour
         //EnemyとEnemyBulletに当たったらプレイヤーを破壊する
         if ((collision.gameObject.tag == "AttackZone" || collision.gameObject.tag == "EnemyBullet"))
         {
-            if (!IsInvincible)
-            {
-                HP -= 1;
-                Debug.Log("痛い");
 
-
-                PlayerColor();
-
-                //// ノックバック処理
-                //Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
-                //GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
-                // 無敵状態を開始
-                StartInvincibility();
-            }
-
+            playerHP(1);
         }
     }
 
@@ -307,7 +294,7 @@ public class player_control : MonoBehaviour
         {
             Debug.Log("隠しエリアクランクアップ！");
             InSecretArea = false;
-            // ★修正: コルーチンを開始する前にGameObjectがアクティブか確認
+            
             if (gameObject.activeInHierarchy) // 親を含めてHierarchy上でアクティブか
             {
                 StartCoroutine(FadeWalls(false)); // 壁を元に戻すコルーチンを開始
@@ -822,46 +809,116 @@ public class player_control : MonoBehaviour
         GetComponent<SetGravity>().IsEnable = true;
     }
 
+    //関数名：playerHP()
+    //用途：はしご登り終了処理
+    //引数：void
+    //戻り値：なし
+   public void  playerHP(int Damege)
+    {
+        if (!IsInvincible)
+        {
+            HP -= Damege;
+            Debug.Log("痛い");
 
 
+            PlayerColor();
+
+            //// ノックバック処理
+            //Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
+            //GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
+            // 無敵状態を開始
+            StartInvincibility();
+        }
+    }
 
 
-    //火柱を放つ
+    //火柱を放つコルーチン
     IEnumerator SpawnFirePillarsRoutine(Vector3 basePosition, float playerDirection, int count, float delay, float spread, LayerMask Ground)
     {
+        //for (int i = 0; i < count; i++)
+        //{
+        //    float offsetX = (i - (count - 1) / 2.0f) * spread * playerDirection;
+        //    // 火柱を生成するX座標は、プレイヤーの目の前を中心に広がるように計算する
+        //    float targetX = basePosition.x + offsetX;
+
+
+        //    float groundY = basePosition.y; // 一旦プレイヤーのY座標を仮の地面として設定
+
+        //    // 弾を真下（Vector2.down）に飛ばして、地面（groundLayer）に当たるかをチェックする
+        //    // ここでのRaycastの長さ（例: 10f）は、プレイヤーの高さから確実に地面に届くように長めにする
+        //    RaycastHit2D hit = Physics2D.Raycast(new Vector2(targetX, basePosition.y + 10f), Vector2.down, 20f, Ground); // ★Raycastの開始位置と長さを調整
+
+        //    if (hit.collider != null)
+        //    {
+        //        // 地面が見つかったら、その地面の上端のY座標を取得する
+        //        groundY = hit.point.y; // Raycastが当たった場所のY座標
+        //    }
+        //    else
+        //    {
+        //        // もし地面が見つからへんかったら（空中にRaycastが届かんとか）、デバッグログを出して、
+        //        // 元のプレイヤーのY座標を使うとか、何らかのフォールバック処理を考える
+        //        // 今回はDebug.Logしとくわ。
+        //        Debug.LogWarning("火柱の足元に地面が見つかりませんでした！ 火柱はプレイヤーの高さから出ます。", this);
+        //    }
+
+        //    // 火柱を生成する最終的な位置やで！Y座標は地面の高さを使う
+        //    Vector3 firePillarSpawnPos = new Vector3(targetX, groundY, basePosition.z);
+
+        //    // 火柱を生成するで
+        //    GameObject pillarInstance = Instantiate(VampireWeapon, firePillarSpawnPos, Quaternion.identity);
+
+        //    // 火柱の見た目もプレイヤーの向きに合わせるで (この部分は変更なし)
+        //    SpriteRenderer pillarSr = pillarInstance.GetComponent<SpriteRenderer>();
+        //    if (pillarSr != null)
+        //    {
+        //        pillarSr.flipX = (playerDirection == -1);
+        //    }
+        //    else
+        //    {
+        //        Vector3 pillarScale = pillarInstance.transform.localScale;
+        //        pillarScale.x = Mathf.Abs(pillarScale.x) * playerDirection;
+        //        pillarInstance.transform.localScale = pillarScale;
+        //    }
+
+        //    // 次の火柱が出るまで少し待つ
+        //    yield return new WaitForSeconds(delay);
+        //}
+
+        // ★★★修正：火柱の基準となるY座標をプレイヤーの足元から取得する★★★
+        float baseFirePillarY = transform.position.y; // デフォルトはプレイヤーのY座標
+
+        // プレイヤーの足元からRaycastを飛ばし、立っている地面のY座標を取得する
+        Vector2 playerFeetRayOrigin = (Vector2)transform.position + bc.offset + Vector2.down * (bc.size.y / 2f - 0.05f); // プレイヤーの足元
+        float playerFeetRayLength = 0.5f; // プレイヤーの足元から地面を探す長さ（調整が必要）
+        RaycastHit2D playerGroundHit = Physics2D.Raycast(playerFeetRayOrigin, Vector2.down, playerFeetRayLength, Ground);
+
+        // Debug.DrawRay(playerFeetRayOrigin, Vector2.down * playerFeetRayLength, Color.green, 1f); // デバッグ用
+
+        if (playerGroundHit.collider != null)
+        {
+            baseFirePillarY = playerGroundHit.point.y; // プレイヤーが立っている地面のY座標を取得
+        }
+        else
+        {
+            // プレイヤーが地面についていない場合（ジャンプ中など）は、最も近い地面を探す
+            // あるいは、火柱を地面から出すのを諦めて、プレイヤーの足元から出す
+            // ここでは、プレイヤーの足元Y座標を基準とする (または、より長いRaycastで地面を探す)
+            Debug.LogWarning("プレイヤーが地面についていないため、火柱の正確な地面位置が特定できませんでした。プレイヤーの足元から出ます。", this);
+        }
+
         for (int i = 0; i < count; i++)
         {
             float offsetX = (i - (count - 1) / 2.0f) * spread * playerDirection;
             // 火柱を生成するX座標は、プレイヤーの目の前を中心に広がるように計算する
             float targetX = basePosition.x + offsetX;
 
+            // 火柱の最終的なY座標は、上で計算したbaseFirePillarYを使用する
+            Vector3 firePillarSpawnPos = new Vector3(targetX, baseFirePillarY, basePosition.z);
 
-            float groundY = basePosition.y; // 一旦プレイヤーのY座標を仮の地面として設定
-
-            // 弾を真下（Vector2.down）に飛ばして、地面（groundLayer）に当たるかをチェックする
-            // ここでのRaycastの長さ（例: 10f）は、プレイヤーの高さから確実に地面に届くように長めにする
-            RaycastHit2D hit = Physics2D.Raycast(new Vector2(targetX, basePosition.y + 10f), Vector2.down, 20f, Ground); // ★Raycastの開始位置と長さを調整
-
-            if (hit.collider != null)
-            {
-                // 地面が見つかったら、その地面の上端のY座標を取得する
-                groundY = hit.point.y; // Raycastが当たった場所のY座標
-            }
-            else
-            {
-                // もし地面が見つからへんかったら（空中にRaycastが届かんとか）、デバッグログを出して、
-                // 元のプレイヤーのY座標を使うとか、何らかのフォールバック処理を考える
-                // 今回はDebug.Logしとくわ。
-                Debug.LogWarning("火柱の足元に地面が見つかりませんでした！ 火柱はプレイヤーの高さから出ます。", this);
-            }
-
-            // 火柱を生成する最終的な位置やで！Y座標は地面の高さを使う
-            Vector3 firePillarSpawnPos = new Vector3(targetX, groundY, basePosition.z);
-
-            // 火柱を生成するで
+            // 火柱を生成する
             GameObject pillarInstance = Instantiate(VampireWeapon, firePillarSpawnPos, Quaternion.identity);
 
-            // 火柱の見た目もプレイヤーの向きに合わせるで (この部分は変更なし)
+            // 火柱の見た目もプレイヤーの向きに合わせる (この部分は変更なし)
             SpriteRenderer pillarSr = pillarInstance.GetComponent<SpriteRenderer>();
             if (pillarSr != null)
             {
