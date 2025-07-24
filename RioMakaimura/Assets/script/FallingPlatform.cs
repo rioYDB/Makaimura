@@ -80,6 +80,14 @@ public class FallingPlatform : MonoBehaviour
         gameObject.SetActive(true); // 再表示
     }
 
+
+    //画面外に出たらこのオブジェクトを破壊
+    private void OnBecameInvisible()
+    {
+        Destroy(gameObject);
+    }
+
+
     // エディタ上で初期位置を表示 (オプション)
     void OnDrawGizmos()
     {

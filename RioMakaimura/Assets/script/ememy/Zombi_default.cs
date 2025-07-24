@@ -12,7 +12,7 @@ public class Zombi_default : MonoBehaviour
     private CapsuleCollider2D capsuleCollider;   // ColliderをCapsuleに変更
 
     public LayerMask Ground; // ← インスペクターから地面レイヤーを指定
-    private bool isGrounded = false;
+    //private bool isGrounded = false;
 
 
  
