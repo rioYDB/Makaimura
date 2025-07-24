@@ -127,15 +127,9 @@ public class magmagimmick : MonoBehaviour
         {
             // ここにプレイヤーにダメージを与える処理を書く
             Debug.Log("マグマに触れてダメージ！");
-            // other.GetComponent<player_control>().TakeDamage(1); // player_controlにTakeDamageメソッドがあれば
+            other.GetComponent<player_control>().playerHP(1); // player_controlにTakeDamageメソッドがあれば
         }
     }
 
-    // OnBecameInvisible はコルーチンで位置と表示を管理するため不要
-    /*
-    private void OnBecameInvisible()
-    {
-        // Destroy(gameObject); // コルーチンサイクルを維持するためDestroyしない
-    }
-    */
+   
 }
