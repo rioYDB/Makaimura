@@ -18,6 +18,8 @@ TagManager:
   - SecretArea
   - Fadewall
   - AttackZone
+  - tume
+  - tendril
   layers:
   - Default
   - TransparentFX
