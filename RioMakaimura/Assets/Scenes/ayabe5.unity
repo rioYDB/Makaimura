@@ -9645,6 +9645,10 @@ PrefabInstance:
       propertyPath: maxFirePillarOnScreen
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 7013771955574629501, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 5dfd2cd4e9e9ea743980b3ae949c4f54, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.03
