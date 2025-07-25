@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 2b7d18f73d7ed58428d02300dd8b006b
+guid: a4696d2754bb0d44aa970d541cbd1522
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2758321919065202026
-    second: Okami_1_0
+      213: 2382646233119640018
+    second: V_attack_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Okami_1_0
+      name: V_attack_0
       rect:
         serializedVersion: 2
-        x: 86
-        y: 47
-        width: 823
-        height: 938
+        x: 0
+        y: 0
+        width: 709
+        height: 709
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 692e1fd24d878b9d0800000000000000
-      internalID: -2758321919065202026
+      spriteID: 2d9c48e002cd01120800000000000000
+      internalID: 2382646233119640018
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Okami_1_0: -2758321919065202026
+      V_attack_0: 2382646233119640018
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
