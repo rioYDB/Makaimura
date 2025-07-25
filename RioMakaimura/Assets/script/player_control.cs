@@ -1,10 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI; // UnityEngine.UI.Imageを使うためこれは残す
+using UnityEngine.UI; 
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
-// using Unity.VisualScripting; // 使っていない場合は削除してOK
-using System; // ★この行が原因で'Image'が曖昧になるため、削除します (必要なければ)
+
+
 public enum AttackType { Human, Okami, Which, Vampire };                                //攻撃種類を管理する
 
 [System.Serializable]
@@ -930,55 +930,7 @@ public class player_control : MonoBehaviour
     //火柱を放つコルーチン
     IEnumerator SpawnFirePillarsRoutine(Vector3 basePosition, float playerDirection, int count, float delay, float spread, LayerMask Ground)
     {
-        //for (int i = 0; i < count; i++)
-        //{
-        //    float offsetX = (i - (count - 1) / 2.0f) * spread * playerDirection;
-        //    // 火柱を生成するX座標は、プレイヤーの目の前を中心に広がるように計算する
-        //    float targetX = basePosition.x + offsetX;
-
-
-        //    float groundY = basePosition.y; // 一旦プレイヤーのY座標を仮の地面として設定
-
-        //    // 弾を真下（Vector2.down）に飛ばして、地面（groundLayer）に当たるかをチェックする
-        //    // ここでのRaycastの長さ（例: 10f）は、プレイヤーの高さから確実に地面に届くように長めにする
-        //    RaycastHit2D hit = Physics2D.Raycast(new Vector2(targetX, basePosition.y + 10f), Vector2.down, 20f, Ground); // ★Raycastの開始位置と長さを調整
-
-        //    if (hit.collider != null)
-        //    {
-        //        // 地面が見つかったら、その地面の上端のY座標を取得する
-        //        groundY = hit.point.y; // Raycastが当たった場所のY座標
-        //    }
-        //    else
-        //    {
-        //        // もし地面が見つからへんかったら（空中にRaycastが届かんとか）、デバッグログを出して、
-        //        // 元のプレイヤーのY座標を使うとか、何らかのフォールバック処理を考える
-        //        // 今回はDebug.Logしとくわ。
-        //        Debug.LogWarning("火柱の足元に地面が見つかりませんでした！ 火柱はプレイヤーの高さから出ます。", this);
-        //    }
-
-        //    // 火柱を生成する最終的な位置やで！Y座標は地面の高さを使う
-        //    Vector3 firePillarSpawnPos = new Vector3(targetX, groundY, basePosition.z);
-
-        //    // 火柱を生成するで
-        //    GameObject pillarInstance = Instantiate(VampireWeapon, firePillarSpawnPos, Quaternion.identity);
-
-        //    // 火柱の見た目もプレイヤーの向きに合わせるで (この部分は変更なし)
-        //    SpriteRenderer pillarSr = pillarInstance.GetComponent<SpriteRenderer>();
-        //    if (pillarSr != null)
-        //    {
-        //        pillarSr.flipX = (playerDirection == -1);
-        //    }
-        //    else
-        //    {
-        //        Vector3 pillarScale = pillarInstance.transform.localScale;
-        //        pillarScale.x = Mathf.Abs(pillarScale.x) * playerDirection;
-        //        pillarInstance.transform.localScale = pillarScale;
-        //    }
-
-        //    // 次の火柱が出るまで少し待つ
-        //    yield return new WaitForSeconds(delay);
-        //}
-
+     
         // ★★★修正：火柱の基準となるY座標をプレイヤーの足元から取得する★★★
         float baseFirePillarY = transform.position.y; // デフォルトはプレイヤーのY座標
 

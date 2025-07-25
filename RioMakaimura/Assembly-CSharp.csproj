@@ -75,6 +75,7 @@
     <Compile Include="Assets\script\bullet\firepillar.cs" />
     <Compile Include="Assets\script\ememy\karasu.cs" />
     <Compile Include="Assets\script\stage\doorcontroller.cs" />
+    <Compile Include="Assets\script\cannon.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Which.cs" />
     <Compile Include="Assets\script\stage\FallingPlatform.cs" />
