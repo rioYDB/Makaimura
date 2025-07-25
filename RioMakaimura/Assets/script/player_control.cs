@@ -7,6 +7,15 @@ using System.Collections.Generic;
 using System; // ★この行が原因で'Image'が曖昧になるため、削除します (必要なければ)
 public enum AttackType { Human, Okami, Which, Vampire };                                //攻撃種類を管理する
 
+[System.Serializable]
+public class AnimationSet
+{
+    public Sprite idle;         // 待機時のスプライト
+    public Sprite[] walk;       // 歩行時（複数枚でアニメーション）
+    public Sprite jump;         // ジャンプ中
+    public Sprite attack;       // 攻撃時
+}
+
 public class player_control : MonoBehaviour
 {
     //変数宣言
@@ -79,9 +88,24 @@ public class player_control : MonoBehaviour
 
     private Image image;            //画像の管理
     bool text1enableKey = true;
+    
+    //アニメーション関連
+    //-----------------------------------------------------------------------------------------
+    // 各変身状態のアニメーションセットをInspectorで登録
+    public AnimationSet humanAnim;
+    public AnimationSet okamiAnim;
+    public AnimationSet witchAnim;
+    public AnimationSet vampireAnim;
 
-    // 画像描画用のコンポーネント
-    SpriteRenderer sr;
+    // 現在の状態のアニメーションを保持する変数
+    private AnimationSet currentAnim;
+
+    private SpriteRenderer sr;       // スプライトを描画するためのコンポーネント
+
+    private float walkAnimTimer = 0f;    // 歩行アニメのタイマー
+    private int walkAnimIndex = 0;       // 歩行アニメのフレームインデックス
+
+    //-----------------------------------------------------------------------------------------
 
     //-----------------------------------------------------------------------------------------------------------------------
     //はしご登り関連の追加変数
@@ -117,6 +141,8 @@ public class player_control : MonoBehaviour
         image = GetComponent<Image>();
         // SpriteのSpriteRendererコンポーネントを取得
         sr = gameObject.GetComponent<SpriteRenderer>();
+        // 初期状態（Human）のアニメーションセットを使用
+        SetCurrentAnimSet();
 
         //元の重力値を保持
         originalGravityScale = rb.gravityScale;
@@ -133,6 +159,10 @@ public class player_control : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (IsGrounded())
+        {
+            IsJumping = false;
+        }
 
         // はしごを登る処理を最優先
         if (isClimbingLadder)
@@ -178,7 +208,8 @@ public class player_control : MonoBehaviour
             }
         }
 
-
+        // アニメーションの更新
+        SetAnimation();
 
 
         //死亡条件
@@ -197,10 +228,63 @@ public class player_control : MonoBehaviour
 
     }
 
+    // 変身状態に応じて使うアニメーションセットを切り替える
+    void SetCurrentAnimSet()
+    {
+        switch (currentAttack)
+        {
+            case AttackType.Okami:
+                currentAnim = okamiAnim;
+                break;
+            case AttackType.Which:
+                currentAnim = witchAnim;
+                break;
+            case AttackType.Vampire:
+                currentAnim = vampireAnim;
+                break;
+            default:
+                currentAnim = humanAnim;
+                break;
+        }
+    }
 
-    //ゴールオブジェクトに触れたらゴールシーンに切り替わる
+    void SetAnimation()
+    {
+        // 攻撃中のスプライトを優先表示（例としてキー入力で判定）
+        if (Input.GetKeyDown(KeyCode.Z) || Input.GetButton("Fire1"))
+        {
+            sr.sprite = currentAnim.attack;
+            return;
+        }
+
+        // ジャンプ中はジャンプ用スプライト
+        if (IsJumping && !IsGrounded())
+        {
+            sr.sprite = currentAnim.jump;
+            return;
+        }
+
+        // 横移動中（地面にいる場合）のスプライト切り替え（歩行アニメ）
+        if (Mathf.Abs(Moveinput) > 0.01f && IsGrounded())
+        {
+            walkAnimTimer += Time.deltaTime;
+            if (walkAnimTimer > 0.2f) // アニメーション速度（0.2秒ごとに切り替え）
+            {
+                walkAnimIndex = (walkAnimIndex + 1) % currentAnim.walk.Length;
+                walkAnimTimer = 0f;
+            }
+            sr.sprite = currentAnim.walk[walkAnimIndex];
+            return;
+        }
+
+        // それ以外（待機状態）のスプライト
+        sr.sprite = currentAnim.idle;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
+        //ゴールオブジェクトに触れたらゴールシーンに切り替わる
         if (collision.gameObject.tag == "Goal")
         {
             SceneManager.LoadScene("Goal");
@@ -212,6 +296,8 @@ public class player_control : MonoBehaviour
 
             sr.sprite = Okami;
             BulletChange("Okami");
+
+            SetCurrentAnimSet();
 
             Debug.Log("狼男に変身");
 
@@ -225,6 +311,8 @@ public class player_control : MonoBehaviour
 
             sr.sprite = Which;
             BulletChange("Which");
+
+            SetCurrentAnimSet();
 
             Debug.Log("魔女に変身");
 
@@ -248,6 +336,8 @@ public class player_control : MonoBehaviour
 
             sr.sprite = Vampire;
             BulletChange("Vampire");
+
+            SetCurrentAnimSet();
 
             Debug.Log("ヴァンパイアに変身");
 
@@ -428,6 +518,8 @@ public class player_control : MonoBehaviour
         //ジャンプ処理
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
         {
+            
+
             //プレイヤーの状態に併せてジャンプ力を変更する
             float currentJumpPower = jumpPower;
 
@@ -451,6 +543,8 @@ public class player_control : MonoBehaviour
 
             //ジャンプ中は移動速度を制限する
             Moveinput *= 0.7f;
+
+            
         }
     }
 
@@ -734,6 +828,7 @@ public class player_control : MonoBehaviour
         bool ret = false;
         //下方向にrayを飛ばして、指定したレイヤーのオブジェクトと接触しているかどうか判別する
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.8f, Ground);
+
         //ヒットしていない場合はnullが返される
         if (hit.collider != null)
         {
@@ -741,7 +836,7 @@ public class player_control : MonoBehaviour
         }
         if (ret == true)
         {
-            IsJumping = false;
+            //IsJumping = false;
         }
 
         return ret;
