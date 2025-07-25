@@ -342,11 +342,7 @@ public class player_control : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
-        //ゴールオブジェクトに触れたらゴールシーンに切り替わる
-        if (collision.gameObject.tag == "Goal")
-        {
-            SceneManager.LoadScene("Goal");
-        }
+        
 
         //狼男アイテムに触れたら自分が狼男になる
         if (collision.gameObject.tag == "Okami")
