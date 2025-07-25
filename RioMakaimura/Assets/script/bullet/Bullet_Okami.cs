@@ -21,6 +21,14 @@ public class Bullet_Okami : bullet
         Destroy(gameObject);
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag== "tendril")
+        {
+            Destroy(collision.gameObject);
+        }
+    }
+
 
     protected override void Update()
     {
