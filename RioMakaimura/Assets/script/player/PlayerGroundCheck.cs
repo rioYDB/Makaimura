@@ -9,9 +9,9 @@ public class PlayerGroundCheck : MonoBehaviour
 
     void Update() // これが正しいUpdate()の定義
     {
-        // ★修正：プレイヤー本体のCollider2DをBoxCollider2Dとして取得する
-        // ※プレイヤーのColliderがCapsuleCollider2Dなら、CapsuleCollider2Dに修正してください
-        //   player_control.csではBoxCollider2Dとして定義されているので、ここではBoxCollider2Dを使用します。
+        //プレイヤー本体のCollider2DをBoxCollider2Dとして取得する
+       
+        
         BoxCollider2D playerBoxCollider = transform.parent.GetComponent<BoxCollider2D>();
         if (playerBoxCollider == null)
         {
