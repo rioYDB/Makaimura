@@ -224,7 +224,65 @@ public class player_control : MonoBehaviour
             SceneManager.LoadScene("GameOver");
         }
 
+        // =================== デバッグキー ===================
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            IsInvincible = !IsInvincible;  // 無敵トグル
+            if (IsInvincible)
+            {
+                InvincibleTimer = 999f; // 十分に長い時間を設定
+                StartCoroutine(InvincibilityFlash());
+                StartCoroutine(IgnoreEnemyCollisionDuringInvincibility());
+                Debug.Log("無敵モード ON");
+            }
+            else
+            {
+                InvincibleTimer = 0f;
+                Debug.Log("無敵モード OFF");
+            }
+        }
 
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            sr.sprite = Okami;
+            BulletChange("Okami");
+            currentAttack = AttackType.Okami;
+            SetCurrentAnimSet();
+            Debug.Log("狼に変身");
+        }
+
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            sr.sprite = Which;
+            BulletChange("Which");
+            currentAttack = AttackType.Which;
+            SetCurrentAnimSet();
+            Debug.Log("魔女に変身");
+        }
+
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            sr.sprite = Vampire;
+            BulletChange("Vampire");
+            currentAttack = AttackType.Vampire;
+            SetCurrentAnimSet();
+            Debug.Log("ヴァンパイアに変身");
+        }
+
+        if (Input.GetKeyDown(KeyCode.F5))
+        {
+            sr.sprite = humanAnim.idle; // idleスプライトに戻す（または任意のSprite）
+            BulletChange("Human");
+            currentAttack = AttackType.Human;
+            SetCurrentAnimSet();
+            Debug.Log("人間に戻る");
+        }
+
+        if (Input.GetKeyDown(KeyCode.F6))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            Debug.Log("シーンリセット");
+        }
 
     }
 
