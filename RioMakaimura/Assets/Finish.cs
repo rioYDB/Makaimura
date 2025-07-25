@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-
-public class GoalFlag : MonoBehaviour
+public class Finish : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -16,15 +14,14 @@ public class GoalFlag : MonoBehaviour
         
     }
 
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //ゴールオブジェクトに触れたらゴールシーンに切り替わる
         if (collision.gameObject.tag == "Player")
         {
-            
 
-            SceneManager.LoadScene("Goal _1"); // 「Goal」シーンへ遷移
+
+            SceneManager.LoadScene("Goal"); // 「Goal」シーンへ遷移
         }
     }
 }

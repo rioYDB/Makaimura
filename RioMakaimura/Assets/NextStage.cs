@@ -13,16 +13,15 @@ public class NextStage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
-
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        //ゴールオブジェクトに触れたらゴールシーンに切り替わる
-        if (collision.gameObject.tag == "Player")
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("LetsPlay"))
         {
-            SceneManager.LoadScene("ayabe5"); // 「Goal」シーンへ遷移
+            Debug.Log("a");
+
+            SceneManager.LoadScene("ayabe5");
+
+            Debug.Log("main");
         }
     }
+
+
 }

@@ -89,6 +89,7 @@
     <Compile Include="Assets\script\GoalFlag.cs" />
     <Compile Include="Assets\script\player\PlayerGroundCheck.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Okami.cs" />
+    <Compile Include="Assets\Finish.cs" />
     <Compile Include="Assets\script\GameManager.cs" />
     <Compile Include="Assets\script\ememy\Redareemer.cs" />
     <Compile Include="Assets\script\player\PlayerWallCheck.cs" />
