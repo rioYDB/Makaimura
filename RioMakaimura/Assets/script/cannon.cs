@@ -9,10 +9,10 @@ public class cannon : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(FireSpearRoutine()); // 発射ルーチンを開始
+        StartCoroutine(EnemyBulletRoutine()); // 発射ルーチンを開始
     }
 
-    IEnumerator FireSpearRoutine()
+    IEnumerator EnemyBulletRoutine()
     {
         while (true) // 無限ループで定期的に発射
         {
@@ -20,10 +20,10 @@ public class cannon : MonoBehaviour
 
             // 槍を生成する位置は、この発射口の場所
             // 槍の回転はなし (Quaternion.identity)
-            GameObject newSpear = Instantiate(spearPrefab, transform.position, Quaternion.identity);
+            GameObject newSpear = Instantiate(BulletPrefab, transform.position, Quaternion.identity);
 
             // 生成した槍のスクリプトに方向を伝える
-            FlyingSpear spearScript = newSpear.GetComponent<FlyingSpear>();
+            Enemybullet spearScript = newSpear.GetComponent<Enemybullet>();
             if (spearScript != null)
             {
                 spearScript.SetDirection(fireDirection);
