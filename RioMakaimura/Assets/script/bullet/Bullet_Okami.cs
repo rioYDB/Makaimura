@@ -23,21 +23,21 @@ public class Bullet_Okami : bullet
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag== "tendril")
+        if(collision.gameObject.tag== "tendril" || collision.gameObject.tag == "Enemy")
         {
             Destroy(collision.gameObject);
         }
 
-        if(collision.gameObject.tag == "Enemy")
-        {
-            // 敵（Enemyスクリプトがついてるもの）に当たったか判定
-            enemy_HP enemy = collision.GetComponent<enemy_HP>();
+        //if(collision.gameObject.tag == "Enemy")
+        //{
+        //    // 敵（Enemyスクリプトがついてるもの）に当たったか判定
+        //    enemy_HP enemy = collision.GetComponent<enemy_HP>();
 
-            if (enemy != null)
-            {
-                enemy.TakeDamage(1); // 1ダメージ与える（必要なら変数化してOK）
-            }
-        }
+        //    if (enemy != null)
+        //    {
+        //        enemy.TakeDamage(1); // 1ダメージ与える（必要なら変数化してOK）
+        //    }
+        //}
     }
 
 

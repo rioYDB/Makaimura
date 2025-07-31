@@ -32,8 +32,8 @@ public abstract class bullet : MonoBehaviour　　　//抽象クラス(継承前提のクラス)
         if (collision.gameObject.tag == "Enemy")
         {
             Debug.Log("敵との衝突を検出");
-            BulletMoves(collision.gameObject);
-            Destroy(gameObject);
+            //BulletMoves(collision.gameObject); //敵を消す
+            Destroy(gameObject);//弾を消す
         }
     }
 
