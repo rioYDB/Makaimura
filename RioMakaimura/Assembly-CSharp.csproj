@@ -69,7 +69,7 @@
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\bullet\bullet.cs" />
     <Compile Include="Assets\script\ememy\Zombi_default.cs" />
-    <Compile Include="Assets\script\ememy\FlyingEnemy.cs" />
+    <Compile Include="Assets\Cerberus_bullet.cs" />
     <Compile Include="Assets\script\stage\movetile.cs" />
     <Compile Include="Assets\script\CameraMove.cs" />
     <Compile Include="Assets\script\bullet\firepillar.cs" />
@@ -80,6 +80,7 @@
     <Compile Include="Assets\Mummy_Spawn.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Which.cs" />
+    <Compile Include="Assets\script\ememy\Cerberus_Controller.cs" />
     <Compile Include="Assets\script\stage\FallingPlatform.cs" />
     <Compile Include="Assets\script\ememy\Spider_default.cs" />
     <Compile Include="Assets\Enemybullet.cs" />
