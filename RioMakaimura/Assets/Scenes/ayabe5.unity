@@ -1990,7 +1990,7 @@ PrefabInstance:
       objectReference: {fileID: 1609065527}
     - target: {fileID: 2646618121655747892, guid: bc94bf9fcf041a244873930a515c8746, type: 3}
       propertyPath: spawnAreaMax.x
-      value: 106.3
+      value: 103.3
       objectReference: {fileID: 0}
     - target: {fileID: 2646618121655747892, guid: bc94bf9fcf041a244873930a515c8746, type: 3}
       propertyPath: spawnAreaMax.y
@@ -1998,7 +1998,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2646618121655747892, guid: bc94bf9fcf041a244873930a515c8746, type: 3}
       propertyPath: spawnAreaMin.x
-      value: 78.1
+      value: 81.7
       objectReference: {fileID: 0}
     - target: {fileID: 2646618121655747892, guid: bc94bf9fcf041a244873930a515c8746, type: 3}
       propertyPath: spawnAreaMin.y

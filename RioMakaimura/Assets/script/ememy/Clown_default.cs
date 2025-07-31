@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Clown_default : MonoBehaviour
+public class Clown_default : enemy_HP
 {
     public Transform player;                   // プレイヤーの位置を取得するため
     public GameObject projectilePrefab;        // 横方向の弾
@@ -22,6 +22,8 @@ public class Clown_default : MonoBehaviour
     private bool isShooting = false;
     private float stopTimer = 0f;
 
+    
+
     // 攻撃タイプ列挙（通常 or 斧）
     enum AttackType 
     {
@@ -38,6 +40,8 @@ public class Clown_default : MonoBehaviour
 
         // 最初の発射までのカウントダウン（すぐ撃たないように）
         timer = fireInterval;
+
+        
     }
 
     // Update is called once per frame
@@ -91,6 +95,8 @@ public class Clown_default : MonoBehaviour
             
         }
     }
+
+ 
 
     // 実際に攻撃を実行
     void PerformAttack()
