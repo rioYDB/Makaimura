@@ -17,7 +17,7 @@ public class Bullet_Okami : bullet
     protected override void BulletMoves(GameObject Enemy)
     {
         Debug.Log("狼男でアタック！！！");
-        Destroy(Enemy);
+        //Destroy(Enemy);
         Destroy(gameObject);
     }
 
@@ -26,6 +26,17 @@ public class Bullet_Okami : bullet
         if(collision.gameObject.tag== "tendril")
         {
             Destroy(collision.gameObject);
+        }
+
+        if(collision.gameObject.tag == "Enemy")
+        {
+            // 敵（Enemyスクリプトがついてるもの）に当たったか判定
+            enemy_HP enemy = collision.GetComponent<enemy_HP>();
+
+            if (enemy != null)
+            {
+                enemy.TakeDamage(1); // 1ダメージ与える（必要なら変数化してOK）
+            }
         }
     }
 
