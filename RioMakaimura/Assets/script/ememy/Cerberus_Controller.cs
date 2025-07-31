@@ -20,6 +20,12 @@ public class Cerberus_Controller : MonoBehaviour
     public CerberusState currentState; // 現在のボスの状態
     public Transform playerTransform; // プレイヤーのTransform (ターゲット)
 
+   
+
+    public Camera mainCamera; // メインカメラへの参照
+    public float attackDetectionRange = 8f; // プレイヤーを見つける距離 (画面外でもこの距離なら攻撃開始)
+
+
     private float attackCoolDownTimer = 0f;
     public float attackCoolDownTime = 3f; // 攻撃間のクールダウン時間
 
@@ -39,6 +45,12 @@ public class Cerberus_Controller : MonoBehaviour
     {
         currentState = CerberusState.Move; // 最初は移動状態から始める
         initialPosition = transform.position; // 初期位置を記録
+
+        // メインカメラを取得 (タグが "MainCamera" のカメラを自動で取得)
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+        }
     }
 
     void Update()
@@ -130,21 +142,63 @@ public class Cerberus_Controller : MonoBehaviour
 
     void ChooseNextAttack()
     {
-        // ランダム、またはHPに応じた攻撃選択ロジック
-        int randomAttack = Random.Range(0, 3); // 0, 1, 2のいずれか
-
-        switch (randomAttack)
+        // プレイヤーが画面内にいるか、または一定距離内にいるかチェック
+        if (IsPlayerVisibleOrInRange())
         {
-            case 0:
-                StartAttack1();
-                break;
-            case 1:
-                StartAttack2();
-                break;
-            case 2:
-                StartAttack3();
-                break;
+            // ランダム、またはHPに応じた攻撃選択ロジック
+            int randomAttack = Random.Range(0, 3); // 0, 1, 2のいずれか
+
+            switch (randomAttack)
+            {
+                case 0:
+                    StartAttack1(); //
+                    break;
+                case 1:
+                    StartAttack2(); //
+                    break;
+                case 2:
+                    StartAttack3(); //
+                    break;
+            }
         }
+        else
+        {
+            // プレイヤーが見つからない場合は、引き続き移動状態を維持
+            currentState = CerberusState.Move;
+        }
+    }
+
+    // プレイヤーが画面内にいるか、または一定距離内にいるかを判定するメソッド
+    bool IsPlayerVisibleOrInRange()
+    {
+        if (playerTransform == null || mainCamera == null)
+        {
+            Debug.LogWarning("Player Transform または Main Camera が設定されていません。");
+            return false;
+        }
+
+        // --- ケルベロス自身が画面内にいるかチェック ---
+        Vector3 cerberusViewportPoint = mainCamera.WorldToViewportPoint(transform.position);
+        bool isCerberusVisible = cerberusViewportPoint.x >= 0 && cerberusViewportPoint.x <= 1 &&
+                                 cerberusViewportPoint.y >= 0 && cerberusViewportPoint.y <= 1 &&
+                                 cerberusViewportPoint.z > 0;
+
+        // ケルベロス自身が画面内にいなければ、攻撃しない
+        if (!isCerberusVisible)
+        {
+            return false;
+        }
+        // プレイヤーがカメラの視界内にあるかチェック
+        Vector3 viewportPoint = mainCamera.WorldToViewportPoint(playerTransform.position);
+        bool isVisible = viewportPoint.x >= 0 && viewportPoint.x <= 1 &&
+                         viewportPoint.y >= 0 && viewportPoint.y <= 1 &&
+                         viewportPoint.z > 0; // z > 0 はカメラの手前にあることを意味する
+
+        // プレイヤーとケルベロスの距離をチェック
+        float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
+        bool isInRange = distanceToPlayer <= attackDetectionRange;
+
+        return isVisible || isInRange;
     }
 
     // --- 各攻撃パターンの開始メソッド ---
