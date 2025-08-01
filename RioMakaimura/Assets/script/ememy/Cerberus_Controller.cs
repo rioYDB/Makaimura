@@ -1,67 +1,81 @@
 using UnityEngine;
 using System.Collections;
 
-
-
 public enum CerberusState
 {
-    Idle,       // ‘Ò‹@
-    Move,       // ˆÚ“®
-    Attack1,    // UŒ‚ƒpƒ^[ƒ“1
-    Attack2,    // UŒ‚ƒpƒ^[ƒ“2
-    Attack3,    // UŒ‚ƒpƒ^[ƒ“3
-    Hurt,       // ”í’e
-    Dead        // €–S
+    Idle,       // å¾…æ©Ÿ
+    Move,       // ç§»å‹•
+    Attack1,    // æ”»æ’ƒãƒ‘ã‚¿ãƒ¼ãƒ³1 (ä¸‰ä½æ–¹å‘ã¸ã®ç«ç‚ãƒ–ãƒ¬ã‚¹)
+    Attack2,    // æ”»æ’ƒãƒ‘ã‚¿ãƒ¼ãƒ³2 (åœ°ä¸­ã«æ¶ˆãˆã¦ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä¸‹ã‹ã‚‰é£›ã³å‡ºã™)
+    Attack3,    // æ”»æ’ƒãƒ‘ã‚¿ãƒ¼ãƒ³3 (çªé€²)
+    Hurt,       // è¢«å¼¾
+    Dead        // æ­»äº¡
 }
 
 
 public class Cerberus_Controller : MonoBehaviour
 {
-    public CerberusState currentState; // Œ»İ‚Ìƒ{ƒX‚Ìó‘Ô
-    public Transform playerTransform; // ƒvƒŒƒCƒ„[‚ÌTransform (ƒ^[ƒQƒbƒg)
+    public CerberusState currentState; // ç¾åœ¨ã®ãƒœã‚¹ã®çŠ¶æ…‹
+    public Transform playerTransform; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Transform (ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ)
 
-   
-
-    public Camera mainCamera; // ƒƒCƒ“ƒJƒƒ‰‚Ö‚ÌQÆ
-    public float attackDetectionRange = 8f; // ƒvƒŒƒCƒ„[‚ğŒ©‚Â‚¯‚é‹——£ (‰æ–ÊŠO‚Å‚à‚±‚Ì‹——£‚È‚çUŒ‚ŠJn)
-
+    public float attackDetectionRange = 8f; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¦‹ã¤ã‘ã‚‹è·é›¢ (ç”»é¢å¤–ã§ã‚‚ã“ã®è·é›¢ãªã‚‰æ”»æ’ƒé–‹å§‹)
 
     private float attackCoolDownTimer = 0f;
-    public float attackCoolDownTime = 3f; // UŒ‚ŠÔ‚ÌƒN[ƒ‹ƒ_ƒEƒ“ŠÔ
+    public float attackCoolDownTime = 3f; // æ”»æ’ƒé–“ã®ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³æ™‚é–“
 
-    public GameObject fireBreathPrefab; // ‰Š‚ÌƒvƒŒƒnƒu
-    public Transform head1SpawnPoint; // “ª1‚Ì‰Š¶¬ˆÊ’u
-    public Transform head2SpawnPoint; // “ª2‚Ì‰Š¶¬ˆÊ’u
-    public Transform head3SpawnPoint; // “ª3‚Ì‰Š¶¬ˆÊ’u
+    // â˜…ä¿®æ­£1: æ”»æ’ƒ1ç”¨ã®ç‚ã®ãƒ—ãƒ¬ãƒãƒ–ã¨é ­ã®Transform
+    public GameObject fireBreathPrefab; // ç‚ã®ãƒ—ãƒ¬ãƒãƒ–
+    public float fireSpeed = 10f; // ç‚ãŒé£›ã¶é€Ÿåº¦
+    public Transform head1SpawnPoint; // é ­1ã®ç‚ç”Ÿæˆä½ç½®
+    public Transform head2SpawnPoint; // é ­2ã®ç‚ç”Ÿæˆä½ç½®
+    public Transform head3SpawnPoint; // é ­3ã®ç‚ç”Ÿæˆä½ç½®
+    public float fireSpreadAngle = 30f; // ç‚ã®åºƒãŒã‚Šè§’åº¦
 
+    // â˜…ä¿®æ­£2, 4, 5: åœ°ä¸­ã«æ¶ˆãˆã‚‹æ”»æ’ƒç”¨ã®å¤‰æ•°
+    public float undergroundYOffset = -5.0f; // åœ°ä¸­ã«æ½œã‚‹æ·±ã•
+    public float premonitionDelay = 2.0f; // â˜…ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä¸‹ã‹ã‚‰é£›ã³å‡ºã™ã¾ã§ã®å¾…æ©Ÿæ™‚é–“ (å‰å…†)
+    public float emergeSpeed = 10f; // é£›ã³å‡ºã™é€Ÿåº¦
+    public GameObject premonitionEffectPrefab; // é£›ã³å‡ºã™å‰ã®å‰å…†ã‚¨ãƒ•ã‚§ã‚¯ãƒˆï¼ˆä¾‹ï¼šåœŸç…™ã®ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ï¼‰
 
-    //ˆÚ“®ˆ—
-    public float moveSpeed = 2f; // ˆÚ“®‘¬“x
-    public float moveRange = 3f; // ¶‰E‚É“®‚­”ÍˆÍ (‰ŠúˆÊ’u‚©‚ç¶‰E‚É‚±‚Ì‹——£)
-    private Vector2 initialPosition; // ƒPƒ‹ƒxƒƒX‚Ì‰ŠúˆÊ’u
-    private int moveDirection = 1; // 1:‰E, -1:¶
+    //ç§»å‹•å‡¦ç†
+    public float moveSpeed = 2f; // ç§»å‹•é€Ÿåº¦
+    public float moveRange = 3f; // å·¦å³ã«å‹•ãç¯„å›² (åˆæœŸä½ç½®ã‹ã‚‰å·¦å³ã«ã“ã®è·é›¢)
+    private Vector2 initialPosition; // ã‚±ãƒ«ãƒ™ãƒ­ã‚¹ã®åˆæœŸä½ç½®
+    private int moveDirection = 1; // 1:å³, -1:å·¦
+
+    // ã‚±ãƒ«ãƒ™ãƒ­ã‚¹ã®ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
+    private Rigidbody2D rb;
+    private SpriteRenderer sr;
+    private Collider2D enemyCollider;
+    private Animator animator;
 
     void Start()
     {
-        currentState = CerberusState.Move; // Å‰‚ÍˆÚ“®ó‘Ô‚©‚çn‚ß‚é
-        initialPosition = transform.position; // ‰ŠúˆÊ’u‚ğ‹L˜^
+        currentState = CerberusState.Move; // æœ€åˆã¯ç§»å‹•çŠ¶æ…‹ã‹ã‚‰å§‹ã‚ã‚‹
+        initialPosition = transform.position; // åˆæœŸä½ç½®ã‚’è¨˜éŒ²
 
-        // ƒƒCƒ“ƒJƒƒ‰‚ğæ“¾ (ƒ^ƒO‚ª "MainCamera" ‚ÌƒJƒƒ‰‚ğ©“®‚Åæ“¾)
-        if (mainCamera == null)
+        rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
+        enemyCollider = GetComponent<Collider2D>();
+        animator = GetComponent<Animator>();
+
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Transformã‚’å–å¾— (ã‚¿ã‚°ãŒ"Player"ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ¢ã™)
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null)
         {
-            mainCamera = Camera.main;
+            playerTransform = playerObj.transform;
         }
     }
 
     void Update()
     {
-        // ƒN[ƒ‹ƒ_ƒEƒ“ƒ^ƒCƒ}[‚ğXV
+        // ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³ã‚¿ã‚¤ãƒãƒ¼ã‚’æ›´æ–°
         if (attackCoolDownTimer > 0)
         {
             attackCoolDownTimer -= Time.deltaTime;
         }
 
-        // Œ»İ‚Ìó‘Ô‚É‰‚¶‚Äˆ—‚ğ•ªŠò
+        // ç¾åœ¨ã®çŠ¶æ…‹ã«å¿œã˜ã¦å‡¦ç†ã‚’åˆ†å²
         switch (currentState)
         {
             case CerberusState.Idle:
@@ -71,11 +85,13 @@ public class Cerberus_Controller : MonoBehaviour
                 HandleMoveState();
                 break;
             case CerberusState.Attack1:
-                // UŒ‚’†‚Í‘¼‚Ìˆ—‚ğƒuƒƒbƒN‚µAUŒ‚I—¹‚ğ‘Ò‚Â
+                // æ”»æ’ƒä¸­ã¯ä»–ã®å‡¦ç†ã‚’ãƒ–ãƒ­ãƒƒã‚¯ã—ã€æ”»æ’ƒçµ‚äº†ã‚’å¾…ã¤
                 break;
             case CerberusState.Attack2:
+                // æ”»æ’ƒä¸­ã¯ä»–ã®å‡¦ç†ã‚’ãƒ–ãƒ­ãƒƒã‚¯ã—ã€æ”»æ’ƒçµ‚äº†ã‚’å¾…ã¤
                 break;
             case CerberusState.Attack3:
+                // æ”»æ’ƒä¸­ã¯ä»–ã®å‡¦ç†ã‚’ãƒ–ãƒ­ãƒƒã‚¯ã—ã€æ”»æ’ƒçµ‚äº†ã‚’å¾…ã¤
                 break;
             case CerberusState.Hurt:
                 HandleHurtState();
@@ -86,42 +102,32 @@ public class Cerberus_Controller : MonoBehaviour
         }
     }
 
-    // --- Šeó‘Ô‚²‚Æ‚Ìˆ— ---
-
-
+    // --- å„çŠ¶æ…‹ã”ã¨ã®å‡¦ç† ---
 
     void HandleIdleState()
     {
-        // ƒN[ƒ‹ƒ_ƒEƒ“‚ªI‚í‚Á‚½‚çŸ‚ÌUŒ‚‚ğ‘I‘ğ
         if (attackCoolDownTimer <= 0)
         {
             ChooseNextAttack();
-        }
-        else
-        {
-            // UŒ‚ƒN[ƒ‹ƒ_ƒEƒ“’†‚ÍˆÚ“®ó‘Ô‚ÉˆÚs
-            currentState = CerberusState.Move;
         }
     }
 
     void HandleMoveState()
     {
-        // ¶‰EˆÚ“®‚Ì–Ú•WˆÊ’u‚ğŒvZ
+        // å·¦å³ç§»å‹•ã®ç›®æ¨™ä½ç½®ã‚’è¨ˆç®—
         float targetX = initialPosition.x + moveRange * moveDirection;
         Vector2 targetPosition = new Vector2(targetX, transform.position.y);
 
-        // Œ»İˆÊ’u‚©‚ç–Ú•WˆÊ’u‚ÖˆÚ“®
+        // ç¾åœ¨ä½ç½®ã‹ã‚‰ç›®æ¨™ä½ç½®ã¸ç§»å‹•
         transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
 
-        // –Ú•WˆÊ’u‚É“’B‚µ‚½‚ç•ûŒü‚ğ”½“]
-        if (Mathf.Abs(transform.position.x - targetX) < 0.1f) // ‚Ù‚Ú“’B‚µ‚½‚ç
+        // ç›®æ¨™ä½ç½®ã«åˆ°é”ã—ãŸã‚‰æ–¹å‘ã‚’åè»¢
+        if (Mathf.Abs(transform.position.x - targetX) < 0.1f)
         {
-            moveDirection *= -1; // •ûŒü‚ğ”½“]
-            // ƒLƒƒƒ‰ƒNƒ^[‚ÌŒü‚«‚ğ”½“]‚³‚¹‚éê‡‚Í‚±‚±‚Å
-            // transform.localScale = new Vector3(moveDirection * Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            moveDirection *= -1;
         }
 
-        // ƒN[ƒ‹ƒ_ƒEƒ“‚ªI‚í‚Á‚½‚çUŒ‚‚ÉˆÚs
+        // ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³ãŒçµ‚ã‚ã£ãŸã‚‰æ”»æ’ƒã«ç§»è¡Œ
         if (attackCoolDownTimer <= 0)
         {
             ChooseNextAttack();
@@ -129,24 +135,21 @@ public class Cerberus_Controller : MonoBehaviour
     }
     void HandleHurtState()
     {
-        // ”í’eƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶AƒmƒbƒNƒoƒbƒN‚È‚Ç
-        // ƒAƒjƒ[ƒVƒ‡ƒ“I—¹Œã‚ÉIdle‚É–ß‚é
+        // è¢«å¼¾ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”Ÿã€ãƒãƒƒã‚¯ãƒãƒƒã‚¯ãªã©
     }
 
     void HandleDeadState()
     {
-        // €–SƒAƒjƒ[ƒVƒ‡ƒ“AƒQ[ƒ€ƒI[ƒo[ˆ—‚È‚Ç
+        // æ­»äº¡ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã€ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼å‡¦ç†ãªã©
     }
 
-    // --- UŒ‚‚Ì‘I‘ğƒƒWƒbƒN ---
+    // --- æ”»æ’ƒã®é¸æŠãƒ­ã‚¸ãƒƒã‚¯ ---
 
     void ChooseNextAttack()
     {
-        // ƒvƒŒƒCƒ„[‚ª‰æ–Ê“à‚É‚¢‚é‚©A‚Ü‚½‚Íˆê’è‹——£“à‚É‚¢‚é‚©ƒ`ƒFƒbƒN
         if (IsPlayerVisibleOrInRange())
         {
-            // ƒ‰ƒ“ƒ_ƒ€A‚Ü‚½‚ÍHP‚É‰‚¶‚½UŒ‚‘I‘ğƒƒWƒbƒN
-            int randomAttack = Random.Range(0, 3); // 0, 1, 2‚Ì‚¢‚¸‚ê‚©
+            int randomAttack = Random.Range(0, 3);
 
             switch (randomAttack)
             {
@@ -163,224 +166,194 @@ public class Cerberus_Controller : MonoBehaviour
         }
         else
         {
-            // ƒvƒŒƒCƒ„[‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡‚ÍAˆø‚«‘±‚«ˆÚ“®ó‘Ô‚ğˆÛ
             currentState = CerberusState.Move;
         }
     }
 
-    // ƒvƒŒƒCƒ„[‚ª‰æ–Ê“à‚É‚¢‚é‚©A‚Ü‚½‚Íˆê’è‹——£“à‚É‚¢‚é‚©‚ğ”»’è‚·‚éƒƒ\ƒbƒh
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒç”»é¢å†…ã«ã„ã‚‹ã‹ã€ã¾ãŸã¯ä¸€å®šè·é›¢å†…ã«ã„ã‚‹ã‹ã‚’åˆ¤å®šã™ã‚‹ãƒ¡ã‚½ãƒƒãƒ‰
     bool IsPlayerVisibleOrInRange()
     {
-        if (playerTransform == null || mainCamera == null)
+        if (playerTransform == null || Camera.main == null)
         {
-            Debug.LogWarning("Player Transform ‚Ü‚½‚Í Main Camera ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+            Debug.LogWarning("Player Transform ã¾ãŸã¯ Main Camera ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‚");
             return false;
         }
 
-        // --- ƒPƒ‹ƒxƒƒX©g‚ª‰æ–Ê“à‚É‚¢‚é‚©ƒ`ƒFƒbƒN ---
-        Vector3 cerberusViewportPoint = mainCamera.WorldToViewportPoint(transform.position);
+        Vector3 cerberusViewportPoint = Camera.main.WorldToViewportPoint(transform.position);
         bool isCerberusVisible = cerberusViewportPoint.x >= 0 && cerberusViewportPoint.x <= 1 &&
                                  cerberusViewportPoint.y >= 0 && cerberusViewportPoint.y <= 1 &&
                                  cerberusViewportPoint.z > 0;
 
-        // ƒPƒ‹ƒxƒƒX©g‚ª‰æ–Ê“à‚É‚¢‚È‚¯‚ê‚ÎAUŒ‚‚µ‚È‚¢
         if (!isCerberusVisible)
         {
             return false;
         }
-        // ƒvƒŒƒCƒ„[‚ªƒJƒƒ‰‚Ì‹ŠE“à‚É‚ ‚é‚©ƒ`ƒFƒbƒN
-        Vector3 viewportPoint = mainCamera.WorldToViewportPoint(playerTransform.position);
+        Vector3 viewportPoint = Camera.main.WorldToViewportPoint(playerTransform.position);
         bool isVisible = viewportPoint.x >= 0 && viewportPoint.x <= 1 &&
                          viewportPoint.y >= 0 && viewportPoint.y <= 1 &&
-                         viewportPoint.z > 0; // z > 0 ‚ÍƒJƒƒ‰‚Ìè‘O‚É‚ ‚é‚±‚Æ‚ğˆÓ–¡‚·‚é
+                         viewportPoint.z > 0;
 
-        // ƒvƒŒƒCƒ„[‚ÆƒPƒ‹ƒxƒƒX‚Ì‹——£‚ğƒ`ƒFƒbƒN
         float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
         bool isInRange = distanceToPlayer <= attackDetectionRange;
 
         return isVisible || isInRange;
     }
 
-    // --- ŠeUŒ‚ƒpƒ^[ƒ“‚ÌŠJnƒƒ\ƒbƒh ---
+    // --- å„æ”»æ’ƒãƒ‘ã‚¿ãƒ¼ãƒ³ã®é–‹å§‹ãƒ¡ã‚½ãƒƒãƒ‰ ---
 
     void StartAttack1()
     {
         currentState = CerberusState.Attack1;
-        Debug.Log("ƒPƒ‹ƒxƒƒX: UŒ‚1‚ğŠJnI (OˆÊ•ûŒü‚Ö‚Ì‰Î‰ŠƒuƒŒƒX)");
-        StartCoroutine(Attack1Coroutine()); // ƒRƒ‹[ƒ`ƒ“‚ÅUŒ‚ˆ—‚ğŠJn
+        Debug.Log("ã‚±ãƒ«ãƒ™ãƒ­ã‚¹: æ”»æ’ƒ1ã‚’é–‹å§‹ï¼ (ä¸‰ä½æ–¹å‘ã¸ã®ç«ç‚ãƒ–ãƒ¬ã‚¹)");
+        StartCoroutine(Attack1Coroutine()); // ã‚³ãƒ«ãƒ¼ãƒãƒ³ã§æ”»æ’ƒå‡¦ç†ã‚’é–‹å§‹
     }
 
     void StartAttack2()
     {
         currentState = CerberusState.Attack2;
-        Debug.Log("ƒPƒ‹ƒxƒƒX: UŒ‚2‚ğŠJnI (’n’†‚ÉÁ‚¦‚ÄƒvƒŒƒCƒ„[‚Ì‰º‚©‚ç”ò‚Ño‚·)");
+        Debug.Log("ã‚±ãƒ«ãƒ™ãƒ­ã‚¹: æ”»æ’ƒ2ã‚’é–‹å§‹ï¼ (åœ°ä¸­ã«æ¶ˆãˆã¦ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä¸‹ã‹ã‚‰é£›ã³å‡ºã™)");
         StartCoroutine(Attack2Coroutine());
     }
 
     void StartAttack3()
     {
         currentState = CerberusState.Attack3;
-        Debug.Log("ƒPƒ‹ƒxƒƒX: UŒ‚3‚ğŠJnI (“Ëi)");
+        Debug.Log("ã‚±ãƒ«ãƒ™ãƒ­ã‚¹: æ”»æ’ƒ3ã‚’é–‹å§‹ï¼ (çªé€²)");
         StartCoroutine(Attack3Coroutine());
     }
 
-    // --- ŠeUŒ‚ƒpƒ^[ƒ“‚Ì‹ï‘Ì“I‚ÈÀ‘• (ƒRƒ‹[ƒ`ƒ“) ---
-    // ‚±‚±‚ÉŠeUŒ‚‚ÌƒƒWƒbƒN‚ğ‹Lq‚µ‚Ü‚·B
+    // --- å„æ”»æ’ƒãƒ‘ã‚¿ãƒ¼ãƒ³ã®å…·ä½“çš„ãªå®Ÿè£… (ã‚³ãƒ«ãƒ¼ãƒãƒ³) ---
 
+    // â˜…ä¿®æ­£1: ä¸‰æ–¹å‘ã«ç‚ã‚’é£›ã°ã™
     IEnumerator Attack1Coroutine()
     {
-        // —á: ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶i‰Š‚ğ“f‚­ƒAƒjƒ[ƒVƒ‡ƒ“j
         // animator.SetTrigger("Attack1");
 
-        yield return new WaitForSeconds(0.5f); // ƒAƒjƒ[ƒVƒ‡ƒ“ŠJn‚©‚çƒuƒŒƒX‚ªo‚é‚Ü‚Å‚Ì‘Ò‹@
+        yield return new WaitForSeconds(0.5f);
 
-        // ‰Š‚Ì¶¬‚Æ”­Ë
-        // Še“ª‚ÌTransform‚ğŠî€‚ÉAŠp“x‚ğ’²®‚µ‚Ä‰Š‚ğ¶¬E”­Ë‚·‚é
-        // —á: ƒvƒŒƒCƒ„[‚Ì•ûŒü‚ğŒü‚©‚¹‚½‚èAŒÅ’è‚Ì3•ûŒüi‘O•ûA¶Î‚ßA‰EÎ‚ßj‚É‚µ‚½‚è
-        // ‚±‚±‚Å‚Í‰¼‚ÉŒÅ’è‚Ì3•ûŒü‚Æ‚µ‚Ü‚·
-
-        // “ª1‚©‚ç”­Ë (—á: ³–Ê)
-        if (fireBreathPrefab != null && head1SpawnPoint != null)
+        if (fireBreathPrefab != null)
         {
-            GameObject fire1 = Instantiate(fireBreathPrefab, head1SpawnPoint.position, Quaternion.identity);
-            // fire1 ‚É•t‚¢‚Ä‚¢‚éƒXƒNƒŠƒvƒg‚ÅˆÚ“®ƒƒWƒbƒN‚ğ§Œä‚·‚é‚©ARigidbody2D‚Å—Í‚ğ‰Á‚¦‚é
-            // fire1.GetComponent<FireBreathScript>().Initialize(Vector2.right); // —á
-            // fire1.GetComponent<Rigidbody2D>().AddForce(Vector2.right * fireSpeed); // —á
+            Vector2 playerDirection = (playerTransform.position - transform.position).normalized;
+
+            // æ­£é¢
+            if (head1SpawnPoint != null)
+            {
+                GameObject fire1 = Instantiate(fireBreathPrefab, head1SpawnPoint.position, Quaternion.identity);
+                Cerberus_bullet bullet1 = fire1.GetComponent<Cerberus_bullet>();
+                if (bullet1 != null) bullet1.Initialize(playerDirection);
+            }
+
+            // å·¦æ–œã‚ (ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ–¹å‘ã‹ã‚‰-fireSpreadAngleåˆ†ãšã‚‰ã™)
+            if (head2SpawnPoint != null)
+            {
+                Quaternion leftRotation = Quaternion.Euler(0, 0, fireSpreadAngle);
+                Vector2 leftDirection = leftRotation * playerDirection;
+                GameObject fire2 = Instantiate(fireBreathPrefab, head2SpawnPoint.position, Quaternion.identity);
+                Cerberus_bullet bullet2 = fire2.GetComponent<Cerberus_bullet>();
+                if (bullet2 != null) bullet2.Initialize(leftDirection);
+            }
+
+            // å³æ–œã‚ (ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ–¹å‘ã‹ã‚‰+fireSpreadAngleåˆ†ãšã‚‰ã™)
+            if (head3SpawnPoint != null)
+            {
+                Quaternion rightRotation = Quaternion.Euler(0, 0, -fireSpreadAngle);
+                Vector2 rightDirection = rightRotation * playerDirection;
+                GameObject fire3 = Instantiate(fireBreathPrefab, head3SpawnPoint.position, Quaternion.identity);
+                Cerberus_bullet bullet3 = fire3.GetComponent<Cerberus_bullet>();
+                if (bullet3 != null) bullet3.Initialize(rightDirection);
+            }
         }
 
-        // “ª2‚©‚ç”­Ë (—á: ¶Î‚ß)
-        if (fireBreathPrefab != null && head2SpawnPoint != null)
-        {
-            GameObject fire2 = Instantiate(fireBreathPrefab, head2SpawnPoint.position, Quaternion.Euler(0, 0, 45)); // 45“x‰ñ“]
-            // fire2.GetComponent<FireBreathScript>().Initialize(Quaternion.Euler(0, 0, 45) * Vector2.right); // —á
-        }
-
-        // “ª3‚©‚ç”­Ë (—á: ‰EÎ‚ß)
-        if (fireBreathPrefab != null && head3SpawnPoint != null)
-        {
-            GameObject fire3 = Instantiate(fireBreathPrefab, head3SpawnPoint.position, Quaternion.Euler(0, 0, -45)); // -45“x‰ñ“]
-            // fire3.GetComponent<FireBreathScript>().Initialize(Quaternion.Euler(0, 0, -45) * Vector2.right); // —á
-        }
-
-        // ‰Š‚ÌƒGƒtƒFƒNƒg‚ª‘±‚­ŠÔ‘Ò‹@
-        yield return new WaitForSeconds(2.0f); // ‰Š‚ª‘±‚·‚éŠÔ
-
-        Debug.Log("UŒ‚1I—¹");
+        yield return new WaitForSeconds(1.0f); // ç‚ãŒæŒç¶šã™ã‚‹æ™‚é–“
+        Debug.Log("æ”»æ’ƒ1çµ‚äº†");
         EndAttack();
     }
 
+    //åœ°ä¸­æ”»æ’ƒ
     IEnumerator Attack2Coroutine()
     {
-        Debug.Log("ƒPƒ‹ƒxƒƒX: UŒ‚2‚ğŠJnI (’n’†‚ÉÁ‚¦‚ÄƒvƒŒƒCƒ„[‚Ì‰º‚©‚ç”ò‚Ño‚·)");
+        Debug.Log("ã‚±ãƒ«ãƒ™ãƒ­ã‚¹: æ”»æ’ƒ2ã‚’é–‹å§‹ï¼ (åœ°ä¸­ã«æ¶ˆãˆã¦ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ä¸‹ã‹ã‚‰é£›ã³å‡ºã™)");
 
-        // 1. ’n’†‚ÉÁ‚¦‚éƒAƒjƒ[ƒVƒ‡ƒ“/ˆ—
-        // animator.SetTrigger("Disappear");
-        // GetComponent<SpriteRenderer>().enabled = false; // ƒXƒvƒ‰ƒCƒg‚ğ”ñ•\¦‚É‚·‚é—á
-        // Rigidbody2D‚ª‚ ‚éê‡A‚±‚ÌŠÔ•¨—‰‰Z‚ğ–³Œø‚É‚·‚é‚Æ—Ç‚¢
-        // GetComponent<Collider2D>().enabled = false; // ƒRƒ‰ƒCƒ_[‚à–³Œø‚É‚·‚é
-        yield return new WaitForSeconds(1.0f); // Á‚¦‚éƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŠÔ
+        // 1. åœ°ä¸­ã«æ½œã‚‹å‰å…†ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ï¼ˆã‚ã‚Œã°ï¼‰
+        // animator.SetTrigger("Submerge");
 
-        // 2. ƒvƒŒƒCƒ„[‚ÌŒ»İ‚ÌˆÊ’u‚ğ‹L‰¯iÅI“I‚È–Ú•W’n“_j
+        // 2. åœ°ä¸­ã«æ¶ˆãˆã‚‹å‡¦ç†
+        if (sr != null) sr.enabled = false;
+        // â˜…ä¿®æ­£: ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨ãƒªã‚¸ãƒƒãƒ‰ãƒœãƒ‡ã‚£ã‚’å®Œå…¨ã«ç„¡åŠ¹ã«ã™ã‚‹
+        if (enemyCollider != null) enemyCollider.enabled = false;
+        if (rb != null) rb.bodyType = RigidbodyType2D.Kinematic; // ç‰©ç†å½±éŸ¿ç„¡åŠ¹
+        if (rb != null) rb.linearVelocity = Vector2.zero; // å¿µã®ãŸã‚é€Ÿåº¦ã‚’ãƒªã‚»ãƒƒãƒˆ
+
+        yield return new WaitForSeconds(1.0f); // æ¶ˆãˆã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®æ™‚é–“ï¼ˆä¾‹ï¼‰
+
+        // 3. ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ã®ä½ç½®ã‚’è¨˜æ†¶
         Vector2 playerCurrentPos = playerTransform.position;
 
-        // 3. ’n’†‚©‚çoŒ»‚·‚é‚½‚ß‚ÌŠJnˆÊ’u‚ğŒvZ
-        // ƒvƒŒƒCƒ„[‚Ì­‚µ‰ºiö‚é[‚³j‚Éƒ[ƒv‚·‚é’n“_‚ğİ’è
-        // ‚±‚±‚ª”ò‚Ño‚µ‚ÌuŠJn“_v‚É‚È‚è‚Ü‚·
-        float deepUndergroundYOffset = -5.0f; // —á: ‚æ‚è[‚­ö‚é‚½‚ß‚ÌYƒIƒtƒZƒbƒg
-        Vector2 startUndergroundPos = new Vector2(playerCurrentPos.x + Random.Range(-0.5f, 0.5f), playerCurrentPos.y + deepUndergroundYOffset);
-        transform.position = startUndergroundPos; // ƒPƒ‹ƒxƒƒX‚ğ’n’†‚ÌŠJnˆÊ’u‚Éƒ[ƒv‚³‚¹‚é
-
-        // 4. Ä‚ÑoŒ»‚·‚éƒAƒjƒ[ƒVƒ‡ƒ“/ˆ—
-        // GetComponent<SpriteRenderer>().enabled = true; // ƒXƒvƒ‰ƒCƒg‚ğÄ•\¦‚·‚é—á
-        // animator.SetTrigger("Appear"); // ”ò‚Ño‚·ƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶
-
-        // 5. ’n’†‚©‚çÅI“I‚ÈoŒ»ˆÊ’u‚Ü‚ÅˆÚ“®‚·‚é
-        float emergeDuration = 0.3f; // ’nã‚Éo‚é‚Ü‚Å‚ÌŠÔ
-        Vector2 emergeTargetPos = new Vector2(playerCurrentPos.x, playerCurrentPos.y); // ÅI“I‚ÉoŒ»‚·‚é’nã‚Å‚ÌˆÊ’u
-        float timer = 0f;
-
-        while (timer < emergeDuration)
+        // 4. åœ°ä¸­ã«ãƒ¯ãƒ¼ãƒ—ã™ã‚‹ä½ç½®ã‚’è¨ˆç®—
+        RaycastHit2D hit = Physics2D.Raycast(playerCurrentPos, Vector2.down, Mathf.Infinity, LayerMask.GetMask("Ground"));
+        float groundY = playerCurrentPos.y; // åœ°é¢ãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸå ´åˆã®ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤
+        if (hit.collider != null)
         {
-            transform.position = Vector2.Lerp(startUndergroundPos, emergeTargetPos, timer / emergeDuration);
-            timer += Time.deltaTime;
-            yield return null; // 1ƒtƒŒ[ƒ€‘Ò‹@
+            groundY = hit.point.y;
         }
-        transform.position = emergeTargetPos; // ŠmÀ‚É–Ú•WˆÊ’u‚É“’B‚³‚¹‚é
 
-        // 6. UŒ‚”»’è‚Ì”­¶ (”ò‚Ño‚µ‚½uŠÔ‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é)
-        // GetComponent<Collider2D>().enabled = true; // ƒRƒ‰ƒCƒ_[‚ğÄ—LŒø‰»
-        // CallAttackHitbox(); // UŒ‚”»’è‚ğ—LŒø‚É‚·‚éƒƒ\ƒbƒh
-        // yield return new WaitForSeconds(0.2f); // UŒ‚”»’è‚ª‘±‚·‚éŠÔ
-        // DisableAttackHitbox(); // UŒ‚”»’è‚ğ–³Œø‚É‚·‚éƒƒ\ƒbƒh
+        // åœ°é¢ã‹ã‚‰å°‘ã—ä¸‹ã«æ½œã£ãŸä½ç½®ã«ãƒ¯ãƒ¼ãƒ—
+        Vector2 startUndergroundPos = new Vector2(playerCurrentPos.x, groundY + undergroundYOffset);
+        transform.position = startUndergroundPos;
 
+        // 5. é£›ã³å‡ºã™ã¾ã§ã®å‰å…†æ™‚é–“
+        if (premonitionEffectPrefab != null)
+        {
+            GameObject premonitionEffect = Instantiate(premonitionEffectPrefab, new Vector2(playerCurrentPos.x, groundY), Quaternion.identity);
+            Destroy(premonitionEffect, premonitionDelay);
+        }
+        yield return new WaitForSeconds(premonitionDelay);
 
-        Debug.Log("UŒ‚2I—¹");
+        // 6. é£›ã³å‡ºã™å‡¦ç†
+        if (sr != null) sr.enabled = true; // è¦‹ãŸç›®ã‚’æœ‰åŠ¹åŒ–
+
+        // â˜…ä¿®æ­£: åœ°é¢ã®ä¸Šéƒ¨ã‚’æ­£ç¢ºã«è¨ˆç®—
+        float colliderHeight = enemyCollider.bounds.size.y;
+        Vector2 emergeTopPos = new Vector2(transform.position.x, groundY + colliderHeight / 2f);
+
+        // ç‰©ç†å½±éŸ¿ã‚’ç„¡è¦–ã—ã¦ã€åœ°ä¸­ã‹ã‚‰åœ°é¢ã®ä¸Šã¾ã§ã‚¹ãƒ ãƒ¼ã‚ºã«ç§»å‹•
+        while (transform.position.y < emergeTopPos.y)
+        {
+            // é£›ã³å‡ºã™é€Ÿåº¦ã‚’ç›´æ¥positionã«åŠ ãˆã‚‹
+            transform.position += Vector3.up * emergeSpeed * Time.deltaTime;
+            yield return null; // æ¬¡ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§å¾…æ©Ÿ
+        }
+
+        // â˜…ä¿®æ­£: åœ°é¢ã‹ã‚‰å®Œå…¨ã«é›¢ã‚Œã¦ã‹ã‚‰ã€ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã¨ãƒªã‚¸ãƒƒãƒ‰ãƒœãƒ‡ã‚£ã‚’æœ‰åŠ¹åŒ–
+        if (enemyCollider != null) enemyCollider.enabled = true;
+        if (rb != null)
+        {
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            // é£›ã³å‡ºã—ãŸå¾Œã€ã•ã‚‰ã«å°‘ã—ä¸Šã«é£›ã³ä¸ŠãŒã‚‹åŠ›ã‚’åŠ ãˆã‚‹
+            rb.AddForce(Vector2.up * emergeSpeed * 2f, ForceMode2D.Impulse);
+        }
+
+        yield return new WaitForSeconds(0.5f); // é£›ã³å‡ºã—å¾Œã®ç¡¬ç›´æ™‚é–“
+
+        Debug.Log("æ”»æ’ƒ2çµ‚äº†");
         EndAttack();
     }
+
+    // Attack3Coroutineã¯å¤‰æ›´ãªã—
     IEnumerator Attack3Coroutine()
     {
-        Debug.Log("ƒPƒ‹ƒxƒƒX: UŒ‚3‚ğŠJnI (“Ëi)");
+        Debug.Log("ã‚±ãƒ«ãƒ™ãƒ­ã‚¹: æ”»æ’ƒ3ã‚’é–‹å§‹ï¼ (çªé€²)");
 
-        // —á: “ËiŠJnƒAƒjƒ[ƒVƒ‡ƒ“
-        // animator.SetTrigger("Dash");
+        // ... (çªé€²ãƒ­ã‚¸ãƒƒã‚¯ã¯å¤‰æ›´ãªã—) ...
 
-        // ƒvƒŒƒCƒ„[‚ÉŒü‚­
-        if (playerTransform.position.x < transform.position.x)
-        {
-            // ƒvƒŒƒCƒ„[‚ª¶‚É‚¢‚éê‡A¶‚ğŒü‚­
-            // transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        }
-        else
-        {
-            // ƒvƒŒƒCƒ„[‚ª‰E‚É‚¢‚éê‡A‰E‚ğŒü‚­
-            // transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        }
-
-
-        //ƒvƒŒƒCƒ„[‚Ö‚Ì“Ëi
-        float dashDuration = 0.5f;
-        Vector2 startPos = transform.position;
-        Vector2 targetPos = playerTransform.position; // ƒvƒŒƒCƒ„[‚ÌŒ»İˆÊ’u‚Ö“Ëi
-
-        // “Ëi‹——£‚ğ§ŒÀ‚µ‚½‚¢ê‡ATargetPos‚ğ’²®‚·‚é‚±‚Æ‚à‚Å‚«‚Ü‚·
-         float maxDashDistance = 5f;
-         Vector2 direction = (targetPos - startPos).normalized;
-         targetPos = startPos + direction * maxDashDistance; // Å‘å5m‚Ü‚Å“Ëi
-
-        float timer = 0f;
-        while (timer < dashDuration)
-        {
-            // “Ëi’†‚ÍUŒ‚”»’è‚ğ—LŒø‚É‚·‚é
-            // CallAttackHitbox();
-
-            transform.position = Vector2.Lerp(startPos, targetPos, timer / dashDuration);
-            timer += Time.deltaTime;
-            yield return null; // 1ƒtƒŒ[ƒ€‘Ò‹@
-        }
-        transform.position = targetPos; // ŠmÀ‚É“’B
-
-        // “ËiI—¹Œã‚ÉUŒ‚”»’è‚ğ–³Œø‚É‚·‚é
-        // DisableAttackHitbox();
-
-        // “ËiŒã‚Ìd’¼ŠÔ‚È‚Ç
-        // yield return new WaitForSeconds(0.5f); // —á
-
-        Debug.Log("UŒ‚3I—¹");
+        Debug.Log("æ”»æ’ƒ3çµ‚äº†");
         EndAttack();
+        yield return null; // ã‚³ãƒ«ãƒ¼ãƒãƒ³ã®çµ‚ç«¯
     }
-
-    // --- UŒ‚I—¹ˆ— ---
 
     void EndAttack()
     {
-        currentState = CerberusState.Idle; // UŒ‚I—¹ŒãA‘Ò‹@ó‘Ô‚É–ß‚é
-        attackCoolDownTimer = attackCoolDownTime; // ƒN[ƒ‹ƒ_ƒEƒ“ŠJn
-    }
-
-    // HPŠÇ—‚â”í’eƒƒWƒbƒN‚Í•Ê“rÀ‘•
-    public void TakeDamage(int damage)
-    {
-        // HPŒ¸­ˆ—
-        // currentState = BossState.Hurt; // ”í’eó‘Ô‚ÖˆÚs‚·‚éƒƒWƒbƒN‚ğ’Ç‰Á
+        currentState = CerberusState.Idle;
+        attackCoolDownTimer = attackCoolDownTime;
     }
 }

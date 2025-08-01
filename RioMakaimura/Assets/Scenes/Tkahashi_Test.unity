@@ -379,11 +379,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.9
+      value: 84
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.6
+      value: 2.8
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1492,63 +1492,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1914967732}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1621712140
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2530917996530987725, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_Name
-      value: gorst
-      objectReference: {fileID: 0}
-    - target: {fileID: 3698901374225860000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 7.462596
-      objectReference: {fileID: 0}
-    - target: {fileID: 3698901374225860000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -2.1821978
-      objectReference: {fileID: 0}
-    - target: {fileID: 3698901374225860000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3698901374225860000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3698901374225860000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3698901374225860000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3698901374225860000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3698901374225860000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3698901374225860000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3698901374225860000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 94ecb4166dc3318489905bdc4327b0b9, type: 3}
 --- !u!1 &1648717555
 GameObject:
   m_ObjectHideFlags: 0
@@ -5293,7 +5236,7 @@ GameObject:
   - component: {fileID: 1914967729}
   - component: {fileID: 1914967733}
   m_Layer: 0
-  m_Name: Hexagon Point Top
+  m_Name: Ceruberus
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5462,13 +5405,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   playerTransform: {fileID: 1653980680}
-  mainCamera: {fileID: 519420031}
   attackDetectionRange: 8
   attackCoolDownTime: 2
   fireBreathPrefab: {fileID: 7058941328400898533, guid: 67d95b948d0537341849996dc125a7e9, type: 3}
+  fireSpeed: 10
   head1SpawnPoint: {fileID: 138567932}
   head2SpawnPoint: {fileID: 1874125803}
   head3SpawnPoint: {fileID: 1579562745}
+  fireSpreadAngle: 30
+  undergroundYOffset: -5
+  premonitionDelay: 2
+  emergeSpeed: 10
+  premonitionEffectPrefab: {fileID: 5364064335996997443, guid: 90130d7f542a41d439cde00d8fba8c03, type: 3}
   moveSpeed: 2
   moveRange: 3
 --- !u!1001 &2104485981
@@ -6080,7 +6028,6 @@ SceneRoots:
   - {fileID: 11568507045586623}
   - {fileID: 7633973327168226044}
   - {fileID: 5257267102846976972}
-  - {fileID: 1621712140}
   - {fileID: 2813221543428272910}
   - {fileID: 249724397}
   - {fileID: 969421794}
