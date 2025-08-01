@@ -5,7 +5,10 @@ public class enemy_HP : MonoBehaviour
     public int maxHP;       // 最大HP（インスペクターで調整）
     private int currentHP;
 
+    //色変化
     private SpriteRenderer spriteRenderer;
+    public Color flashColor = Color.red;
+    public float flashDuration = 0.1f;
     
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -13,11 +16,7 @@ public class enemy_HP : MonoBehaviour
     {
         currentHP = maxHP;
 
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer == null)
-        {
-            Debug.LogError("SpriteRenderer がアタッチされていません: " + gameObject.name);
-        }
+        spriteRenderer = GetComponent<SpriteRenderer>(); // SpriteRenderer を取得
     }
 
     // Update is called once per frame
@@ -29,27 +28,32 @@ public class enemy_HP : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
-        StartCoroutine(FlashRed());
+        Debug.Log("敵がダメージを受けた。残りHP: " + currentHP);
 
         if (currentHP <= 0)
         {
             Die();
         }
+
+        StartCoroutine(FlashRed()); // 赤くフラッシュ
+    }
+
+
+    protected virtual void Die()
+    {
+        Debug.Log("敵が倒れた！");
+        Destroy(gameObject);
     }
 
     private System.Collections.IEnumerator FlashRed()
     {
-        if (spriteRenderer == null) yield break;
+        if (spriteRenderer != null)
+        {
+            Color originalColor = spriteRenderer.color;
 
-        Color originalColor = spriteRenderer.color;
-        spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
-        spriteRenderer.color = originalColor;
-    }
-
-    protected virtual void Die()
-    {
-        // アニメーションやエフェクトを追加してもよい
-        Destroy(gameObject);
+            spriteRenderer.color = flashColor;
+            yield return new WaitForSeconds(flashDuration); // 少し待つ
+            spriteRenderer.color = originalColor;
+        }
     }
 }
