@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5666821033305476590}
   - component: {fileID: 4909113889212151723}
   - component: {fileID: 8223021124747814005}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Falltile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
