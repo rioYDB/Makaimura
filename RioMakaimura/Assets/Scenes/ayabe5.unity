@@ -2028,6 +2028,14 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1609065527}
+    - target: {fileID: 4233994886147623481, guid: f41b0fe6fda31504695499b34be069c9, type: 3}
+      propertyPath: axePrefab
+      value: 
+      objectReference: {fileID: 184761242970778605, guid: 62aee6c1312562248b3bbdd3b78978df, type: 3}
+    - target: {fileID: 4233994886147623481, guid: f41b0fe6fda31504695499b34be069c9, type: 3}
+      propertyPath: projectilePrefab
+      value: 
+      objectReference: {fileID: 4002731123142134803, guid: 68100dfd519e4374cadbf65c95985f6d, type: 3}
     - target: {fileID: 6138662895967447474, guid: f41b0fe6fda31504695499b34be069c9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 174.32
@@ -9841,11 +9849,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 80.17
+      value: -4.17
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.1
+      value: -2.94
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.z
