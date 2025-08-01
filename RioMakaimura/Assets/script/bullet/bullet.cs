@@ -24,7 +24,6 @@ public abstract class bullet : MonoBehaviour　　　//抽象クラス(継承前提のクラス)
     }
 
 
-    //敵に触れたらこのオブジェクトを破壊
 
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
@@ -32,7 +31,7 @@ public abstract class bullet : MonoBehaviour　　　//抽象クラス(継承前提のクラス)
         if (collision.gameObject.tag == "Enemy")
         {
             Debug.Log("敵との衝突を検出");
-            BulletMoves(collision.gameObject); //敵を消す
+            //BulletMoves(collision.gameObject); 
             Destroy(gameObject);//弾を消す
         }
     }
@@ -45,6 +44,6 @@ public abstract class bullet : MonoBehaviour　　　//抽象クラス(継承前提のクラス)
     }
 
 
-    protected abstract void BulletMoves(GameObject Enemy);   //抽象メソッド(子クラスに具体的な処理を書かせる)
+    //protected abstract void BulletMoves(GameObject Enemy);   //抽象メソッド(子クラスに具体的な処理を書かせる)
 
 }

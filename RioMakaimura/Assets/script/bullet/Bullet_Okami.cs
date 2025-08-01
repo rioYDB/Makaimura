@@ -14,30 +14,33 @@ public class Bullet_Okami : bullet
 
     }
 
-    protected override void BulletMoves(GameObject Enemy)
-    {
-        Debug.Log("狼男でアタック！！！");
-        //Destroy(Enemy);
-        Destroy(gameObject);
-    }
+    //protected override void BulletMoves(GameObject Enemy)
+    //{
+    //    Debug.Log("狼男でアタック！！！");
+
+     
+
+    //    //Destroy(gameObject); // 弾の消去
+    //}
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag== "tendril" || collision.gameObject.tag == "Enemy")
+        if(collision.gameObject.tag== "tendril" )
         {
             Destroy(collision.gameObject);
         }
 
-        //if(collision.gameObject.tag == "Enemy")
-        //{
-        //    // 敵（Enemyスクリプトがついてるもの）に当たったか判定
-        //    enemy_HP enemy = collision.GetComponent<enemy_HP>();
+        if (collision.gameObject.tag == "Enemy")
+        {
+            // 敵にEnemy_HPスクリプトがあるか確認
+            enemy_HP enemyHP = collision.GetComponent<enemy_HP>();
+            if (enemyHP != null)
+            {
+                enemyHP.TakeDamage(1); // ダメージ量を1とする（必要に応じて変える）
+            }
+        }
 
-        //    if (enemy != null)
-        //    {
-        //        enemy.TakeDamage(1); // 1ダメージ与える（必要なら変数化してOK）
-        //    }
-        //}
+
     }
 
 

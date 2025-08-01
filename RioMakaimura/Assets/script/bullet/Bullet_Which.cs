@@ -64,19 +64,26 @@ public class Bullet_Which : bullet
         else if (collision.gameObject.CompareTag("Enemy"))
         {
 
-            BulletMoves(collision.gameObject);
+            //BulletMoves(collision.gameObject);
+
+            // 敵にEnemy_HPスクリプトがあるか確認
+            enemy_HP enemyHP = collision.GetComponent<enemy_HP>();
+            if (enemyHP != null)
+            {
+                enemyHP.TakeDamage(1); // ダメージ量を1とする（必要に応じて変える）
+            }
 
         }
     }
 
 
 
-    protected override void BulletMoves(GameObject Enemy)
-    {
-        Debug.Log("魔女でアタック！！！");
-        Destroy(Enemy);
-        Destroy(gameObject);
-    }
+    //protected override void BulletMoves(GameObject Enemy)
+    //{
+    //    Debug.Log("魔女でアタック！！！");
+        
+    //    Destroy(gameObject);
+    //}
 
 
 
