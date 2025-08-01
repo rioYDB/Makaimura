@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Clown_default : enemy_HP
+public class Clown_default : MonoBehaviour
 {
     public Transform player;                   // プレイヤーの位置を取得するため
     public GameObject projectilePrefab;        // 横方向の弾

@@ -17,12 +17,12 @@ public class Bullet_Human : bullet
 
     private Collider2D playerCollider; // プレイヤーのCollider2Dへの参照
 
-    protected override void BulletMoves(GameObject Enemy)
-    {
-        Debug.Log("通常攻撃でアタック");
-        Destroy(Enemy);
-        Destroy(gameObject);
-    }
+    //protected override void BulletMoves(GameObject Enemy)
+    //{
+    //    Debug.Log("通常攻撃でアタック");
+    //    //Destroy(Enemy);
+    //    Destroy(gameObject);
+    //}
 
     protected override void Start()
     {
@@ -139,19 +139,35 @@ public class Bullet_Human : bullet
         // 敵に当たった時の処理
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            BulletMoves(collision.gameObject);
+            // 敵にEnemy_HPスクリプトがあるか確認
+            enemy_HP enemyHP = collision.gameObject.GetComponent<enemy_HP>();
+            if (enemyHP != null)
+            {
+                enemyHP.TakeDamage(1); // ダメージ量を1とする（必要に応じて変える）
+            }
+
+            Destroy(gameObject); // 弾を削除
         }
     }
 
-    
+    //08/01時点で以下の当たり判定はピエロの斧とだけ接触するために使用しています。
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
-        // base.OnTriggerEnter2D(collision); // 親のDestroy(gameObject)が呼ばれるのを防ぐ
+        //base.OnTriggerEnter2D(collision); // 親のDestroy(gameObject)が呼ばれるのを防ぐ
 
         // 敵に当たった時だけBulletMovesを呼ぶ
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            BulletMoves(collision.gameObject);
+            //BulletMoves(collision.gameObject);
+
+            // 敵にEnemy_HPスクリプトがあるか確認
+            enemy_HP enemyHP = collision.gameObject.GetComponent<enemy_HP>();
+            if (enemyHP != null)
+            {
+                enemyHP.TakeDamage(1); // ダメージ量を1とする（必要に応じて変える）
+            }
+
+            Destroy(gameObject); // 弾を削除
         }
     }
 }

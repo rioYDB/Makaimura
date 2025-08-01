@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6421705384241635079}
   - component: {fileID: 8925753499958189273}
   - component: {fileID: -17832787957381384}
+  - component: {fileID: 1290998147231363381}
   m_Layer: 9
   m_Name: GreenMonster
   m_TagString: Enemy
@@ -180,6 +181,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1290998147231363381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 573774872602923943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4bbb9f9b472f0a469a57887d7734cf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 2
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.1
 --- !u!1 &3568230898151615010
 GameObject:
   m_ObjectHideFlags: 0

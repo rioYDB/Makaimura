@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4233994886147623481}
   - component: {fileID: 4337582504984652587}
   - component: {fileID: 2502273559719423335}
+  - component: {fileID: -2831463791984348532}
   m_Layer: 9
   m_Name: "\u30D4\u30A8\u30ED "
   m_TagString: Enemy
@@ -104,8 +105,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  projectilePrefab: {fileID: 4002731123142134803, guid: 68100dfd519e4374cadbf65c95985f6d, type: 3}
-  axePrefab: {fileID: 184761242970778605, guid: 62aee6c1312562248b3bbdd3b78978df, type: 3}
+  projectilePrefab: {fileID: 0}
+  axePrefab: {fileID: 0}
   shootPoint: {fileID: 6138662895967447474}
   moveSpeed: 2
   moveRange: 3
@@ -187,6 +188,21 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.13, y: 1.35}
   m_EdgeRadius: 0
+--- !u!114 &-2831463791984348532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1028765756849333471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4bbb9f9b472f0a469a57887d7734cf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHP: 3
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  flashDuration: 0.1
 --- !u!1 &3202144359782219138
 GameObject:
   m_ObjectHideFlags: 0

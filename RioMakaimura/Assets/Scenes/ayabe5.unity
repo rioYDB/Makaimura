@@ -2459,6 +2459,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1609065527}
+    - target: {fileID: 4274581386164151239, guid: f49370dda4fdb6d4c825a32385d52e88, type: 3}
+      propertyPath: dropStopY
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6552731082205260735, guid: f49370dda4fdb6d4c825a32385d52e88, type: 3}
       propertyPath: m_Name
       value: Spider
@@ -2520,6 +2524,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1609065527}
+    - target: {fileID: 4274581386164151239, guid: f49370dda4fdb6d4c825a32385d52e88, type: 3}
+      propertyPath: dropStopY
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6552731082205260735, guid: f49370dda4fdb6d4c825a32385d52e88, type: 3}
       propertyPath: m_Name
       value: Spider (1)
@@ -9833,11 +9841,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.5
+      value: 80.17
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.19
+      value: 3.1
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.z
