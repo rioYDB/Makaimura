@@ -23,7 +23,7 @@ public class Cerberus_Controller : MonoBehaviour
     private float attackCoolDownTimer = 0f;
     public float attackCoolDownTime = 3f; // 攻撃間のクールダウン時間
 
-    // ★修正1: 攻撃1用の炎のプレハブと頭のTransform
+    // 攻撃1用の炎のプレハブと頭のTransform
     public GameObject fireBreathPrefab; // 炎のプレハブ
     public float fireSpeed = 10f; // 炎が飛ぶ速度
     public Transform head1SpawnPoint; // 頭1の炎生成位置
@@ -31,9 +31,9 @@ public class Cerberus_Controller : MonoBehaviour
     public Transform head3SpawnPoint; // 頭3の炎生成位置
     public float fireSpreadAngle = 30f; // 炎の広がり角度
 
-    // ★修正2, 4, 5: 地中に消える攻撃用の変数
+    // 地中に消える攻撃用の変数
     public float undergroundYOffset = -5.0f; // 地中に潜る深さ
-    public float premonitionDelay = 2.0f; // ★プレイヤーの下から飛び出すまでの待機時間 (前兆)
+    public float premonitionDelay = 2.0f; // プレイヤーの下から飛び出すまでの待機時間 (前兆)
     public float emergeSpeed = 10f; // 飛び出す速度
     public GameObject premonitionEffectPrefab; // 飛び出す前の前兆エフェクト（例：土煙のパーティクル）
 
@@ -154,13 +154,13 @@ public class Cerberus_Controller : MonoBehaviour
             switch (randomAttack)
             {
                 case 0:
-                    StartAttack1(); //
+                    StartAttack1();
                     break;
                 case 1:
-                    StartAttack2(); //
+                    StartAttack2();
                     break;
                 case 2:
-                    StartAttack3(); //
+                    StartAttack3();
                     break;
             }
         }
@@ -224,7 +224,7 @@ public class Cerberus_Controller : MonoBehaviour
 
     // --- 各攻撃パターンの具体的な実装 (コルーチン) ---
 
-    // ★修正1: 三方向に炎を飛ばす
+    // 攻撃1: 三方向に炎を飛ばす
     IEnumerator Attack1Coroutine()
     {
         // animator.SetTrigger("Attack1");
@@ -269,27 +269,24 @@ public class Cerberus_Controller : MonoBehaviour
         EndAttack();
     }
 
-    //地中攻撃
+    // 攻撃2: 地中攻撃
     IEnumerator Attack2Coroutine()
     {
         Debug.Log("ケルベロス: 攻撃2を開始！ (地中に消えてプレイヤーの下から飛び出す)");
 
-        // 1. 地中に潜る前兆アニメーション（あれば）
+        // 1. 物理影響を無効化
         // animator.SetTrigger("Submerge");
-
-        // 2. 地中に消える処理
-        if (sr != null) sr.enabled = false;
-        // ★修正: コライダーとリジッドボディを完全に無効にする
-        if (enemyCollider != null) enemyCollider.enabled = false;
         if (rb != null) rb.bodyType = RigidbodyType2D.Kinematic; // 物理影響無効
-        if (rb != null) rb.linearVelocity = Vector2.zero; // 念のため速度をリセット
+        if (rb != null) rb.linearVelocity = Vector2.zero; // 速度をリセット
+        if (enemyCollider != null) enemyCollider.enabled = false; // コライダーを無効化
+        if (sr != null) sr.enabled = false; // 見た目を非表示
 
         yield return new WaitForSeconds(1.0f); // 消えるアニメーションの時間（例）
 
-        // 3. プレイヤーの現在の位置を記憶
+        // 2. プレイヤーの現在の位置を記憶
         Vector2 playerCurrentPos = playerTransform.position;
 
-        // 4. 地中にワープする位置を計算
+        // 3. 地中にワープする位置を計算
         RaycastHit2D hit = Physics2D.Raycast(playerCurrentPos, Vector2.down, Mathf.Infinity, LayerMask.GetMask("Ground"));
         float groundY = playerCurrentPos.y; // 地面が見つからなかった場合のデフォルト値
         if (hit.collider != null)
@@ -301,7 +298,7 @@ public class Cerberus_Controller : MonoBehaviour
         Vector2 startUndergroundPos = new Vector2(playerCurrentPos.x, groundY + undergroundYOffset);
         transform.position = startUndergroundPos;
 
-        // 5. 飛び出すまでの前兆時間
+        // 4. 飛び出すまでの前兆時間
         if (premonitionEffectPrefab != null)
         {
             GameObject premonitionEffect = Instantiate(premonitionEffectPrefab, new Vector2(playerCurrentPos.x, groundY), Quaternion.identity);
@@ -309,28 +306,30 @@ public class Cerberus_Controller : MonoBehaviour
         }
         yield return new WaitForSeconds(premonitionDelay);
 
-        // 6. 飛び出す処理
+        // 5. 飛び出す処理
         if (sr != null) sr.enabled = true; // 見た目を有効化
 
-        // ★修正: 地面の上部を正確に計算
-        float colliderHeight = enemyCollider.bounds.size.y;
-        Vector2 emergeTopPos = new Vector2(transform.position.x, groundY + colliderHeight / 2f);
+        // 地面の上部Y座標を正確に計算 (Colliderの中心が地面のY座標に来るように)
+        float halfHeight = enemyCollider.bounds.size.y / 2f;
+        Vector2 emergeCenterPos = new Vector2(transform.position.x, groundY + halfHeight);
 
         // 物理影響を無視して、地中から地面の上までスムーズに移動
-        while (transform.position.y < emergeTopPos.y)
+        while (transform.position.y < emergeCenterPos.y)
         {
-            // 飛び出す速度を直接positionに加える
             transform.position += Vector3.up * emergeSpeed * Time.deltaTime;
             yield return null; // 次のフレームまで待機
         }
 
-        // ★修正: 地面から完全に離れてから、コライダーとリジッドボディを有効化
+        // 飛び出し終点に位置を固定
+        transform.position = new Vector3(transform.position.x, emergeCenterPos.y, transform.position.z);
+
+
+        // 6. 物理影響を再開
         if (enemyCollider != null) enemyCollider.enabled = true;
         if (rb != null)
         {
-            rb.bodyType = RigidbodyType2D.Dynamic;
-            // 飛び出した後、さらに少し上に飛び上がる力を加える
-            rb.AddForce(Vector2.up * emergeSpeed * 2f, ForceMode2D.Impulse);
+            rb.bodyType = RigidbodyType2D.Dynamic; // 物理影響を有効化
+            // 飛び出し後のジャンプ力は削除し、重力に任せる
         }
 
         yield return new WaitForSeconds(0.5f); // 飛び出し後の硬直時間
@@ -339,7 +338,7 @@ public class Cerberus_Controller : MonoBehaviour
         EndAttack();
     }
 
-    // Attack3Coroutineは変更なし
+    // 攻撃3: 突進
     IEnumerator Attack3Coroutine()
     {
         Debug.Log("ケルベロス: 攻撃3を開始！ (突進)");
