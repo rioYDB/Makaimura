@@ -8,6 +8,12 @@ public class Bullet_Which : bullet
     private Vector3 currentMoveDirection;
     public LayerMask Ground;            //地面を判定するレイヤー
 
+    //---------------------------------------------------------------------------------------------------------------------------
+
+    //敵が画面内にいない状態はゆらゆら動く弾
+    public float waveAmplitude = 5.0f; //ゆらゆらの幅
+    public float waveSpeed = 0.5f;     //ゆらゆらの速度
+    private float PositionY;           //弾のY座標を保持する
 
     protected override void Start()
     {
@@ -24,9 +30,11 @@ public class Bullet_Which : bullet
         }
         else
         {
-            // ターゲットが見つからない場合は、一旦弾を止めるか、特定の方向へ進ませるか
-            // 停止させて、Updateで再探索を試みる
-            currentMoveDirection = Vector3.zero;
+            //親クラスのdirectionを使い前進する
+            float initialDirectionX = transform.localScale.x > 0 ? 1f : -1f; // プレイヤーの向きを利用
+
+            // 前進方向をセット（Y軸はゼロ）
+            currentMoveDirection = new Vector3(initialDirectionX * movespeed, 0, 0);
         }
 
     }
@@ -38,15 +46,32 @@ public class Bullet_Which : bullet
 
         Horming(); //ホーミング処理の呼び出し
 
-        // 計算された移動方向で実際に弾を移動させる
-        transform.Translate(currentMoveDirection * Time.deltaTime, Space.World);
-        // Space.World を指定することで、弾のローカル座標ではなくワールド座標で移動します。
-
-        // 弾の見た目の向きを進行方向（X軸）に合わせる
-        // currentMoveDirectionの方向に弾のX軸（右方向）を向かせます。
-        if (currentMoveDirection != Vector3.zero) // 無駄な回転を防ぐため
+        // ホーミング中でない場合に「ゆらゆら」処理を適用
+        if (EnemyTarget == null)
         {
-            transform.right = currentMoveDirection;
+            // X軸方向は currentMoveDirection (前進速度) を利用して進む
+            float newX = transform.position.x + currentMoveDirection.x * Time.deltaTime;
+
+            // Y軸方向はサイン波を使ってゆらゆら動く
+            float waveY = Mathf.Sin(Time.time * waveSpeed) * waveAmplitude;
+            float newY = PositionY + waveY;
+
+            // XとYを組み合わせて移動させる (Zは無視)
+            transform.position = new Vector3(newX, newY, transform.position.z);
+
+            // 移動に合わせて弾の向きを調整するロジックは、ホーミング中ではないので一旦保留
+            // ゆらゆら移動時に見た目を追従させたい場合は、更に計算が必要です。
+        }
+        else // ホーミング中（ターゲットが存在する）
+        {
+            // 計算された移動方向で実際に弾を移動させる
+            transform.Translate(currentMoveDirection * Time.deltaTime, Space.World);
+
+            // 弾の見た目の向きを進行方向（X軸）に合わせる
+            if (currentMoveDirection != Vector3.zero)
+            {
+                transform.right = currentMoveDirection;
+            }
         }
     }
 
@@ -81,7 +106,7 @@ public class Bullet_Which : bullet
     //protected override void BulletMoves(GameObject Enemy)
     //{
     //    Debug.Log("魔女でアタック！！！");
-        
+
     //    Destroy(gameObject);
     //}
 
@@ -95,15 +120,15 @@ public class Bullet_Which : bullet
     private void FindEnemy()
     {
 
-       
+
 
         GameObject[] enemy = GameObject.FindGameObjectsWithTag("Enemy");        //シーン内のEnemyのタグをすべて取得する
 
         float ClosestDistanceEnemy = Mathf.Infinity;                            //最も近いEnemyを探すための初期設定。Mathf.Infinityはまだ見つかっていない状態
 
-        Transform ClosestEmemy =null;
+        Transform ClosestEmemy = null;
 
-        Vector3 CurrentPosition=transform.position;                             //現在の位置
+        Vector3 CurrentPosition = transform.position;                             //現在の位置
 
 
         foreach (GameObject enemeis in enemy)                                   //最も近いエネミーを見つける処理
@@ -118,14 +143,14 @@ public class Bullet_Which : bullet
 
 
             //今まで近かったエネミーの距離よりDistanceEnemyの距離が短かったら
-            if (DistanceEnemy < ClosestDistanceEnemy)                                   
+            if (DistanceEnemy < ClosestDistanceEnemy)
             {
-                ClosestDistanceEnemy=DistanceEnemy;
+                ClosestDistanceEnemy = DistanceEnemy;
 
                 ClosestEmemy = enemeis.transform;  //最も近いエネミーを更新する
             }
 
-           
+
 
         }
 
@@ -140,24 +165,36 @@ public class Bullet_Which : bullet
     //戻り値：なし
     private void Horming()
     {
-        // もしホーミングするターゲットが見つかってない、またはターゲットが消滅していたら
+        // もしホーミングするターゲットが見つからない、またはターゲットが消滅していたら
         if (EnemyTarget == null || (EnemyTarget != null && EnemyTarget.gameObject == null))
         {
-            // 現在の移動方向を保持したまま、新しいターゲットを探す
-            // ★ここを変更★
-            // ターゲットが見つからなくても、現在の移動方向は変更しない
-            Vector3 lastMoveDirection = currentMoveDirection; // 最後に追っていた方向を保持
+            // ターゲットをリセット
+            EnemyTarget = null;
+
+            // ★修正★ ターゲットが見つからなくても、現在のX軸移動方向（前進）は維持する
+            float lastDirectionX = currentMoveDirection.x;
             FindEnemy(); // 新しいターゲットを探す
 
-            if (EnemyTarget == null) // 新しいターゲットも見つからなければ、最後の方向へ進み続ける
+            if (EnemyTarget == null) // 新しいターゲットも見つからなければ
             {
-                currentMoveDirection = lastMoveDirection; // 保持していた方向を維持
-                return;
+                // X軸方向だけは前の移動速度を維持し、Y軸はゆらゆら処理のためにリセット
+                currentMoveDirection = new Vector3(lastDirectionX, 0, 0);
+                return; // ホーミング処理をここで終了
             }
         }
 
-        // ターゲットの方向を計算し、親クラスの movespeed を使って移動方向に設定する
-        currentMoveDirection = (EnemyTarget.position - transform.position).normalized * movespeed;
+        // ターゲットが存在する場合のホーミング処理
+
+        // ターゲットの方向を計算
+        Vector3 targetDirection = (EnemyTarget.position - transform.position).normalized;
+
+        // ホーミング速度で現在の移動方向をターゲット方向に近づける
+        currentMoveDirection = Vector3.RotateTowards(
+            currentMoveDirection.normalized,
+            targetDirection,
+            HormingSpeed * Time.deltaTime, // ホーミングスピードをTime.deltaTimeで割ることで、フレームレートに依存しないようにします
+            0.0f
+        ).normalized * movespeed;
     }
 }
 

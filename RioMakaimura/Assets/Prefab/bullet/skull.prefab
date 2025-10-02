@@ -180,3 +180,5 @@ MonoBehaviour:
   Ground:
     serializedVersion: 2
     m_Bits: 8
+  waveAmplitude: 0.5
+  waveSpeed: 5
