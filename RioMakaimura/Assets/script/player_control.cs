@@ -24,6 +24,10 @@ public class player_control : MonoBehaviour
     public LayerMask Ground;                                                        //地面を判別するオブジェクトレイヤー
     public LayerMask LadderLayer;                                                   //hasigoを判別するオブジェクトレイヤー
 
+
+    // ★追加: 攻撃オブジェクトをプレイヤーからどれだけ上に生成するか (Y軸)
+    public float attackSpawnYOffset = 0.5f; // Inspectorで調整してください (この値を大きくすると弾の位置が高くなります)
+
     //---------------------------------------------------------------------------------------------------------------
     //攻撃パターンと変身
     //攻撃判定の変数
@@ -832,6 +836,15 @@ public class player_control : MonoBehaviour
 
             // プレイヤーの向きに合わせて反転
             bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);
+
+
+
+            // ★★★ 変更箇所: Y軸オフセットを加算して生成位置を計算 ★★★
+            Vector3 SpawnPosition = transform.position + new Vector3(
+                playerDirection * Offsetx, // X軸のオフセット
+                attackSpawnYOffset,                  // Y軸のオフセット
+                0f
+            );
 
         }
 
