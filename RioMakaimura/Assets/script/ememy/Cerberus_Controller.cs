@@ -43,6 +43,9 @@ public class Cerberus_Controller : MonoBehaviour
     private Vector2 initialPosition; // ケルベロスの初期位置
     private int moveDirection = 1; // 1:右, -1:左
 
+    // 地中から飛び出す際の、Y軸の最終的な調整値
+    public float emergeTopOffset = 1.0f; // ★追加: Inspectorで調整します。この値を増やすとより上に出ます。
+
     // ケルベロスのコンポーネント
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -274,31 +277,29 @@ public class Cerberus_Controller : MonoBehaviour
     {
         Debug.Log("ケルベロス: 攻撃2を開始！ (地中に消えてプレイヤーの下から飛び出す)");
 
-        // 1. 物理影響を無効化
+        // 1. 物理影響とコライダーを無効化 (地中潜行と移動の開始)
         // animator.SetTrigger("Submerge");
         if (rb != null) rb.bodyType = RigidbodyType2D.Kinematic; // 物理影響無効
         if (rb != null) rb.linearVelocity = Vector2.zero; // 速度をリセット
-        if (enemyCollider != null) enemyCollider.enabled = false; // コライダーを無効化
+        if (enemyCollider != null) enemyCollider.enabled = false; // ★コライダーを無効化★
         if (sr != null) sr.enabled = false; // 見た目を非表示
 
         yield return new WaitForSeconds(1.0f); // 消えるアニメーションの時間（例）
 
-        // 2. プレイヤーの現在の位置を記憶
+        // 2. プレイヤーの現在の位置を記憶と地面Y座標の計算 (ロジック変更なし)
         Vector2 playerCurrentPos = playerTransform.position;
-
-        // 3. 地中にワープする位置を計算
         RaycastHit2D hit = Physics2D.Raycast(playerCurrentPos, Vector2.down, Mathf.Infinity, LayerMask.GetMask("Ground"));
-        float groundY = playerCurrentPos.y; // 地面が見つからなかった場合のデフォルト値
+        float groundY = playerCurrentPos.y;
         if (hit.collider != null)
         {
             groundY = hit.point.y;
         }
 
-        // 地面から少し下に潜った位置にワープ
+        // 地面から少し下に潜った位置にワープ (ロジック変更なし)
         Vector2 startUndergroundPos = new Vector2(playerCurrentPos.x, groundY + undergroundYOffset);
         transform.position = startUndergroundPos;
 
-        // 4. 飛び出すまでの前兆時間
+        // 3. 飛び出すまでの前兆時間 (ロジック変更なし)
         if (premonitionEffectPrefab != null)
         {
             GameObject premonitionEffect = Instantiate(premonitionEffectPrefab, new Vector2(playerCurrentPos.x, groundY), Quaternion.identity);
@@ -306,12 +307,21 @@ public class Cerberus_Controller : MonoBehaviour
         }
         yield return new WaitForSeconds(premonitionDelay);
 
-        // 5. 飛び出す処理
+        // 4. 飛び出す処理
         if (sr != null) sr.enabled = true; // 見た目を有効化
 
-        // 地面の上部Y座標を正確に計算 (Colliderの中心が地面のY座標に来るように)
+        // 地面の上部Y座標を計算
+        // Colliderの中心が地面のY座標に来るように計算
         float halfHeight = enemyCollider.bounds.size.y / 2f;
-        Vector2 emergeCenterPos = new Vector2(transform.position.x, groundY + halfHeight);
+
+        // ★★★ 修正箇所 ★★★
+        // 飛び出しの目標位置に、さらに手動のオフセットを加える
+        Vector2 emergeCenterPos = new Vector2(
+            transform.position.x,
+            groundY + halfHeight + emergeTopOffset // ★ここで持ち上げます★
+        );
+        // ★★★ 修正箇所終わり ★★★
+
 
         // 物理影響を無視して、地中から地面の上までスムーズに移動
         while (transform.position.y < emergeCenterPos.y)
@@ -324,12 +334,13 @@ public class Cerberus_Controller : MonoBehaviour
         transform.position = new Vector3(transform.position.x, emergeCenterPos.y, transform.position.z);
 
 
-        // 6. 物理影響を再開
+
+        // 5. 物理影響を再開
         if (enemyCollider != null) enemyCollider.enabled = true;
+
         if (rb != null)
         {
             rb.bodyType = RigidbodyType2D.Dynamic; // 物理影響を有効化
-            // 飛び出し後のジャンプ力は削除し、重力に任せる
         }
 
         yield return new WaitForSeconds(0.5f); // 飛び出し後の硬直時間
