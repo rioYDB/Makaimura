@@ -38,6 +38,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Tkahashi_Test.unity
     guid: a2601935551288040951328cc6217a90
+  - enabled: 0
+    path: Assets/Scenes/vampire.unity
+    guid: fd17b67300ba2684ca4d2cfabbf293b1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
