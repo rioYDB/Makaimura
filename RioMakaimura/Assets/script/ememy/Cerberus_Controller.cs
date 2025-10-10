@@ -43,6 +43,15 @@ public class Cerberus_Controller : MonoBehaviour
     private Vector2 initialPosition; // ケルベロスの初期位置
     private int moveDirection = 1; // 1:右, -1:左
 
+
+    //突進設定 ★追加
+    public float dashSpeed = 18f; // 突進の速度 (Inspectorで調整してください)
+    public float dashTime = 1.0f; // 突進の持続時間 (Inspectorで調整してください)
+    // ★追加: 壁チェック用の距離 (Colliderのサイズより少し大きい値)
+    public float wallCheckDistance = 1.0f;
+    // ★追加: 突進が強制的に停止する最大距離
+    public float maxDashDistance = 15.0f;
+
     // 地中から飛び出す際の、Y軸の最終的な調整値
     public float emergeTopOffset = 1.0f; //。この値を増やすとより上に出ます。
 
@@ -379,7 +388,80 @@ public class Cerberus_Controller : MonoBehaviour
     {
         Debug.Log("ケルベロス: 攻撃3を開始！ (突進)");
 
-        // ... (突進ロジックは変更なし) ...
+
+        // --- 突進開始前の物理状態の保証 --- (省略、変更なし) ---
+        if (rb != null && rb.bodyType != RigidbodyType2D.Dynamic) rb.bodyType = RigidbodyType2D.Dynamic;
+        if (TileMapLayer != -1) Physics2D.IgnoreLayerCollision(gameObject.layer, TileMapLayer, false);
+        if (enemyCollider != null && !enemyCollider.enabled) enemyCollider.enabled = true;
+
+
+        // アニメーション/チャージ時間
+        yield return new WaitForSeconds(0.3f);
+
+
+        // --- プレイヤー追尾の突進ロジック (速度設定) ---
+        float dashSpeedMultiplier = 9.0f; // ★この倍率を調整してください★
+        float currentDashSpeed = moveSpeed * dashSpeedMultiplier;
+
+        int playerDirectionInt = (playerTransform.position.x > transform.position.x) ? 1 : -1;
+        moveDirection = playerDirectionInt;
+        Vector2 dashDirection = (playerDirectionInt == 1) ? Vector2.right : Vector2.left;
+
+        if (sr != null) sr.flipX = (playerDirectionInt == -1);
+
+        if (rb != null) rb.linearVelocity = dashDirection * currentDashSpeed;
+
+        float startTime = Time.time; // 時間制限用
+        Vector3 startPosition = transform.position; // 距離制限用
+
+        // --- 突出するロジックここまで ---
+
+
+        // ★★★ 修正箇所: 突進ループの変更 ★★★
+
+        // Groundレイヤーを取得
+        // TileMapLayerと同じものがTileMapについていると仮定。念のため、地面判定用のLayerMaskを使用
+        LayerMask groundLayer = 1 << TileMapLayer;
+
+        // 突進時間内、かつ、最大距離に達していない間はループ
+        while (Time.time < startTime + dashTime &&
+               Vector3.Distance(startPosition, transform.position) < maxDashDistance)
+        {
+            if (rb == null) break;
+
+            // 1. 地面チェック (足元にRayを飛ばす)
+            // コライダーの中心の少し下から、地面までの距離をチェック
+            float checkDistance = enemyCollider.bounds.extents.y + 0.1f;
+            RaycastHit2D groundHit = Physics2D.Raycast(transform.position, Vector2.down, checkDistance, groundLayer);
+
+            if (groundHit.collider == null)
+            {
+                Debug.Log("地面が途切れたため、突進を停止します。");
+                break; // 地面がない場合、ループを抜ける
+            }
+
+            // 2. 壁チェック (壁がある場合も停止)
+            Vector2 checkOrigin = transform.position;
+            RaycastHit2D wallHit = Physics2D.Raycast(checkOrigin, dashDirection, wallCheckDistance, groundLayer);
+
+            if (wallHit.collider != null)
+            {
+                Debug.Log("壁に衝突！突進を強制停止します。");
+                break; // 壁に衝突したらループを抜ける
+            }
+
+            yield return null; // 次のフレームへ
+        }
+
+        // ★★★ 修正箇所終わり ★★★
+
+        // 突進終了後に速度を停止させる
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+
+
 
         Debug.Log("攻撃3終了");
         EndAttack();
