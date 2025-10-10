@@ -44,13 +44,18 @@ public class Cerberus_Controller : MonoBehaviour
     private int moveDirection = 1; // 1:右, -1:左
 
     // 地中から飛び出す際の、Y軸の最終的な調整値
-    public float emergeTopOffset = 1.0f; // ★追加: Inspectorで調整します。この値を増やすとより上に出ます。
+    public float emergeTopOffset = 1.0f; //。この値を増やすとより上に出ます。
 
     // ケルベロスのコンポーネント
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Collider2D enemyCollider;
     private Animator animator;
+
+    //レイヤー
+    public string GroundTileMapName = "TileMap";
+
+    public int TileMapLayer;
 
     void Start()
     {
@@ -67,6 +72,13 @@ public class Cerberus_Controller : MonoBehaviour
         if (playerObj != null)
         {
             playerTransform = playerObj.transform;
+        }
+
+        //Tilemapのレイヤー番号を取得
+        TileMapLayer = LayerMask.NameToLayer(GroundTileMapName);
+        if (TileMapLayer == -1)
+        {
+            Debug.LogError("指定されたレイヤー名 '" + GroundTileMapName + "' が見つかりません。Project Settingsを確認してください。");
         }
     }
 
@@ -284,6 +296,13 @@ public class Cerberus_Controller : MonoBehaviour
         if (enemyCollider != null) enemyCollider.enabled = false; // ★コライダーを無効化★
         if (sr != null) sr.enabled = false; // 見た目を非表示
 
+        // ★★★ 修正箇所: Tilemapとの衝突を無視する ★★★
+        if (TileMapLayer != -1)
+        {
+            // ケルベロスのレイヤーとTilemapのレイヤー間の衝突を無視
+            Physics2D.IgnoreLayerCollision(gameObject.layer, TileMapLayer, true);
+        }
+
         yield return new WaitForSeconds(1.0f); // 消えるアニメーションの時間（例）
 
         // 2. プレイヤーの現在の位置を記憶と地面Y座標の計算 (ロジック変更なし)
@@ -314,13 +333,13 @@ public class Cerberus_Controller : MonoBehaviour
         // Colliderの中心が地面のY座標に来るように計算
         float halfHeight = enemyCollider.bounds.size.y / 2f;
 
-        // ★★★ 修正箇所 ★★★
+        
         // 飛び出しの目標位置に、さらに手動のオフセットを加える
         Vector2 emergeCenterPos = new Vector2(
             transform.position.x,
             groundY + halfHeight + emergeTopOffset // ★ここで持ち上げます★
         );
-        // ★★★ 修正箇所終わり ★★★
+        
 
 
         // 物理影響を無視して、地中から地面の上までスムーズに移動
@@ -337,6 +356,12 @@ public class Cerberus_Controller : MonoBehaviour
 
         // 5. 物理影響を再開
         if (enemyCollider != null) enemyCollider.enabled = true;
+
+        // ★★★ 修正箇所: Tilemapとの衝突無視を解除 ★★★
+        if (TileMapLayer != -1)
+        {
+            Physics2D.IgnoreLayerCollision(gameObject.layer, TileMapLayer, false);
+        }
 
         if (rb != null)
         {

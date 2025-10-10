@@ -352,11 +352,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.67
+      value: 85.2
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.8
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1012,9 +1012,37 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 356774540786665162, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 1870296842201156076, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
       propertyPath: m_Name
       value: Ceruberus
+      objectReference: {fileID: 0}
+    - target: {fileID: 1870296842201156076, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896874625863979194, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6776314025248338874, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7002811990008684298, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
+      propertyPath: emergeTopOffset
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7002811990008684298, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
+      propertyPath: playerTransform
+      value: 
+      objectReference: {fileID: 1653980680}
+    - target: {fileID: 7002811990008684298, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
+      propertyPath: GroundTileMapName
+      value: Ground
       objectReference: {fileID: 0}
     - target: {fileID: 7850864881250960338, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1538,6 +1566,11 @@ MonoBehaviour:
 --- !u!1 &1653980673 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8477787116335963341, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+  m_PrefabInstance: {fileID: 249724397}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1653980680 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
   m_PrefabInstance: {fileID: 249724397}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1659862067
