@@ -6,14 +6,14 @@ using Unity.VisualScripting;
 
 public class switchcontroller : MonoBehaviour
 {
-    // ★ Inspectorから設定する変数 ★
+    
     public doorcontroller targetDoor; // 開きたい扉のDoorControllerスクリプトの参照をドラッグ＆ドロップ
 
     public string playerTag = "Player"; // プレイヤーのタグ
     public string playerAttackTag = "Spear"; // プレイヤーの攻撃のタグ (例: 槍なら"Spear")
 
-    public Color pressedColor = Color.gray; // ★追加: スイッチが押された時の色 (デフォルトは灰色)
-    private Color defaultColor; // ★追加: スイッチの初期色を保存
+    public Color pressedColor = Color.gray; // スイッチが押された時の色 (デフォルトは灰色)
+    private Color defaultColor; // スイッチの初期色を保存
 
     private SpriteRenderer spriteRenderer; // スイッチのSpriteRenderer
 
@@ -58,7 +58,7 @@ public class switchcontroller : MonoBehaviour
     {
         isActivated = true; // スイッチを起動済みに設定
 
-        // ★修正: スイッチの見た目を色に変更する (オプション)
+        //スイッチの見た目を色に変更する (オプション)
         if (spriteRenderer != null)
         {
             spriteRenderer.color = pressedColor; // 押された時の色に変更

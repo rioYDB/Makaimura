@@ -302,10 +302,10 @@ public class Cerberus_Controller : MonoBehaviour
         // animator.SetTrigger("Submerge");
         if (rb != null) rb.bodyType = RigidbodyType2D.Kinematic; // 物理影響無効
         if (rb != null) rb.linearVelocity = Vector2.zero; // 速度をリセット
-        if (enemyCollider != null) enemyCollider.enabled = false; // ★コライダーを無効化★
+        if (enemyCollider != null) enemyCollider.enabled = false; //コライダーを無効化
         if (sr != null) sr.enabled = false; // 見た目を非表示
 
-        // ★★★ 修正箇所: Tilemapとの衝突を無視する ★★★
+        
         if (TileMapLayer != -1)
         {
             // ケルベロスのレイヤーとTilemapのレイヤー間の衝突を無視
@@ -366,7 +366,7 @@ public class Cerberus_Controller : MonoBehaviour
         // 5. 物理影響を再開
         if (enemyCollider != null) enemyCollider.enabled = true;
 
-        // ★★★ 修正箇所: Tilemapとの衝突無視を解除 ★★★
+        //Tilemapとの衝突無視を解除 ★★★
         if (TileMapLayer != -1)
         {
             Physics2D.IgnoreLayerCollision(gameObject.layer, TileMapLayer, false);
@@ -400,7 +400,7 @@ public class Cerberus_Controller : MonoBehaviour
 
 
         // --- プレイヤー追尾の突進ロジック (速度設定) ---
-        float dashSpeedMultiplier = 9.0f; // ★この倍率を調整してください★
+        float dashSpeedMultiplier = 9.0f; 
         float currentDashSpeed = moveSpeed * dashSpeedMultiplier;
 
         int playerDirectionInt = (playerTransform.position.x > transform.position.x) ? 1 : -1;
@@ -414,10 +414,7 @@ public class Cerberus_Controller : MonoBehaviour
         float startTime = Time.time; // 時間制限用
         Vector3 startPosition = transform.position; // 距離制限用
 
-        // --- 突出するロジックここまで ---
-
-
-        // ★★★ 修正箇所: 突進ループの変更 ★★★
+       
 
         // Groundレイヤーを取得
         // TileMapLayerと同じものがTileMapについていると仮定。念のため、地面判定用のLayerMaskを使用
@@ -453,7 +450,7 @@ public class Cerberus_Controller : MonoBehaviour
             yield return null; // 次のフレームへ
         }
 
-        // ★★★ 修正箇所終わり ★★★
+       
 
         // 突進終了後に速度を停止させる
         if (rb != null)

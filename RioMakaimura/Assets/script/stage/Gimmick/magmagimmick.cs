@@ -7,7 +7,7 @@ public class magmagimmick : MonoBehaviour
     public float fallGravityScale = 1.0f; // 噴き出し後に落下する際の重力スケール (デフォルト値を1.0fに推奨)
     public float activeDuration = 1.0f;  // マグマが噴き出している（上昇中・落下中）の総時間
     public float coolDownDuration = 2.0f; // 引っ込んでから次に噴き出すまでのクールダウン時間
-    public float hidePositionOffset = -10.0f; // ★修正: マグマが完全に隠れるY座標オフセット (地面の下の十分に低い位置)
+    public float hidePositionOffset = -10.0f; //マグマが完全に隠れるY座標オフセット (地面の下の十分に低い位置)
     
 
     private Animator animator; // 噴き出しアニメーション用 (オプション)
@@ -117,7 +117,7 @@ public class magmagimmick : MonoBehaviour
         }
     }
 
-    // ★追加: アルファ値を変更するコルーチン
+    //アルファ値を変更するコルーチン
     
 
     // プレイヤーにダメージを与える (プレイヤーのタグが"Player"であることを前提)

@@ -6,18 +6,18 @@ using Unity.VisualScripting;
 public class doorcontroller : MonoBehaviour
 {
     public float openSpeed = 1.0f; // 扉が開く速度
-    public float openDistanceY = 5.0f; // ★修正: 上に動く距離
+    public float openDistanceY = 5.0f; //上に動く距離
     public AudioClip openSound; // 開く音 (オプション)
 
     private Vector3 initialPosition;
-    private Vector3 targetOpenPosition; // ★追加: 開いた時の目標位置
+    private Vector3 targetOpenPosition; //開いた時の目標位置
     private bool isOpening = false;
     private AudioSource audioSource; // 音を鳴らすため
 
     void Start()
     {
         initialPosition = transform.position;
-        // ★修正: 開いた時の目標位置を計算 (現在の位置からY方向にopenDistanceYだけ上に移動)
+        //開いた時の目標位置を計算 (現在の位置からY方向にopenDistanceYだけ上に移動)
         targetOpenPosition = initialPosition + new Vector3(0, openDistanceY, 0);
         audioSource = GetComponent<AudioSource>(); // AudioSourceコンポーネントを取得
     }

@@ -25,7 +25,7 @@ public class player_control : MonoBehaviour
     public LayerMask LadderLayer;                                                   //hasigoを判別するオブジェクトレイヤー
 
 
-    // ★追加: 攻撃オブジェクトをプレイヤーからどれだけ上に生成するか (Y軸)
+    //攻撃オブジェクトをプレイヤーからどれだけ上に生成するか (Y軸)
     public float attackSpawnYOffset = 0.5f; // Inspectorで調整してください (この値を大きくすると弾の位置が高くなります)
 
     //---------------------------------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ public class player_control : MonoBehaviour
     private Rigidbody2D rb;                                                         //Rigidbody2Dの格納
     private BoxCollider2D bc;                                                       //BoxCollider2Dの格納庫
     private SpriteRenderer SpriteRenderer;                                          //SpriteRendererを扱うための格納庫
-                                                                                    //-----------------------------------------------------------------------------------------------------------------------
+   //-----------------------------------------------------------------------------------------------------------------------
                                                                                     //仮想チェンジ用
     public Sprite Okami;        //当たった時に画像を変えるため
     public Sprite Which;        //当たった時に画像を変えるため
@@ -87,7 +87,7 @@ public class player_control : MonoBehaviour
     private bool WhichChange = false;		//魔女状態の判定をする
 
 
-    // ★追加：SetGravityコンポーネントへの参照
+    //SetGravityコンポーネントへの参照
     private SetGravity setGravityComponent;
 
     private Image image;            //画像の管理
@@ -117,7 +117,7 @@ public class player_control : MonoBehaviour
     private bool isClimbingLadder = false; // はしごを登っている最中かどうか
     private bool canClimbLadder = false;   // はしごに触れていて、登れる状態にあるかどうか
     private float originalGravityScale;    // 元の重力値を保持
-                                           //-----------------------------------------------------------------------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------------------------------
                                            //しゃがむ処理の変数
     private Vector2 OriginColliderSize;
     private Vector2 OriginClliderOffset;
@@ -839,7 +839,7 @@ public class player_control : MonoBehaviour
 
 
 
-            // ★★★ 変更箇所: Y軸オフセットを加算して生成位置を計算 ★★★
+            //変更箇所: Y軸オフセットを加算して生成位置を計算
             Vector3 SpawnPosition = transform.position + new Vector3(
                 playerDirection * Offsetx, // X軸のオフセット
                 attackSpawnYOffset,                  // Y軸のオフセット
@@ -959,7 +959,7 @@ public class player_control : MonoBehaviour
         isClimbingLadder = false;
         rb.gravityScale = originalGravityScale; // 重力を元に戻す (この変数は使われないが念のため残す)
 
-        // ★★★修正：X軸の速度も0にリセットするで！★★★
+        //X軸の速度も0にリセットするで！
         rb.linearVelocity = Vector2.zero; // X軸速度もY軸速度も0にする
 
         // 地面にいる場合は、IsJumpingをfalseにリセット
@@ -998,7 +998,7 @@ public class player_control : MonoBehaviour
     IEnumerator SpawnFirePillarsRoutine(Vector3 basePosition, float playerDirection, int count, float delay, float spread, LayerMask Ground)
     {
      
-        // ★★★修正：火柱の基準となるY座標をプレイヤーの足元から取得する★★★
+        //修正：火柱の基準となるY座標をプレイヤーの足元から取得する
         float baseFirePillarY = transform.position.y; // デフォルトはプレイヤーのY座標
 
         // プレイヤーの足元からRaycastを飛ばし、立っている地面のY座標を取得する
