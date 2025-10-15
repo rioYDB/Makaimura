@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7661956150356591285}
   - component: {fileID: 4367834093146236378}
   - component: {fileID: 625245165530620128}
+  - component: {fileID: 8022261825315002426}
   m_Layer: 0
   m_Name: Goal_Flag
   m_TagString: Goal
@@ -162,3 +163,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &8022261825315002426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2957165799368276105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13bf0831b6328fc428e6b7a6879637ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
