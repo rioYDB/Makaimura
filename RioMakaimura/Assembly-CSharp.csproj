@@ -68,6 +68,7 @@
     <Compile Include="Assets\script\bullet\Bullet_Human.cs" />
     <Compile Include="Assets\script\ememy\Clown_default.cs" />
     <Compile Include="Assets\script\SetGravity.cs" />
+    <Compile Include="Assets\CheckArea.cs" />
     <Compile Include="Assets\script\bullet\bullet.cs" />
     <Compile Include="Assets\script\ememy\Zombi_default.cs" />
     <Compile Include="Assets\Cerberus_bullet.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Assets\script\CameraMove.cs" />
     <Compile Include="Assets\script\bullet\firepillar.cs" />
     <Compile Include="Assets\script\ememy\karasu.cs" />
+    <Compile Include="Assets\Exitdoor.cs" />
     <Compile Include="Assets\script\stage\doorcontroller.cs" />
     <Compile Include="Assets\NextStage.cs" />
     <Compile Include="Assets\script\cannon.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="Assets\script\ememy\Spider_default.cs" />
     <Compile Include="Assets\Enemybullet.cs" />
     <Compile Include="Assets\script\BackGround.cs" />
+    <Compile Include="Assets\Downdoor.cs" />
     <Compile Include="Assets\script\ememy\Clown_Projectile.cs" />
     <Compile Include="Assets\script\LoadScene.cs" />
     <Compile Include="Assets\script\LoadNextStage.cs" />
