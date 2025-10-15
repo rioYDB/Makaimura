@@ -55,6 +55,12 @@ public class Cerberus_Controller : MonoBehaviour
     // 地中から飛び出す際の、Y軸の最終的な調整値
     public float emergeTopOffset = 1.0f; //。この値を増やすとより上に出ます。
 
+
+    // ★追加: 倒した後に開く扉の参照
+    public Exitdoor exitDoor;
+
+
+
     // ケルベロスのコンポーネント
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -164,6 +170,15 @@ public class Cerberus_Controller : MonoBehaviour
 
     void HandleDeadState()
     {
+
+
+        // ★追加: 扉を開ける命令
+        if (exitDoor != null)
+        {
+            exitDoor.OpenDoor();
+        }
+
+
         // 死亡アニメーション、ゲームオーバー処理など
     }
 
