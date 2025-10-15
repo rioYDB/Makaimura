@@ -56,10 +56,11 @@ public class Cerberus_Controller : MonoBehaviour
     public float emergeTopOffset = 1.0f; //。この値を増やすとより上に出ます。
 
 
-    // ★追加: 倒した後に開く扉の参照
+    //倒した後に開く扉の参照
     public Exitdoor exitDoor;
 
-
+    //HP
+    public int HP;
 
     // ケルベロスのコンポーネント
     private Rigidbody2D rb;
