@@ -56,11 +56,9 @@ public class Cerberus_Controller : MonoBehaviour
     public float emergeTopOffset = 1.0f; //。この値を増やすとより上に出ます。
 
 
-    //倒した後に開く扉の参照
-    public Exitdoor exitDoor;
+    
 
-    //HP
-    public int HP;
+   
 
     // ケルベロスのコンポーネント
     private Rigidbody2D rb;
@@ -173,15 +171,28 @@ public class Cerberus_Controller : MonoBehaviour
     {
 
 
-        // ★追加: 扉を開ける命令
-        if (exitDoor != null)
-        {
-            exitDoor.OpenDoor();
-        }
+
+        // 死亡アニメーションが完了するまで待つ処理などをここに記述
+
+        // ★修正: 扉を開く処理はenemy_HPに移管したため削除
+        // if (exitDoor != null) { exitDoor.OpenDoor(); } 
+
+        // 死亡アニメーション後に破壊 (例: 3秒後に破壊)
+        Destroy(gameObject, 3.0f);
+
 
 
         // 死亡アニメーション、ゲームオーバー処理など
     }
+
+    // ★追加: enemy_HPから呼ばれる死亡開始メソッド
+    public void StartDeathSequence()
+    {
+        currentState = CerberusState.Dead;
+        // 死亡アニメーション開始などの処理をここに記述
+        // animator.SetTrigger("Dead"); 
+    }
+
 
     // --- 攻撃の選択ロジック ---
 

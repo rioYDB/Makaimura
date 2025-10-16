@@ -65,6 +65,7 @@
     <Compile Include="Assets\script\player_control.cs" />
     <Compile Include="Assets\script\ememy\enemy_Flower.cs" />
     <Compile Include="Assets\script\stage\Gimmick\magmagimmick.cs" />
+    <Compile Include="Assets\Cerberus_HP.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Human.cs" />
     <Compile Include="Assets\script\ememy\Clown_default.cs" />
     <Compile Include="Assets\script\SetGravity.cs" />
