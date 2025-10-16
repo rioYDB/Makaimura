@@ -15,6 +15,9 @@ public class CoinScoreManager : MonoBehaviour
     // 現在のスコア
     private int score = 0;
 
+    // プレイヤーへの参照を追加
+    private player_control playerHealth;
+
     // ゲーム開始時に1回だけ呼ばれる
     private void Awake()
     {
@@ -24,6 +27,9 @@ public class CoinScoreManager : MonoBehaviour
 
     void Start()
     {
+        // プレイヤーを検索して取得
+        playerHealth = FindAnyObjectByType<player_control>();
+
         scoreText.text = "Coins: " + score.ToString();
     }
 
@@ -45,14 +51,19 @@ public class CoinScoreManager : MonoBehaviour
         // スコアUIをピョンっと動かす演出
         StartCoroutine(ScoreTextEffect());
 
-        //10枚集めたらリセット
+        //10枚集めたらHP回復＆リセット
         if (score % 10 == 0)
         {
+            if (playerHealth != null)
+            {
+                playerHealth.Heal(1); // HPを1回復！
+            }
+
             // ここでスコアをリセット
             ResetScore();
 
             // 必要なら「ボーナス演出」や「音」もここで追加できる
-            Debug.Log("10枚集めた！スコアをリセットしました。");
+            Debug.Log("10枚集めた！HP回復！スコアをリセットしました。");
         }
     }
 

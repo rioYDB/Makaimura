@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI; 
 using UnityEngine.SceneManagement;
 using System.Collections;
@@ -61,7 +62,15 @@ public class player_control : MonoBehaviour
     public Vector3 StandSize = new Vector3(3.4f, 3.8f, 1f);             //立ってる時のサイズ
     public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);             //しゃがんだ時のサイズ
 
-    private int HP = 2;                                                                 //HP
+    private ScreenFlash screenFlash;
+
+    public int maxHP = 2;       // 最大HP
+    private int HP = 2;         // げんざいのHP 
+    //------------------------------------------------ 
+    // HP表示用Text（インスペクターでセット）
+    [SerializeField] private TMP_Text hpText;
+    private Color defaultColor; // 元の色を保存しておく
+    //------------------------------------------------ 
     private int AttackCount;                                                            //攻撃をカウントする変数
     private bool IsSquat = false;                                                   //しゃがみ判定
     private bool IsJumping;                                                         //空中にいるか判定
@@ -150,6 +159,19 @@ public class player_control : MonoBehaviour
 
         //元の重力値を保持
         originalGravityScale = rb.gravityScale;
+
+        // HP関連
+        // --------------------------------------------
+        // HPマックスからスタート
+        HP = maxHP;
+
+        screenFlash = FindAnyObjectByType<ScreenFlash>(); // 画面フラッシュを探す
+
+        if (hpText != null)
+            defaultColor = hpText.color; // 初期色（通常は白）
+
+        UpdateHPText(); // 起動時に表示を更新
+        // --------------------------------------------
 
         //しゃがみ機能の初期設定
         OriginColliderSize = bc.size;
@@ -972,7 +994,7 @@ public class player_control : MonoBehaviour
     }
 
     //関数名：playerHP()
-    //用途：はしご登り終了処理
+    //用途：ダメージ処理
     //引数：void
     //戻り値：なし
    public void  playerHP(int Damege)
@@ -990,9 +1012,76 @@ public class player_control : MonoBehaviour
             //GetComponent<Rigidbody2D>().AddForce(knockbackDirection * KnockbackForce, ForceMode2D.Impulse);
             // 無敵状態を開始
             StartInvincibility();
+
+            UpdateHPText(); // 起動時に表示を更新
+            StartCoroutine(HPTextEffect(Color.red)); //HP変動時に一瞬拡大する演出(赤)
+
+            // ダメージ時に画面フラッシュ！
+            if (screenFlash != null)
+            {
+                screenFlash.Flash(new Color(1, 0, 0, 0.4f), 0.3f);
+            }
         }
     }
 
+    //HPを回復する関数
+    public void Heal(int amount)
+    {
+        HP += amount;
+        if (HP > maxHP)
+        {
+            HP = maxHP; // 最大値を超えないように
+        }
+
+        Debug.Log("HP回復！ 現在HP：" + HP);
+        // ここに回復エフェクトや音を追加してもOK
+
+        UpdateHPText(); // 起動時に表示を更新
+        StartCoroutine(HPTextEffect(Color.green)); //HP変動時に一瞬拡大する演出(緑)
+    }
+
+    // HPを画面に表示するための関数
+    private void UpdateHPText()
+    {
+        if (hpText != null)
+        {
+            hpText.text = "HP:" + HP + " / " + maxHP;
+        }
+    }
+
+    //HP変動時に一瞬拡大する演出を起こす関数
+    private IEnumerator HPTextEffect(Color effectColor)
+    {
+        if (hpText == null) yield break;
+
+        float duration = 0.1f;
+        Vector3 originalScale = hpText.transform.localScale;
+        Vector3 targetScale = originalScale * 1.2f;
+
+        // 色とスケールのアニメーション
+        float timer = 0f;
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / duration;
+            hpText.transform.localScale = Vector3.Lerp(originalScale, targetScale, t);
+            hpText.color = Color.Lerp(defaultColor, effectColor, t);
+            yield return null;
+        }
+
+        // 戻す処理
+        timer = 0f;
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / duration;
+            hpText.transform.localScale = Vector3.Lerp(targetScale, originalScale, t);
+            hpText.color = Color.Lerp(effectColor, defaultColor, t);
+            yield return null;
+        }
+
+        hpText.color = defaultColor; // 念のため元の色に戻す
+    }
 
     //火柱を放つコルーチン
     IEnumerator SpawnFirePillarsRoutine(Vector3 basePosition, float playerDirection, int count, float delay, float spread, LayerMask Ground)

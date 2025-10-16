@@ -87,6 +87,7 @@
     <Compile Include="Assets\script\stage\FallingPlatform.cs" />
     <Compile Include="Assets\script\ememy\Spider_default.cs" />
     <Compile Include="Assets\Enemybullet.cs" />
+    <Compile Include="Assets\script\ScreenFlash.cs" />
     <Compile Include="Assets\script\BackGround.cs" />
     <Compile Include="Assets\Downdoor.cs" />
     <Compile Include="Assets\script\ememy\Clown_Projectile.cs" />
