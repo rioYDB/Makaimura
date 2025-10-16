@@ -63,6 +63,7 @@ public class player_control : MonoBehaviour
     public Vector3 SquatSize = new Vector3(1.7f, 1.9f, 1f);             //しゃがんだ時のサイズ
 
     private ScreenFlash screenFlash;
+    //private CameraShake cameraShake;
 
     public int maxHP = 2;       // 最大HP
     private int HP = 2;         // げんざいのHP 
@@ -166,6 +167,7 @@ public class player_control : MonoBehaviour
         HP = maxHP;
 
         screenFlash = FindAnyObjectByType<ScreenFlash>(); // 画面フラッシュを探す
+        //cameraShake = FindAnyObjectByType<CameraShake>(); // カメラ振動
 
         if (hpText != null)
             defaultColor = hpText.color; // 初期色（通常は白）
@@ -1021,6 +1023,18 @@ public class player_control : MonoBehaviour
             {
                 screenFlash.Flash(new Color(1, 0, 0, 0.4f), 0.3f);
             }
+
+            //// カメラを揺らす！
+            // カメラシェイク呼び出し
+            CameraMove cameraMove = FindAnyObjectByType<CameraMove>();
+            if (cameraMove != null)
+            {
+                cameraMove.Shake();
+            }
+            //if (cameraShake != null)
+            //{
+            //    cameraShake.Shake(0.15f, 0.08f);
+            //}
         }
     }
 
