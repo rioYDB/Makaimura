@@ -18,6 +18,10 @@ public class CoinScoreManager : MonoBehaviour
     // プレイヤーへの参照を追加
     private player_control playerHealth;
 
+    // コルーチンを1つだけ動かすための変数を追加
+    private Coroutine scaleCoroutine;
+    private Vector3 originalScale;
+
     // ゲーム開始時に1回だけ呼ばれる
     private void Awake()
     {
@@ -31,6 +35,8 @@ public class CoinScoreManager : MonoBehaviour
         playerHealth = FindAnyObjectByType<player_control>();
 
         scoreText.text = "Coins: " + score.ToString();
+
+        originalScale = scoreText.transform.localScale; // ← 元の大きさを記録
     }
 
     // Update is called once per frame
@@ -49,7 +55,10 @@ public class CoinScoreManager : MonoBehaviour
         scoreText.text = "Coins: " + score.ToString();
 
         // スコアUIをピョンっと動かす演出
-        StartCoroutine(ScoreTextEffect());
+        // 既にアニメ中なら止めてから再スタート
+        if (scaleCoroutine != null)
+            StopCoroutine(scaleCoroutine);
+        scaleCoroutine = StartCoroutine(ScoreTextEffect());
 
         //10枚集めたらHP回復＆リセット
         if (score % 10 == 0)
@@ -70,8 +79,9 @@ public class CoinScoreManager : MonoBehaviour
     private IEnumerator ScoreTextEffect()
     {
         float duration = 0.1f;
-        Vector3 originalScale = scoreText.transform.localScale;
         Vector3 targetScale = originalScale * 1.2f;
+        // スケールをリセットしてから拡大
+        scoreText.transform.localScale = originalScale;
 
         float timer = 0f;
         while (timer < duration)
@@ -91,6 +101,9 @@ public class CoinScoreManager : MonoBehaviour
             scoreText.transform.localScale = Vector3.Lerp(targetScale, originalScale, t);
             yield return null;
         }
+
+        scoreText.transform.localScale = originalScale; // 念のため完全に戻す
+        scaleCoroutine = null; // コルーチン完了
     }
 
     // スコアをリセットしたいときに使える関数（任意）

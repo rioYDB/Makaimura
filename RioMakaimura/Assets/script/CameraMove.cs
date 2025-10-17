@@ -3,7 +3,8 @@ using System.Collections;
 public class CameraMove : MonoBehaviour
 {
     [Header("プレイヤーの参照")]
-    public GameObject playerInfo;
+    //public GameObject playerInfo;
+    public player_control player;
 
     [Header("カメラ位置オフセット")]
     public float yOffset; // ← Y座標の高さ調整
@@ -17,56 +18,68 @@ public class CameraMove : MonoBehaviour
     public float shakeDuration = 0.15f;
     public float shakeMagnitude = 0.1f;
 
+    [Header("横方向（先読み）設定")]
+    public float lookAheadDistance = 2.0f;  // 向いている方向にずらす距離
+    public float lookAheadSmoothSpeed = 3.0f; // スムーズさ（高いほど素早く）
+
     private Vector3 originalOffset; // プレイヤーとの距離
+    private float currentLookAheadX = 0f;
+    private float targetLookAheadX = 0f;
+
     private Coroutine shakeCoroutine;
     private bool isShaking = false;
+
+    private Rigidbody2D playerRb;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (playerInfo != null)
+        if (player != null)
         {
             // プレイヤーとカメラの初期距離を記録
-            originalOffset = transform.position - playerInfo.transform.position;
+            originalOffset = transform.position - player.transform.position;
             //originalOffset.y = yOffset; // ← 初期化時にY調整を反映
+
         }
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        if (playerInfo == null /*|| isShaking*/)
+        if (player == null /*|| isShaking*/)
             return;
-        //{
-        //// プレイヤーの位置に追従（Y座標は調整値を反映）
-        //Vector3 targetPos = playerInfo.transform.position + new Vector3(originalOffset.x, yOffset, originalOffset.z);
-        //transform.position = targetPos;
-        //}
 
+        if (shakeCoroutine == null) // ← 揺れ中は通常追従を止める
+        {
+            UpdateCameraFollow();
+        }
+    }
+
+    private void UpdateCameraFollow()
+    {
         // プレイヤーの現在位置
-        Vector3 playerPos = playerInfo.transform.position;
+        Vector3 playerPos = player.transform.position;
 
-        // X・Z は常に追従
-        float targetX = playerPos.x + originalOffset.x;
-        float targetZ = playerPos.z + originalOffset.z;
 
-        // 現在のカメラY位置
+
+        // === プレイヤーの向きに応じた先読み方向 ===
+        float dir = player.isFacingRight ? 1f : -1f;
+        targetLookAheadX = lookAheadDistance * dir;
+        currentLookAheadX = Mathf.Lerp(currentLookAheadX, targetLookAheadX, Time.deltaTime * lookAheadSmoothSpeed);
+
+        // === 縦方向の追従 ===
         float cameraY = transform.position.y;
-        // プレイヤーの目標Y位置
         float targetY = playerPos.y + yOffset + originalOffset.y;
-
         float yDiff = targetY - cameraY;
 
-        // --- 上方向に離れすぎたら追従開始 ---
         if (yDiff > upFollowThreshold)
-        {
-            cameraY = Mathf.Lerp(cameraY, targetY - upFollowThreshold, Time.deltaTime * ySmoothSpeed);
-        }
-        // --- 下方向に離れすぎたら追従開始 ---
+            cameraY = Mathf.Lerp(cameraY, targetY, Time.deltaTime * 2.0f);
         else if (yDiff < -downFollowThreshold)
-        {
-            cameraY = Mathf.Lerp(cameraY, targetY + downFollowThreshold, Time.deltaTime * ySmoothSpeed);
-        }
+            cameraY = Mathf.Lerp(cameraY, targetY, Time.deltaTime * 5.0f);
+
+        // === 最終的なカメラ位置 ===
+        float targetX = playerPos.x + originalOffset.x + currentLookAheadX;
+        float targetZ = playerPos.z + originalOffset.z;
 
         transform.position = new Vector3(targetX, cameraY, targetZ);
     }
@@ -74,44 +87,38 @@ public class CameraMove : MonoBehaviour
     /// <summary>
     /// 外部から呼び出してカメラを揺らす
     /// </summary>
-    public void Shake()
+    public void Shake(float duration = -1f, float magnitude = -1f)
     {
+        if (duration < 0) duration = shakeDuration;
+        if (magnitude < 0) magnitude = shakeMagnitude;
+
         if (shakeCoroutine != null)
             StopCoroutine(shakeCoroutine);
 
-        shakeCoroutine = StartCoroutine(ShakeRoutine());
+        shakeCoroutine = StartCoroutine(ShakeRoutine(duration, magnitude));
     }
 
-    private IEnumerator ShakeRoutine()
+    private IEnumerator ShakeRoutine(float duration, float magnitude)
     {
-        isShaking = true;
+        Vector3 originalPos = transform.position; // カメラ自体の現在位置
         float elapsed = 0f;
 
-        while (elapsed < shakeDuration)
+        while (elapsed < duration)
         {
-            if (playerInfo == null) yield break;
-
+            // カメラ中心を基準にランダムに動かす
             Vector3 randomOffset = new Vector3(
-                Random.Range(-1f, 1f) * shakeMagnitude,
-                Random.Range(-1f, 1f) * shakeMagnitude,
+                Random.Range(-1f, 1f) * magnitude,
+                Random.Range(-1f, 1f) * magnitude,
                 0
             );
 
-            //Vector3 playerPos = playerInfo.transform.position;
-            //Vector3 targetPos = playerPos + new Vector3(originalOffset.x, yOffset, originalOffset.z);
-            //transform.position = targetPos + randomOffset;
-            transform.position = playerInfo.transform.position + originalOffset + randomOffset;
+            transform.position = originalPos + randomOffset;
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        // 揺れ終了後、追従位置に戻す
-        if (playerInfo != null)
-        {
-            transform.position = playerInfo.transform.position + originalOffset;
-        }
-
-        isShaking = false;
+        transform.position = originalPos; // 元の位置に戻す
+        shakeCoroutine = null; // 終了を記録
     }
 }

@@ -140,7 +140,7 @@ public class player_control : MonoBehaviour
     private bool InSecretArea;
     //-----------------------------------------------------------------------------------------------------------------------
 
-
+    public bool isFacingRight = true; // カメラが参照する向きフラグ
 
 
     void Start()
@@ -688,6 +688,9 @@ public class player_control : MonoBehaviour
                 Vector3 scale = transform.localScale;
                 scale.x = Mathf.Abs(scale.x) * Mathf.Sign(Moveinput); // 左ならマイナス、右ならプラス
                 transform.localScale = scale;
+
+                // 向きフラグを更新
+                isFacingRight = (Moveinput > 0);
             }
         }
 
@@ -1026,11 +1029,12 @@ public class player_control : MonoBehaviour
 
             //// カメラを揺らす！
             // カメラシェイク呼び出し
-            CameraMove cameraMove = FindAnyObjectByType<CameraMove>();
-            if (cameraMove != null)
-            {
-                cameraMove.Shake();
-            }
+            FindAnyObjectByType<CameraMove>()?.Shake();
+            //CameraMove cameraMove = FindAnyObjectByType<CameraMove>();
+            //if (cameraMove != null)
+            //{
+            //    cameraMove.Shake();
+            //}
             //if (cameraShake != null)
             //{
             //    cameraShake.Shake(0.15f, 0.08f);
