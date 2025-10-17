@@ -1,75 +1,55 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Bullet_Human : bullet
+
+//かぼちゃ弾(壁に触れたら跳ね返るのではなく破壊される)
+public class Pumpkin_shot : bullet
 {
-    
-    public float BounceMoveSpeed = 5.0f;  // 横方向の初期速度（初速のみに使う）
+    public float Movespeed;               //かぼちゃの移動速度
+    public float Upforce;                 //最初に上方向に掛ける力
     public float BounceForceY = 8.0f;     // 地面からのバウンドする上方向の力
-    public float InitialUpForce = 5.0f;   // 最初に弾を撃ち出した時の上方向の力
 
-    public LayerMask Ground;              // 地面・壁判定用レイヤー (Inspectorで設定)
-
-    public float TotalLifetime = 3.0f;    // 弾の総生存時間 (この時間経過で消える)
+    public float Bullet_Lifetime;         //かぼちゃの生存時間
     public int MaxBounces = 3;            // バウンドする最大回数 (この回数バウンドしたら消える)
-
-    private Rigidbody2D rb;               // Rigidbody2Dを格納する変数
     private int currentBounces = 0;       // 現在のバウンド回数
 
-    private Collider2D playerCollider; // プレイヤーのCollider2Dへの参照
 
-    //protected override void BulletMoves(GameObject Enemy)
-    //{
-    //    Debug.Log("通常攻撃でアタック");
-    //    //Destroy(Enemy);
-    //    Destroy(gameObject);
-    //}
+    public LayerMask Ground;              // 地面判定用レイヤー
+    public LayerMask Wall;                //壁判定のレイヤー
 
+    private Rigidbody2D rb;
     protected override void Start()
     {
-        base.Start(); // 親クラスのStart()を呼び出す (direction の設定のため)
+        base.Start();
+        rb = GetComponent<Rigidbody2D>();
 
-        rb = GetComponent<Rigidbody2D>(); // Rigidbody2Dを取得
-        if (rb == null)
+        if (rb != null)
         {
-            Debug.LogError("Bullet_HumanにはRigidbody2Dが必要！", this);
-            return;
+            Debug.LogError("Rigidbody2Dがついてないよ");
         }
 
-        // プレイヤーのCollider2Dを取得し、衝突を無視するように設定
-        GameObject player = GameObject.FindWithTag("Player"); // "Player"タグのオブジェクトを探す
+
+        //プレイヤーとの衝突をしないようにする
+        GameObject player = GameObject.FindWithTag("Player");
         if (player != null)
         {
-            playerCollider = player.GetComponent<Collider2D>();
+            Collider2D playerCollider = player.GetComponent<Collider2D>();
             if (playerCollider != null)
             {
-                // 弾自身のColliderとプレイヤーのColliderの衝突を無視する
                 Physics2D.IgnoreCollision(GetComponent<Collider2D>(), playerCollider, true);
             }
-            else
-            {
-                Debug.LogWarning("プレイヤーオブジェクトにCollider2Dが見つかりません。", player);
-            }
-        }
-        else
-        {
-            Debug.LogWarning("'Player'タグのオブジェクトが見つかりません。");
         }
 
-        
-        // X方向にはInitialUpForceの代わりにBounceMoveSpeedを直接加える
-        rb.linearVelocity = new Vector2(direction * BounceMoveSpeed, InitialUpForce);
+        rb.linearVelocity = new Vector2(direction * Movespeed , Upforce);
 
-        // 時間経過で自動的に消えるように設定
-        Destroy(gameObject, TotalLifetime);
+        Destroy(gameObject,Bullet_Lifetime);
+
+
     }
+
+
 
     protected override void Update()
     {
-        
-        // 物理的な跳ね返りを優先するため、rb.velocity.x を毎フレーム上書きするのをやめる。
-        // rb.velocity = new Vector2(direction * BounceMoveSpeed, rb.linearVelocity.y); // この行を削除
-
-        // 弾の見た目の向きは、X軸方向で固定 (Physics Material 2DのBouncinessで回転しないように)
         // または、移動方向に合わせて回転させる
         if (rb.linearVelocity.x != 0) // 弾が動いている時だけ向きを変える
         {
@@ -87,8 +67,6 @@ public class Bullet_Human : bullet
             //ここを追加して、何に当たってるか見る
             Debug.Log("カボチャが衝突した相手: " + collision.gameObject.name + " (Layer: " + LayerMask.LayerToName(collision.gameObject.layer) + ")");
 
-
-
             currentBounces++; // バウンド回数をカウントアップ
             Debug.Log("地面/壁に触れたよ👍笑 - バウンド回数: " + currentBounces + " (Max: " + MaxBounces + ")");
 
@@ -99,7 +77,7 @@ public class Bullet_Human : bullet
                 return; // これ以上バウンドさせない
             }
 
-            
+
             // 当たった面の法線ベクトルを取得
             Vector2 surfaceNormal = collision.contacts[0].normal;
 
@@ -121,7 +99,7 @@ public class Bullet_Human : bullet
                 // 壁に当たった場合、X方向は反射させ、Y方向は現在の速度を維持
                 finalBounceVelocity = new Vector2(reflectedVelocity.x, rb.linearVelocity.y);
                 // ただし、X速度の大きさは少なくともInitialMoveSpeed相当にする
-                finalBounceVelocity.x = Mathf.Sign(finalBounceVelocity.x) * Mathf.Max(Mathf.Abs(finalBounceVelocity.x), BounceMoveSpeed);
+                finalBounceVelocity.x = Mathf.Sign(finalBounceVelocity.x) * Mathf.Max(Mathf.Abs(finalBounceVelocity.x), Movespeed);
             }
             else // 地面に近い（垂直方向の法線が強い）
             {
@@ -135,6 +113,18 @@ public class Bullet_Human : bullet
 
             // Debug.Log("反射！ 反射ベクトル: " + reflectedVelocity + ", 法線: " + surfaceNormal + ", 最終速度: " + rb.linearVelocity);
         }
+
+
+        //WallLに設定されたオブジェクトに当たったかどうかをチェックする
+        if (((1 << collision.gameObject.layer) & Wall) != 0)
+        {
+            // 当たったのが壁レイヤーの場合のみ破壊
+            Debug.Log("壁に衝突！弾を破壊します。");
+            Destroy(gameObject);
+            return;
+        }
+
+
 
         // 敵に当たった時の処理
         if (collision.gameObject.CompareTag("Enemy"))
@@ -150,24 +140,5 @@ public class Bullet_Human : bullet
         }
     }
 
-    //08/01時点で以下の当たり判定はピエロの斧とだけ接触するために使用しています。
-    protected override void OnTriggerEnter2D(Collider2D collision)
-    {
-        //base.OnTriggerEnter2D(collision); // 親のDestroy(gameObject)が呼ばれるのを防ぐ
 
-        // 敵に当たった時だけBulletMovesを呼ぶ
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            //BulletMoves(collision.gameObject);
-
-            // 敵にEnemy_HPスクリプトがあるか確認
-            enemy_HP enemyHP = collision.gameObject.GetComponent<enemy_HP>();
-            if (enemyHP != null)
-            {
-                enemyHP.TakeDamage(1); // ダメージ量を1とする（必要に応じて変える）
-            }
-
-            Destroy(gameObject); // 弾を削除
-        }
-    }
 }
