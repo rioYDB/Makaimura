@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3141790992027610131}
   - component: {fileID: 4786716933388012215}
   - component: {fileID: -1809895039346272656}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: skull
   m_TagString: Spear
   m_Icon: {fileID: 0}

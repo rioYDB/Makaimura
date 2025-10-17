@@ -71,8 +71,10 @@
     <Compile Include="Assets\script\bullet\bullet.cs" />
     <Compile Include="Assets\script\Finish.cs" />
     <Compile Include="Assets\script\stage\LoadScene.cs" />
+    <Compile Include="Assets\Frankenstein.cs" />
     <Compile Include="Assets\script\ememy\Zombi_default.cs" />
     <Compile Include="Assets\script\CameraShake.cs" />
+    <Compile Include="Assets\script\Beltconveyor.cs" />
     <Compile Include="Assets\script\stage\movetile.cs" />
     <Compile Include="Assets\script\CameraMove.cs" />
     <Compile Include="Assets\script\bullet\firepillar.cs" />
