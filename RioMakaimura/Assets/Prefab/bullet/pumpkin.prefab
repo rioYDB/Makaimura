@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2191703696847631048}
   - component: {fileID: 6479933782932588635}
   - component: {fileID: 2959894459566549515}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: pumpkin
   m_TagString: Spear
   m_Icon: {fileID: 0}
