@@ -46,6 +46,24 @@ public class Frankenstein : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+
+
+        rb = GetComponent<Rigidbody2D>();
+        // ★追加: 自身のコライダーを取得
+        enemyCollider = GetComponent<Collider2D>();
+        anim = GetComponent<Animator>();
+
+        // ★追加: プレイヤーのTransformを取得
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null)
+        {
+            playerTransform = playerObj.transform;
+        }
+        else
+        {
+            // プレイヤーが見つからない場合は警告を出し、攻撃ロジックをスキップできるようにする
+            Debug.LogError("Playerタグのオブジェクトが見つかりません。攻撃ロジックが機能しません。", this);
+        }
     }
 
     // Update is called once per frame
@@ -183,6 +201,8 @@ public class Frankenstein : MonoBehaviour
         // 衝撃波を生成（ケルベロスと同様、衝撃波プレハブに当たり判定ロジックを持たせる）
         if (stunWavePrefab != null)
         {
+            Debug.Log("スタン開始");
+
             // フランケンの足元（またはコライダーの下端）に生成
             Vector3 spawnPos = transform.position;
             if (GetComponent<Collider2D>() != null)
@@ -194,6 +214,8 @@ public class Frankenstein : MonoBehaviour
 
         // 4. 叩きつけ後の硬直時間
         yield return new WaitForSeconds(slamHardnessTime);
+
+        Debug.Log("スタン終わり");
 
         cooldownTimer = attackCooldown;
         currentState = FrankenState.Idle;
@@ -228,6 +250,11 @@ public class Frankenstein : MonoBehaviour
 
         return hit.collider != null;
     }
+
+
+
+
+
 
     /// <summary>
     /// 攻撃シーケンスを終了し、クールダウンを開始します。

@@ -737,7 +737,7 @@ MonoBehaviour:
   defenseRadius: 3
   jumpForce: 15
   slamHardnessTime: 0.5
-  stunWavePrefab: {fileID: 0}
+  stunWavePrefab: {fileID: 9198850229471948679, guid: 1c9f0ddbd5fb0b24d876e7af766f5334, type: 3}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1369,13 +1369,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b800b9be32255e5478117b06d75ac3bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerInfo: {fileID: 1653980673}
+  player: {fileID: 1653980683}
   yOffset: 0
   upFollowThreshold: 1.5
   downFollowThreshold: 0.5
   ySmoothSpeed: 2
   shakeDuration: 0.15
   shakeMagnitude: 0.1
+  lookAheadDistance: 2
+  lookAheadSmoothSpeed: 3
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2511,16 +2513,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bdde6117de66be4b9ad49c95f5ccfbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1653980673 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8477787116335963341, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
-  m_PrefabInstance: {fileID: 249724397}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1653980680 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
   m_PrefabInstance: {fileID: 249724397}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1653980683 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+  m_PrefabInstance: {fileID: 249724397}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 267b0ea88810bb744b44bbb92b458853, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1659862067
 GameObject:
   m_ObjectHideFlags: 0
