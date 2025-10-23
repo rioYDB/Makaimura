@@ -20,6 +20,7 @@ TagManager:
   - AttackZone
   - tume
   - tendril
+  - PlayerBullet
   layers:
   - Default
   - TransparentFX
@@ -34,7 +35,7 @@ TagManager:
   - SecretArea
   - Wall
   - playerBullet
-  - 
+  - PlayerBullet
   - 
   - 
   - 
