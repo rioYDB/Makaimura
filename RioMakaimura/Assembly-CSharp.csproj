@@ -79,6 +79,7 @@
     <Compile Include="Assets\script\stage\movetile.cs" />
     <Compile Include="Assets\script\CameraMove.cs" />
     <Compile Include="Assets\script\bullet\firepillar.cs" />
+    <Compile Include="Assets\script\ItemSpawner.cs" />
     <Compile Include="Assets\script\ememy\karasu.cs" />
     <Compile Include="Assets\script\stage\Downdoor.cs" />
     <Compile Include="Assets\script\ememy\Cerberus_bullet.cs" />
