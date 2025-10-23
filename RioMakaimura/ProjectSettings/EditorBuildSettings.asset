@@ -32,15 +32,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ayabe5.unity
     guid: 6ac38a8c0fb39a64ca405be6d40c90b6
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Stage1.unity
     guid: ad8715116447d344caa621fd6fcc01fb
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Tkahashi_Test.unity
     guid: a2601935551288040951328cc6217a90
   - enabled: 0
     path: Assets/Scenes/vampire.unity
     guid: fd17b67300ba2684ca4d2cfabbf293b1
+  - enabled: 0
+    path: Assets/Scenes/witchstage.unity
+    guid: 0bb07c47e8c213d49a1af5f097a8b7a0
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

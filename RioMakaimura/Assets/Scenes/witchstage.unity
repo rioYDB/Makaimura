@@ -119,11 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &133753890 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8477787116335963341, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
-  m_PrefabInstance: {fileID: 492258943}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &138727536
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -443,11 +438,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 102.67
+      value: -4.9
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.54
+      value: -2.7
       objectReference: {fileID: 0}
     - target: {fileID: 7324508348279022390, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -654,7 +649,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b800b9be32255e5478117b06d75ac3bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerInfo: {fileID: 133753890}
+  player: {fileID: 1066320330}
+  yOffset: 0
+  upFollowThreshold: 1.5
+  downFollowThreshold: 0.5
+  ySmoothSpeed: 2
+  shakeDuration: 0.15
+  shakeMagnitude: 0.1
+  lookAheadDistance: 2
+  lookAheadSmoothSpeed: 3
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -921,6 +924,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1066320330 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+  m_PrefabInstance: {fileID: 492258943}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 267b0ea88810bb744b44bbb92b458853, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1131981292
 PrefabInstance:
   m_ObjectHideFlags: 0
