@@ -2466,6 +2466,10 @@ PrefabInstance:
       propertyPath: hpText
       value: 
       objectReference: {fileID: 580209494}
+    - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+      propertyPath: jumpPower
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 7013771955574629501, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_SortingOrder
       value: 1

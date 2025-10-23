@@ -24,6 +24,8 @@ public class player_control : MonoBehaviour
     public float jumpPower;                                                         //ジャンプ力
     public LayerMask Ground;                                                        //地面を判別するオブジェクトレイヤー
     public LayerMask LadderLayer;                                                   //hasigoを判別するオブジェクトレイヤー
+    bool jumpPressed;
+    bool jumpHeld;
 
 
     //攻撃オブジェクトをプレイヤーからどれだけ上に生成するか (Y軸)
@@ -208,7 +210,19 @@ public class player_control : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.4f, LadderLayer);
 
         //ジャンプ処理
+        // ジャンプボタン入力を記録
+        if (Input.GetButtonDown("Jump"))
+            jumpPressed = true;
+
+        jumpHeld = Input.GetButton("Jump");
+
         if ((IsGrounded() == true || hit.collider != null) && IsSquat == false && !isClimbingLadder)
+        {
+            Jump();
+        }
+
+        // 変更後（空中でも可変ジャンプ処理が動くようにする）
+        if (!isClimbingLadder && IsSquat == false)
         {
             Jump();
         }
@@ -600,7 +614,7 @@ public class player_control : MonoBehaviour
         //ジャンプ処理
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
         {
-            
+            Debug.Log(jumpHeld);
 
             //プレイヤーの状態に併せてジャンプ力を変更する
             float currentJumpPower = jumpPower;
@@ -618,15 +632,33 @@ public class player_control : MonoBehaviour
             }
 
 
-
-            rb.AddForce(Vector2.up * jumpPower);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, currentJumpPower);
             //ジャンプ状態にする
             IsJumping = true;
+            jumpPressed = false;
 
-            //ジャンプ中は移動速度を制限する
-            Moveinput *= 0.7f;
+            //rb.AddForce(Vector2.up * jumpPower);
+            ////ジャンプ状態にする
+            //IsJumping = true;
 
-            
+            ////ジャンプ中は移動速度を制限する
+            //Moveinput *= 0.7f;
+
+            // 可変ジャンプ（ボタン離したら上昇打ち切り）
+            if (!jumpHeld && rb.linearVelocity.y > 0)
+            {
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+            }
+
+            // 落下を速くする
+            if (rb.linearVelocity.y < 0)
+            {
+                rb.gravityScale = 2.0f;  // 落下中
+            }
+            else
+            {
+                rb.gravityScale = 1.0f;  // 上昇・地上
+            }
         }
     }
 
