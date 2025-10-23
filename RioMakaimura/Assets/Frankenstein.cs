@@ -22,6 +22,8 @@ public class Frankenstein : MonoBehaviour
     public float detectRange = 5f;          // 近接攻撃の検知距離
     public float attackCooldown = 2.0f;     // 攻撃間のクールダウン
     private float cooldownTimer = 0f;
+    public Collider2D hammerHitbox;
+
 
     [Header("防御設定")]
     public float defenseDuration = 0.7f;     // 防御アニメーション時間
@@ -32,11 +34,17 @@ public class Frankenstein : MonoBehaviour
     public float jumpForce = 15f;
     public float slamHardnessTime = 0.5f;    // 叩きつけ後の硬直時間
     public GameObject stunWavePrefab;        // スタン衝撃波のプレハブ
-    public LayerMask groundLayer;            // 地面判定用レイヤー
 
+    [Header("ハンマー制御")]
+    public Transform hammerVisual;       // ハンマーの見た目のTransform
+    public Vector3 swingStartRotation = new Vector3(0, 0, 90); // 振り上げ開始時の角度
+    public Vector3 swingEndRotation = new Vector3(0, 0, -45);  // 振り下ろし終了時の角度
+    public float swingDuration = 0.15f;  // 振り下ろし動作の時間
 
     [Header("接地判定設定")]
     public float groundCheckDistance = 0.1f; // 足元からレイを飛ばす
+    public LayerMask groundLayer;            // 地面判定用レイヤー
+
 
     private Rigidbody2D rb;
     private Collider2D enemyCollider; // 自身のコライダーを格納
@@ -49,11 +57,11 @@ public class Frankenstein : MonoBehaviour
 
 
         rb = GetComponent<Rigidbody2D>();
-        // ★追加: 自身のコライダーを取得
+        //自身のコライダーを取得
         enemyCollider = GetComponent<Collider2D>();
         anim = GetComponent<Animator>();
 
-        // ★追加: プレイヤーのTransformを取得
+        //プレイヤーのTransformを取得
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
         {
@@ -64,6 +72,13 @@ public class Frankenstein : MonoBehaviour
             // プレイヤーが見つからない場合は警告を出し、攻撃ロジックをスキップできるようにする
             Debug.LogError("Playerタグのオブジェクトが見つかりません。攻撃ロジックが機能しません。", this);
         }
+
+        //ハンマーを非表示
+        if (hammerVisual != null)
+        {
+            hammerVisual.gameObject.SetActive(false);
+        }
+
     }
 
     // Update is called once per frame
@@ -137,6 +152,7 @@ public class Frankenstein : MonoBehaviour
             // 弾であることを確認して破壊
             if (col.CompareTag("PlayerBullet") || col.gameObject.GetComponent<bullet>() != null)
             {
+                Debug.Log("破壊");
                 Destroy(col.gameObject);
             }
         }
@@ -154,21 +170,72 @@ public class Frankenstein : MonoBehaviour
         currentState = FrankenState.Attack_main;
         // anim.SetTrigger("HammerSwing");
 
-        // 攻撃判定コライダー（チャイルドオブジェクト）への参照を事前に取得してください
-        // Collider2D hammerHitbox = GetComponentInChildren<Collider2D>(); 
+        Debug.Log("通常攻撃");
+
+        // 予備動作中に見た目をプレイヤーに向かせる（オプション）
+        if (playerTransform != null)
+        {
+            // 振り下ろす前にプレイヤーの方向を向く
+            bool lookLeft = playerTransform.position.x < transform.position.x;
+            // SRが存在するとして、見た目を反転させる
+            // if (GetComponent<SpriteRenderer>() != null) GetComponent<SpriteRenderer>().flipX = lookLeft; 
+        }
+
+        Debug.Log("通常攻撃: 予備動作開始");
+
+
+
+        //ハンマーを表示する
+        if (hammerVisual != null)
+        {
+            hammerVisual.gameObject.SetActive(true);
+            hammerVisual.localRotation = Quaternion.Euler(swingStartRotation); // 振り上げ開始位置
+        }
 
         // 1. 振り下ろし動作の予備動作 (チャージ)
+        // 予備動作時間: 0.4秒
         yield return new WaitForSeconds(0.4f);
 
-        // 2. ハンマーが地面に当たる瞬間にコライダーを有効化
-        // hammerHitbox.gameObject.SetActive(true); 
-        // プレイヤーのHPスクリプトを呼び出し、ダメージを与える処理を実行
 
-        // 攻撃判定を維持する時間（一瞬）
-        yield return new WaitForSeconds(0.15f);
+        // --- ★攻撃判定の開始★ ---
+        // 振り下ろし開始時刻を記録
+        float startTime = Time.time;
 
-        // 3. 攻撃判定を無効化
-        // hammerHitbox.gameObject.SetActive(false);
+        // 振り下ろしが完了するまでループ
+        while (Time.time < startTime + swingDuration)
+        {
+            // 進行度 (0.0 から 1.0)
+            float t = (Time.time - startTime) / swingDuration;
+
+            // 開始角度から終了角度へ補間して回転させる
+            Quaternion targetRotation = Quaternion.Euler(swingEndRotation);
+            Quaternion currentRotation = Quaternion.Euler(swingStartRotation);
+
+            hammerVisual.localRotation = Quaternion.Slerp(currentRotation, targetRotation, t);
+
+            // 攻撃判定を有効化 (動作中に当たり判定ON)
+            if (t >= 0.2f && hammerHitbox != null && !hammerHitbox.enabled)
+            {
+                Debug.Log("通常攻撃: ヒットボックスON");
+                hammerHitbox.enabled = true;
+            }
+
+            yield return null;
+        }
+
+        // 動作完了後、角度を正確に終了位置に設定
+        if (hammerVisual != null)
+        {
+            hammerVisual.localRotation = Quaternion.Euler(swingEndRotation);
+        }
+
+        // --- ★攻撃判定の終了★ ---
+
+        if (hammerHitbox != null)
+        {
+            Debug.Log("通常攻撃: ヒットボックスOFF");
+            hammerHitbox.enabled = false; // 攻撃判定を無効化
+        }
 
         // 攻撃後の硬直
         yield return new WaitForSeconds(0.7f);

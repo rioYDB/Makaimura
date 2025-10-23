@@ -22,7 +22,7 @@ public class Pumpkin_shot : bullet
         base.Start();
         rb = GetComponent<Rigidbody2D>();
 
-        if (rb != null)
+        if (rb == null)
         {
             Debug.LogError("Rigidbody2Dがついてないよ");
         }
