@@ -22,6 +22,12 @@ public class player_control : MonoBehaviour
     //変数宣言
     public float moveSpeed;                                                         //移動速度
     public float jumpPower;                                                         //ジャンプ力
+    private float jumpCooldown = 0.1f; // ジャンプ後の無効時間
+    private float jumpTimer = 0f;
+    private bool isFlying = false;
+    private float flyingTime = 0f;
+    private float currentMoveSpeed;
+    public float maxFlyingTime = 2.0f; // 飛行の最大時間
     public LayerMask Ground;                                                        //地面を判別するオブジェクトレイヤー
     public LayerMask LadderLayer;                                                   //hasigoを判別するオブジェクトレイヤー
     bool jumpPressed;
@@ -129,8 +135,13 @@ public class player_control : MonoBehaviour
     private bool isClimbingLadder = false; // はしごを登っている最中かどうか
     private bool canClimbLadder = false;   // はしごに触れていて、登れる状態にあるかどうか
     private float originalGravityScale;    // 元の重力値を保持
+    private Collider2D currentLadderCollider; // 今触れているはしご
+    private Collider2D lastLadderCollider; // 最後に登ったはしごを保存
+    // はしご上に立っている状態を管理する
+    private bool isStandingOnLadderTop = false;
+    private float ladderTopY;
     //-----------------------------------------------------------------------------------------------------------------------
-                                           //しゃがむ処理の変数
+    //しゃがむ処理の変数
     private Vector2 OriginColliderSize;
     private Vector2 OriginClliderOffset;
     private Vector3 OriginLocalScale;
@@ -151,7 +162,7 @@ public class player_control : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         bc = GetComponent<BoxCollider2D>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
-        SpriteRenderer.color = Color.green;                                     //プレイヤーの色を緑色にする
+        /*SpriteRenderer.color = Color.green; */                                    //プレイヤーの色を緑色にする
 
         // SpriteRendererコンポーネントを取得します
         image = GetComponent<Image>();
@@ -201,6 +212,63 @@ public class player_control : MonoBehaviour
             return; // はしごを登っている間は他の動作をスキップ
         }
 
+        //// はしご上に立っているときの仮想地面処理
+        //if (isStandingOnLadderTop)
+        //{
+        //    // 落下防止（位置を固定）
+        //    if (transform.position.y < ladderTopY - 0.05f)
+        //    {
+        //        // 下キーで降りたら再びはしごモードへ
+        //        isStandingOnLadderTop = false;
+        //        canClimbLadder = true;
+        //        StartClimbingLadder(currentLadderCollider);
+        //        Debug.Log("はしご上から再びはしごに戻る");
+        //    }
+        //    else
+        //    {
+        //        // 通常の歩行やジャンプを許可する
+        //        Move();     // ← 自前の移動関数そのまま使える
+        //        Jump();     // ← 既存のジャンプ処理
+        //    }
+
+        //    return; // はしご上モード中は他の処理をスキップ
+        //}
+        // はしご上に立っているときの仮想地面処理
+        if (isStandingOnLadderTop)
+        {
+            float verticalInput = Input.GetAxisRaw("Vertical");
+
+            // ↓ 1️⃣「下キーを押した」時のみ再登りするようにする（誤動作防止）
+            if (verticalInput < -0.3f && transform.position.y < ladderTopY - 0.05f)
+            {
+                // 下キーで降りたら再びはしごモードへ
+                isStandingOnLadderTop = false;
+                canClimbLadder = true;
+
+                // ★ currentLadderCollider が null なら lastLadderCollider を使う
+                if (currentLadderCollider == null)
+                    currentLadderCollider = lastLadderCollider;
+
+                if (currentLadderCollider != null)
+                {
+                    Debug.Log("はしご上 → 再びはしご登りモードに入る");
+                    StartClimbingLadder(currentLadderCollider);
+                }
+                else
+                {
+                    Debug.LogWarning("はしごの参照がありません！再登りできません");
+                }
+            }
+            else
+            {
+                // 通常の歩行やジャンプを許可する
+                Move();     // ← 自前の移動関数そのまま使える
+                Jump();     // ← 既存のジャンプ処理
+            }
+
+            return; // はしご上モード中は他の処理をスキップ
+        }
+
         //移動処理
         if (IsSquat == false )
         {
@@ -210,13 +278,17 @@ public class player_control : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.4f, LadderLayer);
 
         //ジャンプ処理
+        // タイマー更新
+        if (jumpTimer > 0)
+            jumpTimer -= Time.deltaTime;
+
         // ジャンプボタン入力を記録
         if (Input.GetButtonDown("Jump"))
             jumpPressed = true;
 
         jumpHeld = Input.GetButton("Jump");
 
-        if ((IsGrounded() == true || hit.collider != null) && IsSquat == false && !isClimbingLadder)
+        if (/*(IsGrounded() == true || hit.collider != null) && */IsSquat == false && !isClimbingLadder)
         {
             Jump();
         }
@@ -237,7 +309,7 @@ public class player_control : MonoBehaviour
         // はしごに触れていて、かつ上方向の入力がある場合
         if (canClimbLadder && (Input.GetAxisRaw("Vertical") > 0.3f))
         {
-            StartClimbingLadder();
+            StartClimbingLadder(currentLadderCollider);
         }
 
         //無敵タイマー
@@ -446,6 +518,8 @@ public class player_control : MonoBehaviour
         if (collision.gameObject.CompareTag("Ladder"))
         {
             canClimbLadder = true;
+            currentLadderCollider = collision; // どのはしごか記録！（現在）
+            lastLadderCollider = collision; 　 // どのはしごか記録！（最終）
         }
 
         //EnemyとEnemyBulletに当たったらプレイヤーを破壊する
@@ -462,6 +536,7 @@ public class player_control : MonoBehaviour
         if (collision.gameObject.CompareTag("Ladder"))
         {
             canClimbLadder = false;
+            currentLadderCollider = null; // はしごから離れたらクリア
             // はしごのコライダーから完全に離れたら、はしご登り状態を強制終了する
             // これで、横に移動してはしごから外れた場合も対応できる
             if (isClimbingLadder)
@@ -611,10 +686,17 @@ public class player_control : MonoBehaviour
     //戻り値：なし
     void Jump()
     {
+        // ジャンプ可能条件
+        bool canJump = IsGrounded() && jumpTimer <= 0f;
+
+        // 飛行中はジャンプ入力を無効化
+        if (isFlying) return;
+
         //ジャンプ処理
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump"))
+        if ((Input.GetKeyDown(KeyCode.Space) || jumpPressed) && canJump/*Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Jump")*/)
         {
-            Debug.Log(jumpHeld);
+         
+            //Debug.Log(jumpHeld);
 
             //プレイヤーの状態に併せてジャンプ力を変更する
             float currentJumpPower = jumpPower;
@@ -622,13 +704,13 @@ public class player_control : MonoBehaviour
             //狼男の状態だとジャンプ力が上がる
             if (currentAttack == AttackType.Okami)
             {
-                currentJumpPower *= 1.3f;
+                currentJumpPower *= 1.2f;
             }
 
             //ヴァンパイア状態だとジャンプ力が少し上がる
             if (currentAttack == AttackType.Vampire)
             {
-                currentJumpPower *= 1.15f;
+                currentJumpPower *= 1.1f;
             }
 
 
@@ -644,21 +726,41 @@ public class player_control : MonoBehaviour
             ////ジャンプ中は移動速度を制限する
             //Moveinput *= 0.7f;
 
-            // 可変ジャンプ（ボタン離したら上昇打ち切り）
-            if (!jumpHeld && rb.linearVelocity.y > 0)
-            {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
-            }
+            // ジャンプ中は SetGravity を一時停止
+            GetComponent<SetGravity>().IsEnable = false;
 
-            // 落下を速くする
-            if (rb.linearVelocity.y < 0)
-            {
-                rb.gravityScale = 2.0f;  // 落下中
-            }
-            else
-            {
-                rb.gravityScale = 1.0f;  // 上昇・地上
-            }
+            // 次のジャンプまで待機時間を設定
+            jumpTimer = jumpCooldown;
+        }
+
+
+        // 可変ジャンプ（ボタン離したら上昇打ち切り）
+        if (!jumpHeld && rb.linearVelocity.y > 0)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+        }
+
+        // 落下時と上昇時で重力を調整
+        if (rb.linearVelocity.y < 0)
+        {
+            // 落下中：速く落ちる
+            rb.gravityScale = 2.5f;  // ← 落下を速く（ズドン感UP）
+        }
+        else if (rb.linearVelocity.y > 0 && !jumpHeld)
+        {
+            // ジャンプボタンを離したら少しだけ重くする
+            rb.gravityScale = 1.5f;
+        }
+        else
+        {
+            // 上昇中（押してる間）は軽くしてふわっと
+            rb.gravityScale = 0.7f;  // ← 上昇を軽く（ふんわり感UP）
+        }
+
+        // 地面についたら SetGravity を再開
+        if (IsGrounded())
+        {
+            GetComponent<SetGravity>().IsEnable = true;
         }
     }
 
@@ -687,7 +789,7 @@ public class player_control : MonoBehaviour
             if (Input.GetAxisRaw("Vertical") < -0.3f)
             {
                 //梯子（はしご）モードに遷移
-                StartClimbingLadder();
+                StartClimbingLadder(currentLadderCollider);
                 return;
 
             }
@@ -729,7 +831,7 @@ public class player_control : MonoBehaviour
 
 
 
-        float currentMoveSpeed = moveSpeed;  //moveSpeedを一時的な変数に保管
+        currentMoveSpeed = moveSpeed;  //moveSpeedを一時的な変数に保管
         float PlayerDirection = transform.localScale.x > 0 ? 1f : -1f; // Move()内で使うplayerDirectionを定義
 
 
@@ -754,7 +856,7 @@ public class player_control : MonoBehaviour
             {
 
                 //梯子（はしご）モードに遷移
-                StartClimbingLadder();
+                StartClimbingLadder(currentLadderCollider);
 
 
                 // 壁に沿って登るようにY軸速度を調整
@@ -787,43 +889,43 @@ public class player_control : MonoBehaviour
             currentMoveSpeed *= 1.2f;
 
 
+            HandleVampireFlight();
+            //// Wキー長押しで飛行モードに入る例
+            //if ((Input.GetKey(KeyCode.Space) || jumpHeld) && !isClimbingLadder) // はしご登り中は飛ばない
+            //{
 
-            // Wキー長押しで飛行モードに入る例
-            if (Input.GetKey(KeyCode.W) && !isClimbingLadder) // はしご登り中は飛ばない
-            {
+            //    FlyingTime += Time.deltaTime;
+            //    Debug.Log(("経過") + FlyingTime);
 
-                FlyingTime += Time.deltaTime;
-                Debug.Log(("経過") + FlyingTime);
+            //    //Gravityのスクリプトも止める
+            //    GetComponent<SetGravity>().IsEnable = false;
 
-                //Gravityのスクリプトも止める
-                GetComponent<SetGravity>().IsEnable = false;
-
-                rb.gravityScale = 0f; // 重力を無効にする
-
-
-
-                // Y軸の速度は0に固定する
-                // 左右の移動はMoveinputで制御、Y軸はInput.GetAxisRaw("Vertical")の影響を受けないようにする
-                rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, 0f); // Y軸の速度を0に固定！
-            }
-
-            if (FlyingTime >= 2.0f) //3秒たったら重力を元に戻し徐々に下降していく
-            {
-                SpriteRenderer.color = Color.magenta;   //プレイヤーに下降している状態とわかりやすく伝えるために色を変える
-
-                GetComponent<SetGravity>().IsEnable = true;
-                rb.gravityScale = originalGravityScale;
-            }
-
-            else if (Input.GetKeyUp(KeyCode.W)) // Wキーを離したら重力を元に戻す
-            {
-                PlayerColor();                 //元の体力状態の色に戻す
-                GetComponent<SetGravity>().IsEnable = true;
-                rb.gravityScale = originalGravityScale;
+            //    rb.gravityScale = 0f; // 重力を無効にする
 
 
 
-            }
+            //    // Y軸の速度は0に固定する
+            //    // 左右の移動はMoveinputで制御、Y軸はInput.GetAxisRaw("Vertical")の影響を受けないようにする
+            //    rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, 0f); // Y軸の速度を0に固定！
+            //}
+
+            //if (FlyingTime >= 2.0f) //3秒たったら重力を元に戻し徐々に下降していく
+            //{
+            //    SpriteRenderer.color = Color.magenta;   //プレイヤーに下降している状態とわかりやすく伝えるために色を変える
+
+            //    GetComponent<SetGravity>().IsEnable = true;
+            //    rb.gravityScale = originalGravityScale;
+            //}
+
+            //else if (Input.GetKeyUp(KeyCode.Space)|| !jumpHeld) // Wキーを離したら重力を元に戻す
+            //{
+            //    PlayerColor();                 //元の体力状態の色に戻す
+            //    GetComponent<SetGravity>().IsEnable = true;
+            //    rb.gravityScale = originalGravityScale;
+
+
+
+            //}
         }
 
 
@@ -839,7 +941,50 @@ public class player_control : MonoBehaviour
 
     }
 
+    // ヴァンパイアの飛行の関数
+    void HandleVampireFlight()
+    {
+        // ヴァンパイア形態でなければスキップ
+        if (currentAttack != AttackType.Vampire)
+        {
+            isFlying = false;
+            return;
+        }
 
+        // 空中でジャンプボタンを押し続けている間に飛行へ移行
+        if (!IsGrounded() && (Input.GetKey(KeyCode.Space) || jumpHeld) && !isFlying)
+        {
+            // 飛行に入る条件：上昇が止まってから（自然な感じに）
+            if (rb.linearVelocity.y <= 0)
+            {
+                isFlying = true;
+                flyingTime = 0f;
+
+                GetComponent<SetGravity>().IsEnable = false;
+                rb.gravityScale = 0f;
+                rb.linearVelocity = Vector2.zero;
+
+                //// 見た目で分かるように色変化など
+                //SpriteRenderer.color = Color.magenta;
+            }
+        }
+
+        // 飛行中の処理
+        if (isFlying)
+        {
+            flyingTime += Time.deltaTime;
+            rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, 0f);
+
+            // 離す or 時間切れで飛行終了
+            if ((Input.GetKeyUp(KeyCode.Space) || !jumpHeld) || flyingTime > maxFlyingTime)
+            {
+                isFlying = false;
+                GetComponent<SetGravity>().IsEnable = true;
+                rb.gravityScale = 1f;
+                /*PlayerColor();*/ // 元の色に戻す
+            }
+        }
+    }
 
 
     //関数名：Attack()
@@ -955,6 +1100,9 @@ public class player_control : MonoBehaviour
         //下方向にrayを飛ばして、指定したレイヤーのオブジェクトと接触しているかどうか判別する
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.8f, Ground);
 
+        // レイを可視化
+        Debug.DrawRay(transform.position, Vector2.down * 0.8f, Color.yellow);
+
         //ヒットしていない場合はnullが返される
         if (hit.collider != null)
         {
@@ -972,7 +1120,7 @@ public class player_control : MonoBehaviour
     //用途：はしごを登り始める処理
     //引数：void
     //戻り値：なし
-    void StartClimbingLadder()
+    void StartClimbingLadder(Collider2D ladderCollider)
     {
         isClimbingLadder = true;
         rb.gravityScale = 0f; // 重力を無効にする
@@ -980,6 +1128,12 @@ public class player_control : MonoBehaviour
 
         //Gravityのスクリプトも止める
         GetComponent<SetGravity>().IsEnable = false;
+        // はしごの中央に位置をスナップ
+        Vector3 pos = transform.position;
+        pos.x = ladderCollider.bounds.center.x;
+        transform.position = pos;
+
+        currentLadderCollider = ladderCollider; // 今登っているはしごを保存
     }
 
     //関数名：ClimbLadder()
@@ -988,7 +1142,7 @@ public class player_control : MonoBehaviour
     //戻り値：なし
     void ClimbLadder()
     {
-        if (!isClimbingLadder)
+        if (!isClimbingLadder || currentLadderCollider == null)
         {
             return;
         }
@@ -996,16 +1150,67 @@ public class player_control : MonoBehaviour
         // Y軸の入力（上矢印キーまたはLスティックの上下）を取得
         float verticalInput = Input.GetAxisRaw("Vertical");
 
-        //地上にいる、かつ、下方向に入力したら、梯子を解除してよい
-        //もしくはジャンプボタンを押したら梯子を解除
-        if ((verticalInput < -0.1f && IsGrounded()) || Input.GetButtonDown("Jump"))
+        // 上下移動
+        rb.linearVelocity = new Vector2(0f, verticalInput * ladderClimbSpeed);
+
+        // はしごの上によじ登る処理
+        Bounds ladderBounds = currentLadderCollider.bounds;
+
+        float playerFeetY = transform.position.y - (bc.size.y / 2f);
+        Debug.Log($"feet={playerFeetY:F2}, ladderMin={ladderBounds.min.y:F2}");
+
+        // === はしご上端でよじ登る ===
+        if (transform.position.y > ladderBounds.max.y - 0.1f)
         {
-            StopClimbingLadder();
+            Debug.Log("はしご上端に到達！はしご上に立たせる");
+
+            // はしご登り状態を解除
+            isClimbingLadder = false;
+            canClimbLadder = false;
+
+            // 重力を復帰
+            rb.gravityScale = originalGravityScale;
+            GetComponent<SetGravity>().IsEnable = true;
+
+            // はしごの上にプレイヤーをスナップ（仮想地面の高さに配置）
+            float virtualGroundY = ladderBounds.max.y + (bc.size.y / 2f - 0.05f);
+            transform.position = new Vector3(transform.position.x, virtualGroundY, transform.position.z);
+
+            // 落下防止のために垂直速度をリセット
+            rb.linearVelocity = Vector2.zero;
+
+            // この状態では地面がないので「一時的にIsGroundedをtrue扱い」にする
+            isStandingOnLadderTop = true;  // ← 新しいフラグ
+            ladderTopY = virtualGroundY;   // ← 登り切った高さを記録
+
+            Debug.Log("はしご上で立ち状態に変更");
+
             return;
         }
 
-        Debug.Log("Input = " + verticalInput + " velocity = " + rb.linearVelocity + " verticalInput * ladderClimbSpeed= " + verticalInput * ladderClimbSpeed);
-        rb.linearVelocity = new Vector2(0f, verticalInput * ladderClimbSpeed);
+        // はしごの下に着いたら降りる
+        if (verticalInput < -0.1f && playerFeetY < ladderBounds.min.y)
+        {
+            Debug.Log("はしご下端を下方向入力で降りる");
+            StopClimbingLadder();
+            // 重力を戻す
+            rb.gravityScale = originalGravityScale;
+            GetComponent<SetGravity>().IsEnable = true;
+            return;
+        }
+        //地上にいる、かつ、下方向に入力したら、梯子を解除してよい
+        //もしくはジャンプボタンを押したら梯子を解除
+        if (Input.GetButtonDown("Jump"))
+        {
+            StopClimbingLadder();
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower * 0.8f);
+            return;
+        }
+
+
+
+        //Debug.Log("Input = " + verticalInput + " velocity = " + rb.linearVelocity + " verticalInput * ladderClimbSpeed= " + verticalInput * ladderClimbSpeed);
+        
     }
 
 
@@ -1030,11 +1235,28 @@ public class player_control : MonoBehaviour
         GetComponent<SetGravity>().IsEnable = true;
     }
 
+    // 梯子の上でジャンプと歩きができる許可
+    IEnumerator EnableMovementAfterClimb()
+    {
+        // ほんの少し待ってから入力を有効化
+        yield return new WaitForSeconds(0.1f);
+
+        // 念のため強制的に「はしご登りモードOFF」
+        isClimbingLadder = false;
+        canClimbLadder = false;
+
+        // 移動・ジャンプ可能に（重力も確実に戻す）
+        rb.gravityScale = originalGravityScale;
+        GetComponent<SetGravity>().IsEnable = true;
+
+        Debug.Log("よじ登り完了！通常移動・ジャンプ再開");
+    }
+
     //関数名：playerHP()
     //用途：ダメージ処理
     //引数：void
     //戻り値：なし
-   public void  playerHP(int Damege)
+    public void  playerHP(int Damege)
     {
         if (!IsInvincible)
         {
@@ -1042,7 +1264,7 @@ public class player_control : MonoBehaviour
             Debug.Log("痛い");
 
 
-            PlayerColor();
+            //PlayerColor();
 
             //// ノックバック処理
             //Vector2 knockbackDirection = transform.position.x < collision.transform.position.x ? Vector2.left : Vector2.right;
