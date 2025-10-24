@@ -8,29 +8,51 @@ public class ItemSpawner : MonoBehaviour
     [Header("スポーン位置（各アイテムに対応）")]
     public Transform[] spawnPoints;
 
-    [Header("湧く間隔（秒）")]
-    public float spawnInterval = 3f;
+    [Header("湧くまでの待機時間（秒）")]
+    public float respawnDelay = 2f;
+
+    private GameObject[] currentItems;     // 現在存在するアイテム
+    private bool[] isRespawning;           // リスポーン中かどうか
 
     void Start()
     {
-        // アイテム数とスポーン位置数が一致しているか確認
-        if (itemPrefabs.Length != spawnPoints.Length)
+        currentItems = new GameObject[spawnPoints.Length];
+        isRespawning = new bool[spawnPoints.Length];
+        SpawnAllItems();
+    }
+
+    void Update()
+    {
+        for (int i = 0; i < spawnPoints.Length; i++)
         {
-            Debug.LogWarning("itemPrefabsとspawnPointsの数が一致していません");
+            // アイテムが消えていて、まだリスポーン準備中でないなら
+            if (currentItems[i] == null && !isRespawning[i])
+            {
+                StartCoroutine(RespawnItem(i));
+            }
+        }
+    }
+
+    System.Collections.IEnumerator RespawnItem(int index)
+    {
+        isRespawning[index] = true; // リスポーン中に設定
+        yield return new WaitForSeconds(respawnDelay);
+
+        if (index < itemPrefabs.Length && currentItems[index] == null)
+        {
+            currentItems[index] = Instantiate(itemPrefabs[index], spawnPoints[index].position, Quaternion.identity);
         }
 
-        // 一定間隔で湧かせる処理を繰り返す
-        InvokeRepeating(nameof(SpawnAllItems), 0f, spawnInterval);
+        isRespawning[index] = false; // リスポーン完了
     }
 
     void SpawnAllItems()
     {
-        // 各スポーン位置に対応するアイテムを生成
         for (int i = 0; i < spawnPoints.Length; i++)
         {
             if (i < itemPrefabs.Length)
             {
-                Instantiate(itemPrefabs[i], spawnPoints[i].position, Quaternion.identity);
+                currentItems[i] = Instantiate(itemPrefabs[i], spawnPoints[i].position, Quaternion.identity);
             }
         }
     }
