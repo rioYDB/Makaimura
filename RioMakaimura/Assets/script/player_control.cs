@@ -127,8 +127,8 @@ public class player_control : MonoBehaviour
     private float walkAnimTimer = 0f;    // 歩行アニメのタイマー
     private int walkAnimIndex = 0;       // 歩行アニメのフレームインデックス
 
-    //-----------------------------------------------------------------------------------------
-
+    //狼状態の壁登り-----------------------------------------------------------------------------------------
+    public LayerMask WallClim;          //壁登りレイヤーの変数
     //-----------------------------------------------------------------------------------------------------------------------
     //はしご登り関連の追加変数
     public float ladderClimbSpeed = 3.0f; // はしごを登る速度
@@ -264,6 +264,15 @@ public class player_control : MonoBehaviour
                 // 通常の歩行やジャンプを許可する
                 Move();     // ← 自前の移動関数そのまま使える
                 Jump();     // ← 既存のジャンプ処理
+
+
+                // ★追加: 登り切った状態からジャンプした瞬間にフラグを解除★
+                // ジャンプはrb.linearVelocity.yを上書きするので、ジャンプ後すぐはIsGrounded()がfalseになる
+                if (rb.linearVelocity.y > jumpPower * 0.1f)
+                {
+                    isStandingOnLadderTop = false;
+                }
+
             }
 
             return; // はしご上モード中は他の処理をスキップ
@@ -838,40 +847,60 @@ public class player_control : MonoBehaviour
         //狼男になった時に壁を登れるようになる
         if (currentAttack == AttackType.Okami)
         {
-            //移動速度アップ
             currentMoveSpeed *= 1.5f;
 
+            float WallCheck = 0.01f;
 
-            //横方向にレイを飛ばし、壁があるか判定する
-            float WallCheck = 0.01f; //壁を判定する距離
+            // Y軸オフセットを追加
+            float verticalCenterOffset = bc.size.y * 0.50f; // プレイヤーの高さの1/4分上にずらす
 
             Vector2 wallRayOrigin = (Vector2)transform.position + bc.offset + new Vector2(bc.size.x / 2f * PlayerDirection, 0f);
-            RaycastHit2D wallHit = Physics2D.Raycast(wallRayOrigin, Vector2.right * PlayerDirection, WallCheck, Ground); // 進行方向へRayを飛ばす
 
 
-            Debug.DrawRay(wallRayOrigin, Vector2.right * PlayerDirection * WallCheck, Color.blue); // デバッグ用
 
-            // 壁に触れていて、かつ上方向の入力がある場合
+            // 壁のチェック (横方向)
+            RaycastHit2D wallHit = Physics2D.Raycast(wallRayOrigin, Vector2.right * PlayerDirection, WallCheck, WallClim);
+
+            // 壁に触れていて、かつ上方向の入力がある場合 (壁登りの継続/開始条件)
             if (wallHit.collider != null && Input.GetAxisRaw("Vertical") > 0.1f)
             {
+                // 壁登りの実行
+                GetComponent<SetGravity>().IsEnable = false;
+                rb.gravityScale = 0f;
 
-                //梯子（はしご）モードに遷移
-                StartClimbingLadder(currentLadderCollider);
+                float climbSpeed = currentMoveSpeed * 0.8f;
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, climbSpeed);
 
-
-                // 壁に沿って登るようにY軸速度を調整
-                // climbSpeedは移動速度currentMoveSpeedに比例させると良い
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, currentMoveSpeed * 0.8f); // 登る速度を調整
+                return; // 壁登り中は他の移動処理をスキップ
             }
+
+            // ★★★ 修正箇所: 横方向の壁がなくなった時のチェック ★★★
+
+            // 壁登りモード中に、横の壁がなくなった（wallHit.collider == null）場合
+            // ただし、Playerが空中にいる場合のみこのロジックが適用されるようにする（地面にいる場合は通常の移動ロジックで制御される）
+            if (rb.gravityScale == 0f && !IsGrounded())
+            {
+                // 空中で、かつ壁がなくなった（Raycastがヒットしなかった）場合
+                if (wallHit.collider == null)
+                {
+                    Debug.Log("横の壁が途切れたため、壁登りモードを解除します。");
+
+                    // 重力と移動を復帰させる
+                    GetComponent<SetGravity>().IsEnable = true;
+                    rb.gravityScale = originalGravityScale;
+
+                    // プレイヤーが向いている方向（Moveinput方向）にジャンプさせる
+                    rb.linearVelocity = new Vector2(PlayerDirection * jumpPower * 0.5f, jumpPower * 0.8f);
+
+                    return; // 処理を終了し、通常の移動処理をスキップ
+                }
+            }
+
+            // 壁に触れていない、または上入力がない場合は重力を元に戻す
             else
             {
                 GetComponent<SetGravity>().IsEnable = true;
-
-                // 壁に触れていないか、上入力がない場合は重力に従う
                 rb.gravityScale = originalGravityScale;
-
-
-
             }
 
         }
@@ -1167,25 +1196,26 @@ public class player_control : MonoBehaviour
             // はしご登り状態を解除
             isClimbingLadder = false;
             canClimbLadder = false;
+            currentLadderCollider = null; // ★追加: 参照をクリア★
 
             // 重力を復帰
             rb.gravityScale = originalGravityScale;
             GetComponent<SetGravity>().IsEnable = true;
 
-            // はしごの上にプレイヤーをスナップ（仮想地面の高さに配置）
+            // はしごの上にプレイヤーをスナップ
             float virtualGroundY = ladderBounds.max.y + (bc.size.y / 2f - 0.05f);
             transform.position = new Vector3(transform.position.x, virtualGroundY, transform.position.z);
 
             // 落下防止のために垂直速度をリセット
             rb.linearVelocity = Vector2.zero;
 
-            // この状態では地面がないので「一時的にIsGroundedをtrue扱い」にする
-            isStandingOnLadderTop = true;  // ← 新しいフラグ
-            ladderTopY = virtualGroundY;   // ← 登り切った高さを記録
+            // 一時的な仮想地面状態を設定
+            isStandingOnLadderTop = true;
+            ladderTopY = virtualGroundY;
 
             Debug.Log("はしご上で立ち状態に変更");
 
-            return;
+            return; // ★重要: 登り切ったので、ここでコルーチンを終了★
         }
 
         // はしごの下に着いたら降りる
@@ -1204,13 +1234,15 @@ public class player_control : MonoBehaviour
         {
             StopClimbingLadder();
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower * 0.8f);
+            // ★isStandingOnLadderTopフラグの処理を追加★
+            isStandingOnLadderTop = false;
             return;
         }
 
 
 
         //Debug.Log("Input = " + verticalInput + " velocity = " + rb.linearVelocity + " verticalInput * ladderClimbSpeed= " + verticalInput * ladderClimbSpeed);
-        
+
     }
 
 
@@ -1221,15 +1253,17 @@ public class player_control : MonoBehaviour
     void StopClimbingLadder()
     {
         isClimbingLadder = false;
-        rb.gravityScale = originalGravityScale; // 重力を元に戻す (この変数は使われないが念のため残す)
+        canClimbLadder = false; // ★追加: canClimbLadder もリセット★
+        isStandingOnLadderTop = false; // ★追加: 登り切り状態もリセット★
+        currentLadderCollider = null; // ★追加: 参照をクリア★
+
+        rb.gravityScale = originalGravityScale;
 
         //X軸の速度も0にリセットするで！
         rb.linearVelocity = Vector2.zero; // X軸速度もY軸速度も0にする
 
         // 地面にいる場合は、IsJumpingをfalseにリセット
         IsJumping = !IsGrounded();
-
-
 
         //Gravityのスクリプトは再開
         GetComponent<SetGravity>().IsEnable = true;
