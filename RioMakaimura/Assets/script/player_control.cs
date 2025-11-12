@@ -91,6 +91,8 @@ public class player_control : MonoBehaviour
     private Vector2 Movedirection = Vector2.zero;                           // 移動方向を記憶しておく
     private float FlyingTime = 0.0f;   //滑空時間を制限する変数
     private Rigidbody2D rb;                                                         //Rigidbody2Dの格納
+    private int playerLayer;
+    private int platformLayer;
     private BoxCollider2D bc;                                                       //BoxCollider2Dの格納庫
     private SpriteRenderer SpriteRenderer;                                          //SpriteRendererを扱うための格納庫
    //-----------------------------------------------------------------------------------------------------------------------
@@ -195,6 +197,12 @@ public class player_control : MonoBehaviour
         OriginLocalScale = transform.localScale;
 
         BulletChange("Human");
+
+        // レイヤーを取得する処理
+        playerLayer = LayerMask.NameToLayer("Player");
+        platformLayer = LayerMask.NameToLayer("Platform");
+
+        Debug.Log("PlayerLayer = " + playerLayer + ", PlatformLayer = " + platformLayer);
     }
 
     // Update is called once per frame
@@ -278,6 +286,11 @@ public class player_control : MonoBehaviour
             return; // はしご上モード中は他の処理をスキップ
         }
 
+        if (Input.GetKey(KeyCode.DownArrow) )
+        {
+            StartCoroutine(DisableCollisionTemporarily());
+        }
+
         //移動処理
         if (IsSquat == false )
         {
@@ -313,6 +326,7 @@ public class player_control : MonoBehaviour
         {
             Attack();
         }
+
 
 
         // はしごに触れていて、かつ上方向の入力がある場合
@@ -1126,8 +1140,12 @@ public class player_control : MonoBehaviour
     public bool IsGrounded()
     {
         bool ret = false;
+        // 「Ground」+「Platform」両方を対象にする
+        int groundAndPlatformMask = Ground | (1 << LayerMask.NameToLayer("Platform"));
+
+
         //下方向にrayを飛ばして、指定したレイヤーのオブジェクトと接触しているかどうか判別する
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.8f, Ground);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.8f, groundAndPlatformMask);
 
         // レイを可視化
         Debug.DrawRay(transform.position, Vector2.down * 0.8f, Color.yellow);
@@ -1480,5 +1498,14 @@ public class player_control : MonoBehaviour
 
         }
 
+    }
+
+    // すり抜け床とプレイヤーの判定
+    IEnumerator DisableCollisionTemporarily()
+    {
+        // プレイヤーとすり抜け床の衝突を一時的に無視
+        Physics2D.IgnoreLayerCollision(playerLayer, platformLayer, true);
+        yield return new WaitForSeconds(0.3f);
+        Physics2D.IgnoreLayerCollision(playerLayer, platformLayer, false);
     }
 }
