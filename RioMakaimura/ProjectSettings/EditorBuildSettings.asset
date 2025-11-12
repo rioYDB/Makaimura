@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Ayabe.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Title.unity
     guid: 1d872db81be818d4eba45c5669d3d361
   - enabled: 0
@@ -17,19 +17,19 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Takahashi.unity
     guid: afa2a159f477fba43a4b5040ec4a33d5
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Goal.unity
     guid: 65301ab28dd8d6c4cbb4828389a422b0
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/GameOver.unity
     guid: d9d1d994e8078c046b17aa825f221ce5
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/ayabe4.unity
     guid: 5032cce4708a7ab489b10344e20d5261
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Goal _1.unity
     guid: 0d6ed19f9d060764b9613d916eda67bf
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/ayabe5.unity
     guid: 6ac38a8c0fb39a64ca405be6d40c90b6
   - enabled: 0
