@@ -56,6 +56,13 @@ public class player_control : MonoBehaviour
     private GameObject spearToShoot;
 
 
+    // 外部から currentAttack の値を安全に読み取るための公開プロパティ
+    public AttackType CurrentAttackType
+    {
+        get { return currentAttack; }
+    }
+
+
     public float KnockbackForce;                                                    //ノックバック
     public float invincibleTime;                                                        //無敵時間
     public int maxBulletsOnScreen = 3;                                          //画面内に出るプレイヤー攻撃の最大の数
@@ -91,6 +98,9 @@ public class player_control : MonoBehaviour
     private Vector2 Movedirection = Vector2.zero;                           // 移動方向を記憶しておく
     private float FlyingTime = 0.0f;   //滑空時間を制限する変数
     private Rigidbody2D rb;                                                         //Rigidbody2Dの格納
+
+    public Rigidbody2D Rb { get { return rb; } } // Rigidbody2Dを外部に公開
+
     private int playerLayer;
     private int platformLayer;
     private BoxCollider2D bc;                                                       //BoxCollider2Dの格納庫
@@ -480,7 +490,7 @@ public class player_control : MonoBehaviour
     {
 
         
-
+        
         //狼男アイテムに触れたら自分が狼男になる
         if (collision.gameObject.tag == "Okami")
         {
@@ -510,16 +520,32 @@ public class player_control : MonoBehaviour
             Destroy(collision.gameObject);
         }
 
+        
         //魔女が隠し空間に入れるようにする
         if (currentAttack == AttackType.Which && ((1 << collision.gameObject.layer) & SecretArea) != 0)
         {
-            Debug.Log("隠しエリアクランクインです");
-            if (!InSecretArea) // 既に入っている状態ではない場合のみ実行
+            // 衝突したオブジェクトがFadeWallタグを持っているか確認（壁を透かす対象か）
+            if (collision.CompareTag(FadeWallTag))
             {
-                InSecretArea = true;
-                StartCoroutine(FadeWalls(true)); // 壁を透かすコルーチンを開始
+                Debug.Log("隠しエリアクランクインです (魔女)");
+                if (!InSecretArea) // 既に入っている状態ではない場合のみ実行
+                {
+                    InSecretArea = true;
+
+                    // ★修正: 透過アニメーション開始前に、コライダーを即座に無効化し通り抜けを保証★
+                    Collider2D wallCollider = collision.GetComponent<Collider2D>();
+                    if (wallCollider != null)
+                    {
+                        wallCollider.enabled = false; // すぐにすり抜け可能にする
+                        // Debug.Log("壁コライダー即時無効化"); 
+                    }
+
+                    // 透過アニメーション開始
+                    StartCoroutine(FadeWalls(true));
+                }
             }
         }
+        
 
         //ヴァンパイアアイテムに触れたら自分が魔女になる
         if (collision.gameObject.tag == "Vampire")
@@ -573,22 +599,25 @@ public class player_control : MonoBehaviour
 
         //隠しエリアから出る
 
+
+        
         // 衝突したオブジェクトのレイヤーがSecretAreaに含まれているかチェック
         if (((1 << collision.gameObject.layer) & SecretArea) != 0)
         {
             Debug.Log("隠しエリアクランクアップ！");
             InSecretArea = false;
-            
-            if (gameObject.activeInHierarchy) // 親を含めてHierarchy上でアクティブか
+
+            if (gameObject.activeInHierarchy)
             {
-                StartCoroutine(FadeWalls(false)); // 壁を元に戻すコルーチンを開始
+                // ★修正: 透過解除とコライダー有効化を同時に行う★
+                StartCoroutine(FadeWalls(false));
             }
             else
             {
                 Debug.LogWarning("コルーチンを開始できませんでした: プレイヤーオブジェクトが非アクティブです。", this);
             }
         }
-
+        
     }
 
 
@@ -1105,6 +1134,10 @@ public class player_control : MonoBehaviour
     //戻り値：なし
     private void BulletChange(string BulletName)
     {
+        // ★修正: 攻撃タイプが変更されたら、壁のルールを強制適用★
+        EnforceSecretWallRule();
+
+
         //発射する弾の種類を管理する（switchで）
         spearToShoot = HumanWeapon;
 
@@ -1463,14 +1496,36 @@ public class player_control : MonoBehaviour
         }
     }
 
+
+    //一旦削除
+
+    
+
+
     //魔女の隠しエリアのかべのコルーチン
     IEnumerator FadeWalls(bool FadeOut)
     {
         GameObject[] walls = GameObject.FindGameObjectsWithTag(FadeWallTag); // FadingWallタグの壁を全て取得
+        
+        // フェードアウト（壁に入る）時は、まずコライダーを無効化
+        if (FadeOut)
+        {
+            foreach (GameObject wall in walls)
+            {
+                Collider2D wallCollider = wall.GetComponent<Collider2D>();
+                if (wallCollider != null)
+                {
+                    wallCollider.enabled = false; // コライダーを無効にし、すり抜け可能にする
+                }
+            }
+        }
+        
 
         foreach (GameObject wall in walls)
         {
             SpriteRenderer wallRenderer = wall.GetComponent<SpriteRenderer>();
+            Collider2D wallCollider = wall.GetComponent<Collider2D>(); // コライダーを再取得
+
             if (wallRenderer != null)
             {
                 Color startColor = wallRenderer.color;
@@ -1478,7 +1533,7 @@ public class player_control : MonoBehaviour
 
                 if (FadeOut) // 透かす場合
                 {
-                    targetColor.a = 0.3f; // 完全に透明にせず、少しだけ見えるように (0.0fで完全透明)
+                    targetColor.a = 0.3f; // 完全に透明にせず、少しだけ見えるように
                 }
                 else // 元に戻す場合
                 {
@@ -1490,15 +1545,46 @@ public class player_control : MonoBehaviour
                 {
                     timer += Time.deltaTime;
                     float progress = timer / FadeDuration;
-                    wallRenderer.color = Color.Lerp(startColor, targetColor, progress); // 色を徐々に変化させる
-                    yield return null; // 1フレーム待つ
+                    wallRenderer.color = Color.Lerp(startColor, targetColor, progress);
+                    yield return null;
                 }
                 wallRenderer.color = targetColor; // 最終的な色を確実に適用
             }
+        }
 
+        // フェードイン（壁から出る）時は、フェードが完了してからコライダーを有効化
+        if (!FadeOut)
+        {
+            foreach (GameObject wall in walls)
+            {
+                Collider2D wallCollider = wall.GetComponent<Collider2D>();
+                if (wallCollider != null)
+                {
+                    wallCollider.enabled = true; // コライダーを有効にし、壁として機能させる
+                }
+            }
         }
 
     }
+
+
+    /// <summary>
+    /// プレイヤーの状態が変わったとき、隠し壁の規則を強制的に適用する。
+    /// </summary>
+    private void EnforceSecretWallRule()
+    {
+        // プレイヤーが現在、隠しエリアの境界内にいる、または壁が透けている状態の場合にチェック
+        if (InSecretArea && currentAttack != AttackType.Which)
+        {
+            Debug.Log("変身検知: 非魔女状態のため壁を即時復帰します。");
+            // 非魔女がエリア内にいる場合、壁を元に戻す（SOLIDにする）
+            // FadeOut=falseでコライダーを有効にし、見た目を不透明に戻す
+            StartCoroutine(FadeWalls(false));
+            InSecretArea = false; // 状態をリセット
+        }
+    }
+
+    
 
     // すり抜け床とプレイヤーの判定
     IEnumerator DisableCollisionTemporarily()
