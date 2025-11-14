@@ -70,8 +70,9 @@ public class FadeManager : MonoBehaviour
 				//(UnityEditor名前空間を使わないと自動取得できなかったので決めうちで作成) .
 				List<string> scenes = new List<string> ();
 				scenes.Add ("Ayabe4");
-				//scenes.Add ("SomeScene1");
-				//scenes.Add ("SomeScene2");
+				scenes.Add ("Ayabe5");
+				scenes.Add ("Title");
+				scenes.Add("Goal _1");
 
 
 				//Sceneが一つもない .
