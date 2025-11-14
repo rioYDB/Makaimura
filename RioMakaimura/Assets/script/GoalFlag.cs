@@ -24,7 +24,7 @@ public class GoalFlag : MonoBehaviour
         {
             
 
-            SceneManager.LoadScene("Goal _1"); // 「Goal」シーンへ遷移
+            FadeManager.Instance.LoadScene("Goal _1",1.0f); // 「Goal」シーンへ遷移
         }
     }
 }
