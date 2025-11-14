@@ -296,10 +296,13 @@ public class player_control : MonoBehaviour
             return; // はしご上モード中は他の処理をスキップ
         }
 
-        if (Input.GetKey(KeyCode.DownArrow) )
+        if (Input.GetKeyDown(KeyCode.DownArrow) && IsGrounded())
         {
-            StartCoroutine(DisableCollisionTemporarily());
+            Debug.Log("↓キー入力検出！");
+            StartCoroutine(DisablePlatformTemporarily());
         }
+
+       
 
         //移動処理
         if (IsSquat == false )
@@ -431,6 +434,21 @@ public class player_control : MonoBehaviour
             Debug.Log("シーンリセット");
         }
 
+        // ↓キー入力時に物理設定を変更する前後でログを出力
+        #if false
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            Debug.Log("↓キーが押された: 衝突無効化を開始");
+            Physics2D.IgnoreLayerCollision(playerLayer, platformLayer, true);
+            rb.gravityScale = 0f;  // 重力を無効化
+        }
+        else
+        {
+            Debug.Log("↓キーが離された: 衝突無効化を終了");
+            Physics2D.IgnoreLayerCollision(playerLayer, platformLayer, false);
+            rb.gravityScale = originalGravityScale;  // 元の重力に戻す
+        }
+        #endif
     }
 
     // 変身状態に応じて使うアニメーションセットを切り替える
@@ -1584,14 +1602,28 @@ public class player_control : MonoBehaviour
         }
     }
 
-    
+
 
     // すり抜け床とプレイヤーの判定
-    IEnumerator DisableCollisionTemporarily()
+    IEnumerator DisablePlatformTemporarily()
     {
-        // プレイヤーとすり抜け床の衝突を一時的に無視
-        Physics2D.IgnoreLayerCollision(playerLayer, platformLayer, true);
-        yield return new WaitForSeconds(0.3f);
-        Physics2D.IgnoreLayerCollision(playerLayer, platformLayer, false);
+
+        // 無視開始
+        //Physics2D.IgnoreLayerCollision(
+        //    LayerMask.NameToLayer("Player"),
+        //    LayerMask.NameToLayer("Platform"),
+        //    true
+        //);
+
+
+        //// 少し待つ（床を通過する間）
+        yield return new WaitForSeconds(0.8f);
+
+        //// 無視解除
+        //Physics2D.IgnoreLayerCollision(
+        //    LayerMask.NameToLayer("Player"),
+        //    LayerMask.NameToLayer("Platform"),
+        //    false
+        //);
     }
 }
