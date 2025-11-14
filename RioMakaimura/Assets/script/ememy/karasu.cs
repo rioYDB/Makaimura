@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class karasu : MonoBehaviour
 {
@@ -15,6 +16,16 @@ public class karasu : MonoBehaviour
 
     void Update()
     {
+
+        // 敵キャラクターが画面内にいるか確認
+        Vector3 screenPos = Camera.main.WorldToViewportPoint(transform.position);
+        if (screenPos.x < 0 || screenPos.x > 1 || screenPos.y < 0 || screenPos.y > 1)
+        {
+            // 画面外にいる場合は岸辺露伴は動かない
+            return;
+        }
+
+
         // 移動させたX座標を取得
         float newX = transform.position.x - e_moveSpeed * Time.deltaTime;
 
@@ -24,6 +35,9 @@ public class karasu : MonoBehaviour
 
         // 新しい位置に更新
         transform.position = new Vector3(newX, newY, transform.position.z);
+
+
+
     }
 
     void OnBecameInvisible()
