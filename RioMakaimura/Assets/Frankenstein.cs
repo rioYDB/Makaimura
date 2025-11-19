@@ -197,7 +197,7 @@ public class Frankenstein : MonoBehaviour
         yield return new WaitForSeconds(0.4f);
 
 
-        // --- ★攻撃判定の開始★ ---
+        //攻撃判定の開始
         // 振り下ろし開始時刻を記録
         float startTime = Time.time;
 
@@ -229,16 +229,25 @@ public class Frankenstein : MonoBehaviour
             hammerVisual.localRotation = Quaternion.Euler(swingEndRotation);
         }
 
-        // --- ★攻撃判定の終了★ ---
 
+
+        //攻撃判定の終了
         if (hammerHitbox != null)
         {
             Debug.Log("通常攻撃: ヒットボックスOFF");
             hammerHitbox.enabled = false; // 攻撃判定を無効化
         }
 
+
+
         // 攻撃後の硬直
         yield return new WaitForSeconds(0.7f);
+
+        if(hammerVisual != null)
+        {
+            hammerVisual.gameObject.SetActive(false);
+        }
+
 
         cooldownTimer = attackCooldown;
         currentState = FrankenState.Idle;
