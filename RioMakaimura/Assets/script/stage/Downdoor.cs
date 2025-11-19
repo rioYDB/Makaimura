@@ -65,10 +65,7 @@ public class Downdoor : MonoBehaviour
         {
             // 落ち切った後の処理
             // コライダーを無効化することで、完全に消えたように見せる
-            if (doorCollider != null)
-            {
-                doorCollider.enabled = false;
-            }
+       
 
             // スクリプトのUpdateを停止 (CPU負荷軽減)
             enabled = false;
