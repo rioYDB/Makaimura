@@ -72,7 +72,10 @@ public class FadeManager : MonoBehaviour
 				scenes.Add ("Ayabe4");
 				scenes.Add ("Ayabe5");
 				scenes.Add ("Title");
+				scenes.Add("Tkahashi_Test");
+				scenes.Add("honki");
 				scenes.Add("Goal _1");
+				scenes.Add("Gameover");
 
 
 				//Sceneが一つもない .

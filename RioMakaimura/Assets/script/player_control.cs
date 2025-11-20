@@ -43,6 +43,8 @@ public class player_control : MonoBehaviour
     private AttackType currentAttack = AttackType.Human;                        //攻撃する種類がはじめは人間状態の攻撃にするため
     public void ChangeAttack(AttackType newType)
     {
+
+
         currentAttack = newType;
     }
 
@@ -54,6 +56,8 @@ public class player_control : MonoBehaviour
     public GameObject VampireWeapon;										   //ヴァンパイア状態で攻撃する(火柱)のプレハブ
 
     private GameObject spearToShoot;
+
+
 
 
     // 外部から currentAttack の値を安全に読み取るための公開プロパティ
@@ -165,6 +169,8 @@ public class player_control : MonoBehaviour
     //-----------------------------------------------------------------------------------------------------------------------
 
     public bool isFacingRight = true; // カメラが参照する向きフラグ
+
+
 
 
     void Start()
@@ -494,7 +500,7 @@ public class player_control : MonoBehaviour
             Destroy(collision.gameObject);
         }
 
-        
+        /*
         //魔女が隠し空間に入れるようにする
         if (currentAttack == AttackType.Which && ((1 << collision.gameObject.layer) & SecretArea) != 0)
         {
@@ -520,7 +526,7 @@ public class player_control : MonoBehaviour
             }
         }
         
-
+        */
         //ヴァンパイアアイテムに触れたら自分が魔女になる
         if (collision.gameObject.tag == "Vampire")
         {
@@ -601,7 +607,7 @@ public class player_control : MonoBehaviour
             if (gameObject.activeInHierarchy)
             {
                 // ★修正: 透過解除とコライダー有効化を同時に行う★
-                StartCoroutine(FadeWalls(false));
+                //StartCoroutine(FadeWalls(false));
             }
             else
             {
@@ -1100,9 +1106,10 @@ public class player_control : MonoBehaviour
     //戻り値：なし
     private void BulletChange(string BulletName)
     {
+        /*
         // ★修正: 攻撃タイプが変更されたら、壁のルールを強制適用★
         EnforceSecretWallRule();
-
+        */
 
         //発射する弾の種類を管理する（switchで）
         spearToShoot = HumanWeapon;
@@ -1382,7 +1389,7 @@ public class player_control : MonoBehaviour
     //一旦削除
 
     
-
+    /*
 
     //魔女の隠しエリアのかべのコルーチン
     IEnumerator FadeWalls(bool FadeOut)
@@ -1448,6 +1455,7 @@ public class player_control : MonoBehaviour
         }
 
     }
+    
 
 
     /// <summary>
@@ -1466,7 +1474,7 @@ public class player_control : MonoBehaviour
         }
     }
 
-
+    */
 
     //すり抜け床の上にいるかどうかを判定する関数 すり抜け床用
     bool IsOnPlatform()
