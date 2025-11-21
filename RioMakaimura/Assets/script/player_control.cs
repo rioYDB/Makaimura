@@ -820,22 +820,22 @@ public class player_control : MonoBehaviour
     //戻り値：なし
     void Move()
     {
-       
-            GetComponent<SetGravity>().IsEnable = true;
+        // はしごの中で横慣性を残さないようにリセット
+        if (isClimbingLadder)
+        {
+            Moveinput = 0f;
+            return;
+        }
+        GetComponent<SetGravity>().IsEnable = true;
             rb.gravityScale = originalGravityScale;
-        
 
+        //空中でも入力を受け付けるようにする
+        Moveinput = Input.GetAxisRaw("Horizontal");
         //地上にいないときは入力を受け付けない
         if (IsGrounded() == true )
         {
-
-
             //地面についたら滑空時間をリセットする
             FlyingTime = 0.0f;
-
-            Moveinput = Input.GetAxisRaw("Horizontal");
-
-
 
             //プレイヤーの向きを変更
             if (Moveinput != 0)
@@ -973,9 +973,25 @@ public class player_control : MonoBehaviour
         }
 
 
-        //プレイヤーを移動させる
-        rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, rb.linearVelocity.y);
+        // --- 空中の横移動を少しだけ効くようにする設定 ---
+        float airMoveSpeed = moveSpeed * 0.8f;   // 空中での最大速度（地上の半分）
+        float airControl = 1f;                 // 空中での加速具合（低いと慣性強め）
 
+        // --- 空中か地上かで処理を分ける ---
+        if (IsGrounded())
+        {
+            // 地上：普通に反応する
+            rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, rb.linearVelocity.y);
+        }
+        else
+        {
+            // 空中：慣性を残しつつ入力方向に寄っていく
+            float targetX = Moveinput * airMoveSpeed;
+
+            float newX = Mathf.Lerp(rb.linearVelocity.x, targetX, airControl * Time.deltaTime);
+
+            rb.linearVelocity = new Vector2(newX, rb.linearVelocity.y);
+        }
 
 
         if (Moveinput != 0)
@@ -1176,17 +1192,22 @@ public class player_control : MonoBehaviour
     void StartClimbingLadder(Collider2D ladderCollider)
     {
         isClimbingLadder = true;
-        rb.gravityScale = 0f; // 重力を無効にする
-        rb.linearVelocity = Vector2.zero; // 現在の移動をリセット
 
-        //Gravityのスクリプトも止める
+        //  横慣性を完全に消す（これがとても重要）
+        rb.linearVelocity = Vector2.zero;
+
+        // 重力を無効化
+        rb.gravityScale = 0f;
+
+        //Gravityスクリプト無効
         GetComponent<SetGravity>().IsEnable = false;
-        // はしごの中央に位置をスナップ
+
+        // はしご中心に吸着
         Vector3 pos = transform.position;
         pos.x = ladderCollider.bounds.center.x;
         transform.position = pos;
 
-        currentLadderCollider = ladderCollider; // 今登っているはしごを保存
+        currentLadderCollider = ladderCollider;
     }
 
     //関数名：ClimbLadder()
@@ -1195,10 +1216,10 @@ public class player_control : MonoBehaviour
     //戻り値：なし
     void ClimbLadder()
     {
-        if (!isClimbingLadder)
-        {
-            return;
-        }
+        //if (!isClimbingLadder)
+        //{
+        //    return;
+        //}
 
         // Y軸の入力（上矢印キーまたはLスティックの上下）を取得
         float verticalInput = Input.GetAxisRaw("Vertical");
@@ -1206,7 +1227,17 @@ public class player_control : MonoBehaviour
         // 上下移動
         rb.linearVelocity = new Vector2(0f, verticalInput * ladderClimbSpeed);
         //Debug.Log("Input = " + verticalInput + " velocity = " + rb.linearVelocity + " verticalInput * ladderClimbSpeed= " + verticalInput * ladderClimbSpeed);
-
+        // ★はしご中でもジャンプしたら離れる
+        if (Input.GetButtonDown("Jump"))
+        {
+            isClimbingLadder = false;
+            rb.gravityScale = originalGravityScale;
+            // 横慣性を必ず消す
+            Moveinput = 0f;
+            rb.linearVelocity = new Vector2(0f, 0f);
+            Jump();   // ← 通常ジャンプ
+            return;
+        }
     }
 
 
@@ -1219,7 +1250,9 @@ public class player_control : MonoBehaviour
         isClimbingLadder = false;
         rb.gravityScale = originalGravityScale;
 
-
+        // 横慣性をリセット
+        Moveinput = 0f;
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
         //Gravityのスクリプトは再開
         GetComponent<SetGravity>().IsEnable = true;
     }
