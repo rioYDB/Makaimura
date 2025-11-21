@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2550363188408004709}
   - component: {fileID: 7817723793913946770}
   - component: {fileID: 6814006237957029053}
+  - component: {fileID: -9168630742876833232}
   m_Layer: 10
   m_Name: Fadewall
   m_TagString: Fadewall
@@ -162,3 +163,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-9168630742876833232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7030851181617564030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19bb1514a9bcb18419d14f959cd5e48b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FadeDuration: 0.5
+  TargetAlpha: 0.3
+  PlayerTag: Player
