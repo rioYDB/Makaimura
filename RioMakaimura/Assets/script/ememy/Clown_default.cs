@@ -47,6 +47,15 @@ public class Clown_default : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        // 敵キャラクターが画面内にいるか確認
+        Vector3 screenPos = Camera.main.WorldToViewportPoint(transform.position);
+        if (screenPos.x < 0 || screenPos.x > 1 || screenPos.y < 0 || screenPos.y > 1)
+        {
+            // 画面外にいる場合は岸辺露伴は動かない
+            return;
+        }
+
         // 発射準備中（停止中）の処理
         if (isShooting)
         {
