@@ -4,7 +4,7 @@ using System.Collections;
 
 public class FadeArea : MonoBehaviour
 {
-    // ★ Inspectorで設定する項目
+    //Inspectorで設定する項目
     public float FadeDuration = 0.5f;
     public float TargetAlpha = 0.3f;
     public string PlayerTag = "Player";
@@ -13,7 +13,7 @@ public class FadeArea : MonoBehaviour
     private Collider2D wallCollider;
     private bool isCurrentlyFaded = false;
 
-    // ★追加: 衝突フラグと参照
+    //衝突フラグと参照
     private bool isPlayerTouching = false; // プレイヤーが今フレームで触れたか
     private Rigidbody2D touchingPlayerRb = null; // 衝突中のプレイヤーのRb
     private Collider2D touchingPlayerCollider = null; // 衝突中のプレイヤーのCollider
@@ -30,11 +30,32 @@ public class FadeArea : MonoBehaviour
         }
     }
 
-    // 【重要】OnCollisionStay2Dに変更し、壁に触れている間常にチェックする
+
+
+
+    private void Update()
+    {
+        //壁復帰
+        if (isCurrentlyFaded && isPlayerTouching)
+        {
+            Debug.Log("壁を元に戻します");
+
+            if (touchingPlayerCollider != null && wallCollider != null)
+            {
+                Physics2D.IgnoreCollision(wallCollider, touchingPlayerCollider, false);
+            }
+
+        }
+
+        isPlayerTouching=false;
+
+    }
+
+    //OnCollisionStay2Dに変更し、壁に触れている間常にチェックする
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag(PlayerTag)&&isPlayerTouching==false)
+        if (collision.gameObject.CompareTag(PlayerTag) && isPlayerTouching == false)
         {
             player_control player = collision.gameObject.GetComponent<player_control>();
 
@@ -65,7 +86,7 @@ public class FadeArea : MonoBehaviour
                     Physics2D.IgnoreCollision(wallCollider, collision.collider, true);
 
                     isPlayerTouching = true;
-                    
+
                     // 2. 透過アニメーション開始
                     StartCoroutine(SetWallState(true));
                 }
@@ -73,25 +94,48 @@ public class FadeArea : MonoBehaviour
             else // 非魔女、または魔女だが壁を押していない場合
             {
                 // 1. 衝突無視を解除（非魔女はブロックされ続ける）
+                //壁復帰
+                if (isCurrentlyFaded && isPlayerTouching)
+                {
+                    Debug.Log("壁を元に戻します");
+
+                    if (touchingPlayerCollider != null && wallCollider != null)
+                    {
+                        Physics2D.IgnoreCollision(wallCollider, touchingPlayerCollider, false);
+                    }
+
+                }
+                // Physics2D.IgnoreCollision(wallCollider, collision.collider, false);
                 if (isCurrentlyFaded)
                 {
-                    Physics2D.IgnoreCollision(wallCollider, collision.collider, false);
+
 
                     // 2. 透過アニメーションを逆再生
                     StartCoroutine(SetWallState(false));
                 }
                 // 3. 非魔女の場合、このブロック以外では処理を行わないため、壁はソリッドのままブロックする
 
-                
             }
+
+           
         }
 
-        isPlayerTouching = false;
+
     }
 
-  
-        // 壁の状態を切り替えるコルーチン (透過処理のみ)
-        IEnumerator SetWallState(bool fadeOut)
+
+    /*private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag(PlayerTag) && isPlayerTouching == false)
+        {
+            isPlayerTouching = false;
+
+
+        }
+    }
+    */
+    // 壁の状態を切り替えるコルーチン (透過処理のみ)
+    IEnumerator SetWallState(bool fadeOut)
     {
         // 状態変更をチェックし、コルーチンが二重に実行されるのを防ぐ
         if (fadeOut == isCurrentlyFaded) yield break;
