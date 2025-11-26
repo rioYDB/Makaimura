@@ -1053,68 +1053,105 @@ public class player_control : MonoBehaviour
     //戻り値：なし
     private void Attack()
     {
-        ////槍オブジェクトをすべて取得するために配列を作成
-        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
+		// 槍オブジェクトをすべて取得するために配列を作成
+		GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
+
+		// プレイヤーの向きを取得
+		float playerDirection = transform.localScale.x > 0 ? 1f : -1f;
+
+		// 攻撃発射位置の基準オフセット
+		float Offsetx = 1.0f;
+		Vector3 BaseSpawnPos = transform.position + new Vector3(playerDirection * Offsetx, 0, 0);
 
 
-        // プレイヤーの向きを取得
-        float playerDirection = transform.localScale.x > 0 ? 1f : -1f;
+		// ===============================================
+		// 1. ヴァンパイアの火柱攻撃
+		// ===============================================
+		if (currentAttack == AttackType.Vampire)
+		{
+			//火柱の位置を設定
+			Vector3 spawnPosition = transform.position + new Vector3(playerDirection * FirePillarOffset, 0f, 0f);
 
-        //発射位置を制御
-        float Offsetx = 1.0f;
-        Vector3 SpwanPos = transform.position + new Vector3(transform.localScale.x > 0 ? Offsetx : -Offsetx, 0, 0);
+			//数の制限
+			GameObject[] Pillars = GameObject.FindGameObjectsWithTag(VampireWeapon.tag);
+			if (Pillars.Length > maxFirePillarOnScreen)
+			{
+				Debug.Log("火柱出すぎてアチアチやでぇ...");
+				return;
+			}
 
-        //火柱の位置を設定
-        Vector3 spawnPosition = transform.position + new Vector3(playerDirection * FirePillarOffset, 0f, 0f);
+			//火柱を出力
+			StartCoroutine(SpawnFirePillarsRoutine(spawnPosition, playerDirection, FirePillarCnt, FirePillarDelay, FirePillarSpread, Ground));
+			return; // ★攻撃後はここで処理を終了★
+		}
+
+		// ===============================================
+		// 2. 魔女のホーミング弾攻撃（滅びの流星風）
+		// ===============================================
+		else if (currentAttack == AttackType.Which)
+		{
+			// 同時発射数（3発）
+			int bulletCount = 3;
+			// 弾のY座標のズレ
+			float spreadY = 0.5f;
+			// X軸の発射位置（プレイヤーの少し前）
+			float spawnXOffset = 1.0f;
+
+			// 弾数制限が必要な場合は、ここで実装
+
+			for (int i = 0; i < bulletCount; i++)
+			{
+				// Y軸のオフセットを計算 (i=0で中央、i=1で上、i=2で下)
+				float yOffset = (i - 1) * spreadY;
+
+				// 弾の生成位置を計算
+				Vector3 bulletSpawnPos = transform.position + new Vector3(
+					playerDirection * spawnXOffset,
+					attackSpawnYOffset + yOffset, // 既存のYオフセットに、Y軸のズレを加算
+					0f
+				);
+
+				// 弾を生成 (spearToShootはBulletChangeでWhichWeaponに設定済み)
+				GameObject bullet = Instantiate(spearToShoot, bulletSpawnPos, Quaternion.identity);
+
+				// 弾の向きを設定
+				// プレイヤーの向きに合わせてXスケールを反転
+				bullet.transform.localScale = new Vector3(playerDirection, 1, 1);
+			}
+			return; // ★攻撃後はここで処理を終了★
+		}
+
+		// ===============================================
+		// 3. 人間/狼男の通常飛び道具攻撃
+		// ===============================================
+		else // (AttackType.Human または AttackType.Okami)
+		{
+			// 既存の弾数制限
+			if (bullets.Length >= maxBulletsOnScreen)
+			{
+				return;
+			}
+
+			// 生成位置を計算
+			Vector3 SpawnPosition = transform.position + new Vector3(
+				playerDirection * Offsetx,
+				attackSpawnYOffset,
+				0f
+			);
+
+			// 攻撃処理（1発生成）
+			GameObject bullet = Instantiate(spearToShoot, SpawnPosition, Quaternion.identity);
+
+			// プレイヤーの向きに合わせて反転
+			bullet.transform.localScale = new Vector3(playerDirection, 1, 1);
+
+			// ★攻撃後はここで処理を終了★
+			return;
+		}
 
 
-        if (currentAttack == AttackType.Vampire)
-        {
-            //火柱の処理
-            //数の制限
-            GameObject[] Pillars = GameObject.FindGameObjectsWithTag(VampireWeapon.tag);
-            if (Pillars.Length > maxFirePillarOnScreen)
-            {
-                Debug.Log("火柱出すぎてアチアチやでぇ...");
-                return;
-            }
 
-            //火柱を出力
-            StartCoroutine(SpawnFirePillarsRoutine(spawnPosition, playerDirection, FirePillarCnt, FirePillarDelay, FirePillarSpread, Ground));
-
-        }
-
-        else //ヴァンパイア以外の状態の攻撃
-        {
-
-            if (bullets.Length >= maxBulletsOnScreen)
-            {
-                // 画面の最大数に達しているので発射しない
-
-                return;
-            }
-
-
-            // 攻撃処理
-            GameObject bullet = Instantiate(spearToShoot, SpwanPos, Quaternion.identity);
-
-            // プレイヤーの向きに合わせて反転
-            bullet.transform.localScale = new Vector3(Mathf.Sign(transform.localScale.x), 1, 1);
-
-
-
-            //変更箇所: Y軸オフセットを加算して生成位置を計算
-            Vector3 SpawnPosition = transform.position + new Vector3(
-                playerDirection * Offsetx, // X軸のオフセット
-                attackSpawnYOffset,                  // Y軸のオフセット
-                0f
-            );
-
-        }
-
-
-
-    }
+	}
 
     //関数名：BulletChange()
     //用途：攻撃処理
