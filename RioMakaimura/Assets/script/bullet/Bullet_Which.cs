@@ -3,7 +3,7 @@ using UnityEngine;
 public class Bullet_Which : bullet
 {
 
-    public float HormingSpeed = 2.0f;   // ホーミングの回転速度
+    [SerializeField] public float HormingSpeed = 2.0f; // ★このままで大丈夫ですが、もしprivateにしていたらpublicに戻してください★   // ホーミングの回転速度
     public float InitialFlyTime = 0.2f; // ★追加★ 初速でまっすぐ飛ぶ時間
     private float initialFlyTimer = 0f; // 初速タイマー
 

@@ -1098,11 +1098,11 @@ public class player_control : MonoBehaviour
             float[][] spawnData = new float[][]
             {
                 // 1. 頭上 (真上90度へ)
-                new float[] { 0.0f, 1.5f, 90f }, 
+                new float[] { 0.0f, 1.5f, 90f,2.0f }, 
                 // 2. 目の前 (真横0度へ)
-                new float[] { 1.5f, 0.5f, 0f },  
+                new float[] { 1.5f, 0.5f, 0f ,1.5f},  
                 // 3. 右上 (斜め上45度へ)
-                new float[] { 1.0f, 1.0f, 45f }
+                new float[] { 1.0f, 1.0f, 45f,2.5f }
             };
 
             // X軸の発射位置の基準（プレイヤーの少し前）
@@ -1112,10 +1112,10 @@ public class player_control : MonoBehaviour
 
             for (int i = 0; i < spawnData.Length; i++)
             {
-                float xOffset = spawnData[i][0];
-                float yOffset = spawnData[i][1];
+                float xOffset = spawnData[i][0];　//Xの位置
+                float yOffset = spawnData[i][1];  //Yの位置
                 float angle = spawnData[i][2]; // 基準角度 (右向き基準)
-
+                float hormingSpeed = spawnData[i][3]; //ホーミングの速度をそれぞれ調整
 
                 // プレイヤーが左向きの場合、位置のX座標と角度を補正する
                 if (playerDirection < 0)
@@ -1138,6 +1138,19 @@ public class player_control : MonoBehaviour
 
                 // 弾を生成
                 GameObject bullet = Instantiate(spearToShoot, bulletSpawnPos, bulletRotation);
+
+                // 生成した弾の Bullet_Which コンポーネントを取得
+                Bullet_Which bulletWhich = bullet.GetComponent<Bullet_Which>();
+
+                if (bulletWhich != null)
+                {
+                    // 取得した値を使って HormingSpeed を上書き設定
+                    bulletWhich.HormingSpeed = hormingSpeed;
+                }
+                else
+                {
+                    Debug.LogError("生成された弾に Bullet_Which コンポーネントが見つかりません！");
+                }
 
                 // 弾の向きを設定 (Bullet_Whichが向きを決定するのに使用する可能性を考慮し維持)
                 bullet.transform.localScale = new Vector3(playerDirection, 1, 1);
