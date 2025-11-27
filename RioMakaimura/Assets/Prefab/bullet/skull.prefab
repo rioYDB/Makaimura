@@ -175,9 +175,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 701844cc1ceb5b24282002eb50073608, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movespeed: 2
+  movespeed: 2.5
   HormingSpeed: 0.5
-  InitialFlyTime: 0.5
+  InitialFlyTime: 0.1
   Ground:
     serializedVersion: 2
     m_Bits: 8
