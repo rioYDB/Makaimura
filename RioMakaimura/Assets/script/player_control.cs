@@ -1085,46 +1085,83 @@ public class player_control : MonoBehaviour
 			return; // ★攻撃後はここで処理を終了★
 		}
 
-		// ===============================================
-		// 2. 魔女のホーミング弾攻撃（滅びの流星風）
-		// ===============================================
-		else if (currentAttack == AttackType.Which)
-		{
-			// 同時発射数（3発）
-			int bulletCount = 3;
-			// 弾のY座標のズレ
-			float spreadY = 0.5f;
-			// X軸の発射位置（プレイヤーの少し前）
-			float spawnXOffset = 1.0f;
+        // ===============================================
+        // 2. 魔女のホーミング弾攻撃（滅びの流星風）
+        // ===============================================
+        else if (currentAttack == AttackType.Which)
+        {
+            // 弾の生成は、配列を使って3箇所に定義します。
+            // プレイヤーの向きは考慮せず、常に右向きを基準(playerDirection=1)として定義し、
+            // 最後にplayerDirectionで補正します。
 
-			// 弾数制限が必要な場合は、ここで実装
+            // { Xオフセット, Yオフセット, Z回転角度 }
+            float[][] spawnData = new float[][]
+            {
+                // 1. 頭上 (真上90度へ)
+                new float[] { 0.0f, 1.5f, 90f,2.0f }, 
+                // 2. 目の前 (真横0度へ)
+                new float[] { 1.5f, 0.5f, 0f ,1.5f},  
+                // 3. 右上 (斜め上45度へ)
+                new float[] { 1.0f, 1.0f, 45f,2.5f }
+            };
 
-			for (int i = 0; i < bulletCount; i++)
-			{
-				// Y軸のオフセットを計算 (i=0で中央、i=1で上、i=2で下)
-				float yOffset = (i - 1) * spreadY;
+            // X軸の発射位置の基準（プレイヤーの少し前）
+            float baseSpawnXOffset = 1.0f; // プレイヤーの体からの基準距離 (この変数名は使用しませんが、弾の位置を分かりやすくするために残します)
 
-				// 弾の生成位置を計算
-				Vector3 bulletSpawnPos = transform.position + new Vector3(
-					playerDirection * spawnXOffset,
-					attackSpawnYOffset + yOffset, // 既存のYオフセットに、Y軸のズレを加算
-					0f
-				);
+            // 弾数制限が必要な場合は、ここで実装
 
-				// 弾を生成 (spearToShootはBulletChangeでWhichWeaponに設定済み)
-				GameObject bullet = Instantiate(spearToShoot, bulletSpawnPos, Quaternion.identity);
+            for (int i = 0; i < spawnData.Length; i++)
+            {
+                float xOffset = spawnData[i][0];　//Xの位置
+                float yOffset = spawnData[i][1];  //Yの位置
+                float angle = spawnData[i][2]; // 基準角度 (右向き基準)
+                float hormingSpeed = spawnData[i][3]; //ホーミングの速度をそれぞれ調整
 
-				// 弾の向きを設定
-				// プレイヤーの向きに合わせてXスケールを反転
-				bullet.transform.localScale = new Vector3(playerDirection, 1, 1);
-			}
-			return; // ★攻撃後はここで処理を終了★
-		}
+                // プレイヤーが左向きの場合、位置のX座標と角度を補正する
+                if (playerDirection < 0)
+                {
+                    // Xオフセットを反転
+                    xOffset *= -1f;
+                    // 角度を反転 (例: 0度 -> 180度, 90度 -> 90度, 45度 -> 135度)
+                    angle = 180f - angle;
+                }
 
-		// ===============================================
-		// 3. 人間/狼男の通常飛び道具攻撃
-		// ===============================================
-		else // (AttackType.Human または AttackType.Okami)
+                // 弾の回転を設定
+                Quaternion bulletRotation = Quaternion.Euler(0f, 0f, angle);
+
+                // 弾の生成位置を計算
+                Vector3 bulletSpawnPos = transform.position + new Vector3(
+                    xOffset,
+                    attackSpawnYOffset + yOffset, // プレイヤーの基準Yオフセット + 弾ごとのYオフセット
+                    0f
+                );
+
+                // 弾を生成
+                GameObject bullet = Instantiate(spearToShoot, bulletSpawnPos, bulletRotation);
+
+                // 生成した弾の Bullet_Which コンポーネントを取得
+                Bullet_Which bulletWhich = bullet.GetComponent<Bullet_Which>();
+
+                if (bulletWhich != null)
+                {
+                    // 取得した値を使って HormingSpeed を上書き設定
+                    bulletWhich.HormingSpeed = hormingSpeed;
+                }
+                else
+                {
+                    Debug.LogError("生成された弾に Bullet_Which コンポーネントが見つかりません！");
+                }
+
+                // 弾の向きを設定 (Bullet_Whichが向きを決定するのに使用する可能性を考慮し維持)
+                bullet.transform.localScale = new Vector3(playerDirection, 1, 1);
+            }
+            return; // 攻撃後はここで処理を終了
+        }
+
+        // ===============================================
+        // 3. 人間/狼男の通常飛び道具攻撃
+        // ===============================================
+        else // (AttackType.Human または AttackType.Okami)
 		{
 			// 既存の弾数制限
 			if (bullets.Length >= maxBulletsOnScreen)
