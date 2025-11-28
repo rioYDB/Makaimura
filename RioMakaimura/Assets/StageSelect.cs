@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,6 +22,28 @@ public class StageSelect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
+        //stage_numが２以上のとき、ステージ２を解放する。以下同様
+        if (Stage_num >= 2)
+        {
+            Stage_2.SetActive(true);
+        }
+
+        if (Stage_num >= 3)
+        {
+            Stage_3.SetActive(true);
+        }
+
+        if (Stage_num >= 4)
+        {
+            Stage_4.SetActive(true);
+        }
+
+        if (Stage_num >= 5)
+        {
+            Stage_5.SetActive(true);
+        }
     }
+
+
 }
