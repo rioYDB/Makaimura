@@ -104,6 +104,7 @@
     <Compile Include="Assets\script\stage\NextStage.cs" />
     <Compile Include="Assets\script\stage\LoadNextStage.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Okami.cs" />
+    <Compile Include="Assets\StageSelect.cs" />
     <Compile Include="Assets\script\GameManager.cs" />
     <Compile Include="Assets\script\CoinRotate.cs" />
     <Compile Include="Assets\script\ememy\Redareemer.cs" />
