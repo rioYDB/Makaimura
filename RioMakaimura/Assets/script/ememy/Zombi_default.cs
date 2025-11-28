@@ -1,4 +1,9 @@
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
 
 public class Zombi_default : MonoBehaviour
 {
@@ -14,10 +19,6 @@ public class Zombi_default : MonoBehaviour
     public LayerMask Ground; // ← インスペクターから地面レイヤーを指定
     //private bool isGrounded = false;
 
-
- 
-   
-
     private float originalHeight;
     private float originalWidth;
     private Vector2 originalOffset;
@@ -28,31 +29,55 @@ public class Zombi_default : MonoBehaviour
     public delegate void OnDesloyDelegate(GameObject g);
     public OnDesloyDelegate mOnDestly = new OnDesloyDelegate((GameObject g) => { });
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    //void Start()
+    //{
+    //    //アタッチされているComponentを取得
+    //    rb = GetComponent<Rigidbody2D>();
+    //    capsuleCollider = GetComponent<CapsuleCollider2D>();
+
+
+    //    //GameObject playerObj = GameObject.FindWithTag("Player");
+    //    //if (playerObj != null)
+    //    //{
+    //    //    player = playerObj.transform;
+    //    //}
+    //    //StartCoroutine(SetMoveDirection());
+
+
+
+    //    //// 最初に向かう方向を計算して固定
+    //    //if (player != null)
+    //    //{
+    //    //    moveDirection = (player.position - transform.position).normalized;
+
+    //    //    moveDirection.y = 0f;            // Y成分をゼロにする
+    //    //    moveDirection = moveDirection.normalized; // 正規化する
+    //    //}
+
+
+    //}
+
     void Start()
     {
-        //アタッチされているComponentを取得
         rb = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
 
-
-        GameObject playerObj = GameObject.FindWithTag("Player");
-        if (playerObj != null)
-        {
-            player = playerObj.transform;
-        }
-
-        // 最初に向かう方向を計算して固定
-        if (player != null)
-        {
-            moveDirection = (player.position - transform.position).normalized;
-
-            moveDirection.y = 0f;            // Y成分をゼロにする
-            moveDirection = moveDirection.normalized; // 正規化する
-        }
-
-     
+        StartCoroutine(InitDirection());
     }
 
+    IEnumerator InitDirection()
+    {
+        // Player が必ず存在するまで待つ
+//        yield return new WaitUntil(() => GameObject.FindWithTag("Player") != null);
+        yield return new WaitUntil(() => GameObject.Find("player 1") != null);
+
+//        player = GameObject.FindWithTag("Player").transform;
+        player = GameObject.Find("player 1").transform;
+
+        moveDirection = (player.position - transform.position);
+        moveDirection.y = 0f;
+        moveDirection = moveDirection.normalized;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -99,6 +124,15 @@ public class Zombi_default : MonoBehaviour
     }
 
 
+    IEnumerator SetMoveDirection()
+    {
+        yield return new WaitUntil(() => GameObject.FindWithTag("Player") != null);
 
+        player = GameObject.FindWithTag("Player").transform;
+
+        moveDirection = (player.position - transform.position);
+        moveDirection.y = 0f;
+        moveDirection = moveDirection.normalized;
+    }
 
 }
