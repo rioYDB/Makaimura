@@ -50,6 +50,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/StageSelect.unity
     guid: 16ec9f7d6987cfa4287fcbcc6b4a585c
+  - enabled: 1
+    path: Assets/Scenes/honki_goal.unity
+    guid: 547c84de4069eda4da43368d3d976c94
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

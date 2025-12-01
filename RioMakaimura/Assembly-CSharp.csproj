@@ -69,6 +69,7 @@
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\stage\vampirestage.cs" />
     <Compile Include="Assets\script\ememy\Stan.cs" />
+    <Compile Include="Assets\script\stage\witch_goal.cs" />
     <Compile Include="Assets\script\bullet\bullet.cs" />
     <Compile Include="Assets\script\stage\LoadScene.cs" />
     <Compile Include="Assets\script\ememy\Zombi_default.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Assets\StageSelect.cs" />
     <Compile Include="Assets\script\GameManager.cs" />
     <Compile Include="Assets\script\CoinRotate.cs" />
+    <Compile Include="Assets\script\stage\honkistage.cs" />
     <Compile Include="Assets\script\ememy\Redareemer.cs" />
     <Compile Include="Assets\script\ememy\Cerberus_HP.cs" />
     <Compile Include="Assets\script\stage\Exitdoor.cs" />
