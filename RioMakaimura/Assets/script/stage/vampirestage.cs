@@ -18,7 +18,7 @@ public class vampirestage : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("LetsPlay"))
         {
-            SceneManager.LoadScene("vampire");
+            SceneManager.LoadScene("honki");
 
             Debug.Log("main");
         }

@@ -18,7 +18,7 @@ public class witchstage : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("LetsPlay"))
         {
-            SceneManager.LoadScene("witch");
+            SceneManager.LoadScene("title");
 
             Debug.Log("main");
         }

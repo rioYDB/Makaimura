@@ -1054,7 +1054,7 @@ public class player_control : MonoBehaviour
     private void Attack()
     {
 		// 槍オブジェクトをすべて取得するために配列を作成
-		GameObject[] bullets = GameObject.FindGameObjectsWithTag("Spear");
+		GameObject[] bullets = GameObject.FindGameObjectsWithTag("PlayerBullet");
 
 		// プレイヤーの向きを取得
 		float playerDirection = transform.localScale.x > 0 ? 1f : -1f;
