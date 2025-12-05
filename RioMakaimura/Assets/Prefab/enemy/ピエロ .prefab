@@ -105,8 +105,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  projectilePrefab: {fileID: 0}
-  axePrefab: {fileID: 0}
+  projectilePrefab: {fileID: 4002731123142134803, guid: 68100dfd519e4374cadbf65c95985f6d, type: 3}
+  axePrefab: {fileID: 184761242970778605, guid: 62aee6c1312562248b3bbdd3b78978df, type: 3}
   shootPoint: {fileID: 6138662895967447474}
   moveSpeed: 2
   moveRange: 3

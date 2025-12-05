@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6987724965572562295}
   - component: {fileID: -2223561842758746394}
   - component: {fileID: 8191008543758101007}
+  - component: {fileID: 7040920919589945696}
   m_Layer: 0
   m_Name: gin_dangan_silver_bullet_0
   m_TagString: EnemyBullet
@@ -162,3 +163,17 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 4.665991, y: 1.717745}
   m_EdgeRadius: 0
+--- !u!114 &7040920919589945696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8298561557497616378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11dbfe9d264865a46960fdacef566c09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 10
+  lifetime: 5
