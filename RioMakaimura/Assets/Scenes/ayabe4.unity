@@ -3253,6 +3253,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+      propertyPath: Which
+      value: 
+      objectReference: {fileID: 4084873730771437129, guid: 9619d944a10f94846bdfbb78565ac9a7, type: 3}
+    - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: maxHP
       value: 5
       objectReference: {fileID: 0}
@@ -3269,13 +3273,29 @@ PrefabInstance:
       value: 16392
       objectReference: {fileID: 0}
     - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+      propertyPath: witchAnim.idle
+      value: 
+      objectReference: {fileID: 4084873730771437129, guid: 9619d944a10f94846bdfbb78565ac9a7, type: 3}
+    - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: WallClim.m_Bits
       value: 2048
       objectReference: {fileID: 0}
     - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+      propertyPath: witchAnim.attack
+      value: 
+      objectReference: {fileID: -2311376350850286804, guid: 09ebf1f36a1045143813946522324a3d, type: 3}
+    - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: SecretArea.m_Bits
       value: 1024
       objectReference: {fileID: 0}
+    - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+      propertyPath: 'witchAnim.walk.Array.data[0]'
+      value: 
+      objectReference: {fileID: 7085504473132940829, guid: c97d1e5499894e34ebdfd4a45bbeb5f2, type: 3}
+    - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+      propertyPath: 'witchAnim.walk.Array.data[1]'
+      value: 
+      objectReference: {fileID: -7636663062132714883, guid: 46a8f3839374ace4cb2c70235cd16ed1, type: 3}
     - target: {fileID: 7013771955574629501, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_SortingOrder
       value: 1
