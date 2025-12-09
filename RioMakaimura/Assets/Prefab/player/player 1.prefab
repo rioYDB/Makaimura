@@ -193,7 +193,7 @@ MonoBehaviour:
   maxFirePillarOnScreen: 4
   StandSize: {x: 3.4, y: 3.8, z: 1}
   SquatSize: {x: 1.7, y: 1.9, z: 1}
-  maxHP: 2
+  maxHP: 5
   hpText: {fileID: 0}
   Okami: {fileID: 21300000, guid: 2b956bbee6ca00747a0e7b799d6dcae2, type: 3}
   Which: {fileID: 4084873730771437129, guid: 9619d944a10f94846bdfbb78565ac9a7, type: 3}

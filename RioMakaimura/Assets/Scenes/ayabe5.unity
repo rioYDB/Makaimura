@@ -7623,11 +7623,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2668210577008949057, guid: c8acf6417db43dd40890258ae5492c7a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 198.98
+      value: 208.11
       objectReference: {fileID: 0}
     - target: {fileID: 2668210577008949057, guid: c8acf6417db43dd40890258ae5492c7a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 28.166092
+      value: 32.77
       objectReference: {fileID: 0}
     - target: {fileID: 2668210577008949057, guid: c8acf6417db43dd40890258ae5492c7a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -18830,6 +18830,26 @@ Tilemap:
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
+  - first: {x: 186, y: 33, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 5
+      m_TileSpriteIndex: 5
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 1073741825
+  - first: {x: 187, y: 33, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 5
+      m_TileSpriteIndex: 5
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 1073741825
   - first: {x: 188, y: 33, z: 0}
     second:
       serializedVersion: 2
@@ -19231,6 +19251,26 @@ Tilemap:
       dummyAlignment: 0
       m_AllTileFlags: 1073741825
   - first: {x: 185, y: 34, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 5
+      m_TileSpriteIndex: 5
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 1073741825
+  - first: {x: 186, y: 34, z: 0}
+    second:
+      serializedVersion: 2
+      m_TileIndex: 5
+      m_TileSpriteIndex: 5
+      m_TileMatrixIndex: 0
+      m_TileColorIndex: 0
+      m_TileObjectToInstantiateIndex: 65535
+      dummyAlignment: 0
+      m_AllTileFlags: 1073741825
+  - first: {x: 187, y: 34, z: 0}
     second:
       serializedVersion: 2
       m_TileIndex: 5
@@ -20062,7 +20102,7 @@ Tilemap:
     m_Data: {fileID: 0}
   - m_RefCount: 0
     m_Data: {fileID: 0}
-  - m_RefCount: 435
+  - m_RefCount: 439
     m_Data: {fileID: 11400000, guid: 452dab26485da024b9a7c8539e9c1513, type: 2}
   - m_RefCount: 7
     m_Data: {fileID: 11400000, guid: 41151d2f68b47bd4eb072d3867663d25, type: 2}
@@ -20077,12 +20117,12 @@ Tilemap:
     m_Data: {fileID: 7414935576914088792, guid: ec1c1394a1e9dff4e94f3d0a317b751b, type: 3}
   - m_RefCount: 7
     m_Data: {fileID: 4981267683996305070, guid: e38eb24f51f983042a0e61abb5af7ba1, type: 3}
-  - m_RefCount: 435
+  - m_RefCount: 439
     m_Data: {fileID: 6532678807519511550, guid: a46c3ad6f3dfdb04986d9c62a2faecc4, type: 3}
   - m_RefCount: 0
     m_Data: {fileID: 0}
   m_TileMatrixArray:
-  - m_RefCount: 1065
+  - m_RefCount: 1069
     m_Data:
       e00: 1
       e01: 0
@@ -20101,7 +20141,7 @@ Tilemap:
       e32: 0
       e33: 1
   m_TileColorArray:
-  - m_RefCount: 1065
+  - m_RefCount: 1069
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   - m_RefCount: 0
     m_Data: {r: 6.2652e-41, g: 6.2652e-41, b: 6.2652e-41, a: 6.2652e-41}
@@ -20896,11 +20936,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2668210577008949057, guid: c8acf6417db43dd40890258ae5492c7a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 201.39
+      value: 198.55
       objectReference: {fileID: 0}
     - target: {fileID: 2668210577008949057, guid: c8acf6417db43dd40890258ae5492c7a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 39.93
+      value: 28.27
       objectReference: {fileID: 0}
     - target: {fileID: 2668210577008949057, guid: c8acf6417db43dd40890258ae5492c7a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -21357,7 +21397,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: maxHP
-      value: 10
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: hpText
