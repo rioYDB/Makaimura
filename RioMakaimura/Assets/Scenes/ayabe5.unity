@@ -21437,20 +21437,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1260021834853296740, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+      propertyPath: m_Size.x
+      value: 0.945778
+      objectReference: {fileID: 0}
+    - target: {fileID: 1260021834853296740, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5092661622490202304, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_Size.x
-      value: 0.91
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 5092661622490202304, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_Size.y
-      value: 1.41
+      value: 0.83
       objectReference: {fileID: 0}
     - target: {fileID: 5092661622490202304, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5092661622490202304, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.35
       objectReference: {fileID: 0}
     - target: {fileID: 5708774463391587881, guid: 99e8ae94f6b933544a6293692bb56a5d, type: 3}
       propertyPath: maxHP
