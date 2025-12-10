@@ -864,7 +864,7 @@ public class player_control : MonoBehaviour
         {
             currentMoveSpeed *= 1.5f;
 
-            float WallCheck = 0.01f;
+            float WallCheck = 0.1f;
 
             // Y軸オフセットを追加
             float verticalCenterOffset = bc.size.y * 0.50f; // プレイヤーの高さの1/4分上にずらす
@@ -1235,25 +1235,73 @@ public class player_control : MonoBehaviour
     //戻り値：接地している場合はtrue、していない場合はfalse
     public bool IsGrounded()
     {
-        bool ret = false;
+
         // 「Ground」+「Platform」両方を対象にする
-        int groundAndPlatformMask = Ground | (1 << LayerMask.NameToLayer("Platform"));
+        //int groundAndPlatformMask = Ground | (1 << LayerMask.NameToLayer("Platform"));
 
+        // 判定対象レイヤーを初期化
+        int groundAndPlatformMask = Ground;
 
-        //下方向にrayを飛ばして、指定したレイヤーのオブジェクトと接触しているかどうか判別する
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.8f, groundAndPlatformMask);
-
-        // レイを可視化
-        Debug.DrawRay(transform.position, Vector2.down * 0.8f, Color.yellow);
-
-        //ヒットしていない場合はnullが返される
-        if (hit.collider != null)
+        // すり抜け中ではない、またはコライダーが無効化されていない場合にPlatformも対象にする
+        if (IsOnPlatform())
         {
-            ret = true;
+            groundAndPlatformMask |= (1 << LayerMask.NameToLayer("Platform"));
         }
+
+
+        // レイの長さ (調整しやすいように定数化)
+        float rayLength = 0.2f;
+
+        // BoxCollider2Dの参照を取得
+        // bcはStart()で取得済み
+        if (bc == null) return false;
+
+        // ----------------------------------------------------------------------
+        // 1. レイトレースの始点を左右の足元に設定
+        // ----------------------------------------------------------------------
+
+        // Colliderの中心とサイズ
+        Vector2 center = rb.position + bc.offset;
+        float extentsX = bc.size.x / 2f; // 横幅の半分
+        float extentsY = bc.size.y / 2f; // 縦幅の半分
+
+        // 足元から少し内側の位置（ギリギリだと壁判定と間違える可能性があるため）
+        //float padding = 0.1f;
+
+        // 左足元の位置
+        Vector2 originLeft = center + new Vector2(-extentsX  ,-extentsY);
+        // 右足元の位置
+        Vector2 originRight = center + new Vector2(extentsX , -extentsY);
+        // 中央足元の位置 (既存のレイキャストに近い)
+        Vector2 originCenter = center + new Vector2(0f, -extentsY);
+
+        // ----------------------------------------------------------------------
+        // 2. 3方向へレイを飛ばして判定
+        // ----------------------------------------------------------------------
+
+        // 中央
+        RaycastHit2D hitCenter = Physics2D.Raycast(originCenter, Vector2.down, rayLength, groundAndPlatformMask);
+        // 左足
+        RaycastHit2D hitLeft = Physics2D.Raycast(originLeft, Vector2.down, rayLength, groundAndPlatformMask);
+        // 右足
+        RaycastHit2D hitRight = Physics2D.Raycast(originRight, Vector2.down, rayLength, groundAndPlatformMask);
+
+        // 3本のレイのうち、いずれか一つでもヒットしていれば接地とみなす
+        bool ret = hitCenter.collider != null || hitLeft.collider != null || hitRight.collider != null;
+
+
+        // ----------------------------------------------------------------------
+        // 3. デバッグ用描画（必要に応じてコメントアウトを外してください）
+        // ----------------------------------------------------------------------
+
+        Debug.DrawRay(originCenter, Vector2.down * rayLength, hitCenter.collider != null ? Color.green : Color.red);
+        Debug.DrawRay(originLeft, Vector2.down * rayLength, hitLeft.collider != null ? Color.green : Color.red);
+        Debug.DrawRay(originRight, Vector2.down * rayLength, hitRight.collider != null ? Color.green : Color.red);
+
+
         if (ret == true)
         {
-            //IsJumping = false;
+            //IsJumping = false; // IsGrounded()内でIsJumpingをfalseにするロジックはUpdate()で処理されているため、ここではコメントアウトのままとしておきます
         }
 
         return ret;
@@ -1590,9 +1638,9 @@ public class player_control : MonoBehaviour
         int platformMask = 1 << LayerMask.NameToLayer("Platform");
 
         // 親切に少し長めにRaycast（下方向）
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, platformMask);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.0f, platformMask);
 
-        Debug.DrawRay(transform.position, Vector2.down * 1.5f, Color.cyan);
+        Debug.DrawRay(transform.position, Vector2.down * 1.0f, Color.cyan);
 
         return hit.collider != null;
     }
@@ -1604,7 +1652,9 @@ public class player_control : MonoBehaviour
         Collider2D col = GetComponent<Collider2D>();
 
         col.enabled = false;      // 一瞬無効化する
+        bc.enabled = false;
         yield return new WaitForSeconds(0.2f); // 落ちる時間だけ待つ
         col.enabled = true;       // 元に戻す
+        bc.enabled = true;
     }
 }
