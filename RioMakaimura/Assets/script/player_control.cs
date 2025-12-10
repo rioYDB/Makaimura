@@ -140,6 +140,9 @@ public class player_control : MonoBehaviour
 
     private SpriteRenderer sr;       // スプライトを描画するためのコンポーネント
 
+    private bool attackFlag = false;
+    private float attackAnimTimer = 0f;
+
     private float walkAnimTimer = 0f;    // 歩行アニメのタイマー
     private int walkAnimIndex = 0;       // 歩行アニメのフレームインデックス
 
@@ -435,12 +438,24 @@ public class player_control : MonoBehaviour
 
     void SetAnimation()
     {
-        // 攻撃中のスプライトを優先表示（例としてキー入力で判定）
+        // 攻撃のボタン入力
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetButton("Fire1"))
         {
+            attackFlag = true;
+        }
+        // 攻撃中で時間計測
+        if( attackFlag == true)
+        {
+            attackAnimTimer += Time.deltaTime;
+            if (attackAnimTimer > 0.3f) // アニメーション速度（0.5秒で終了）
+            {
+                attackAnimTimer = 0f;
+                attackFlag = false;     // flagを元に戻す
+            }
             sr.sprite = currentAnim.attack;
             return;
         }
+
 
         // ジャンプ中はジャンプ用スプライト
         if (IsJumping && !IsGrounded())
