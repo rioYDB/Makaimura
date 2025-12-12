@@ -1,3 +1,4 @@
+// StageManager.cs
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -45,5 +46,3 @@ public static class StageManager
         Debug.Log("All game progress has been reset.");
     }
 }
-
-

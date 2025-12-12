@@ -22,9 +22,13 @@ public class GoalFlag : MonoBehaviour
         //ゴールオブジェクトに触れたらゴールシーンに切り替わる
         if (collision.gameObject.tag == "Player")
         {
-            
+
+            string clearedStageName = SceneManager.GetActiveScene().name;
+            StageManager.MarkStageAsCleared(clearedStageName); // クリア情報を保存
+            // --- ★ここまで追加・変更★ ---
 
             FadeManager.Instance.LoadScene("Goal _1",1.0f); // 「Goal」シーンへ遷移
+
         }
     }
 }
