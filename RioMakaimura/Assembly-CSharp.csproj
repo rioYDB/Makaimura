@@ -73,6 +73,7 @@
     <Compile Include="Assets\script\bullet\bullet.cs" />
     <Compile Include="Assets\script\stage\LoadScene.cs" />
     <Compile Include="Assets\script\ememy\Zombi_default.cs" />
+    <Compile Include="Assets\Stage_Manager.cs" />
     <Compile Include="Assets\script\SceneManager.cs" />
     <Compile Include="Assets\script\ememy\Frankenstein.cs" />
     <Compile Include="Assets\script\bullet\Enemybullet.cs" />
