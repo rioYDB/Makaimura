@@ -224,10 +224,10 @@ MonoBehaviour:
   vampireAnim:
     idle: {fileID: 21300000, guid: cc65c314ad4af2e4d9636c55955a7a0d, type: 3}
     walk:
-    - {fileID: -175969674502359236, guid: 3adb1393b8ea12c48bd3829cbb0a4723, type: 3}
-    - {fileID: 7123377487014304504, guid: 9356fcfd7635f3b46afeff451c783e17, type: 3}
-    jump: {fileID: 1359623415805649539, guid: 776217d8c84296b488a3f740179376f6, type: 3}
-    attack: {fileID: 2382646233119640018, guid: a4696d2754bb0d44aa970d541cbd1522, type: 3}
+    - {fileID: -7614034613558942452, guid: 51dd91d5be8529a45ae92201e34e5201, type: 3}
+    - {fileID: -6913677806783060712, guid: 2486aee0711241c4f84ce6b7eee41ba8, type: 3}
+    jump: {fileID: -2115549470766654851, guid: 8cfd85de2ef36bd4b82cbaec4852a4cc, type: 3}
+    attack: {fileID: 2693147732311453154, guid: 771338757f6425547b363a41b3e05e7d, type: 3}
   WallClim:
     serializedVersion: 2
     m_Bits: 2048
