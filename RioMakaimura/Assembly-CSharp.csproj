@@ -65,6 +65,7 @@
     <Compile Include="Assets\script\ememy\enemy_Flower.cs" />
     <Compile Include="Assets\script\stage\Gimmick\magmagimmick.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Human.cs" />
+    <Compile Include="Assets\Dark Forest\scripts\ParallaxEffect\ParallaxBehavior.cs" />
     <Compile Include="Assets\script\ememy\Clown_default.cs" />
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\stage\vampirestage.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Assets\script\bullet\firepillar.cs" />
     <Compile Include="Assets\script\stage\vanpire_goal.cs" />
     <Compile Include="Assets\script\ItemSpawner.cs" />
+    <Compile Include="Assets\Dark Forest\scripts\MoveCamera\Move.cs" />
     <Compile Include="Assets\script\ememy\karasu.cs" />
     <Compile Include="Assets\script\stage\Downdoor.cs" />
     <Compile Include="Assets\script\ememy\Cerberus_bullet.cs" />

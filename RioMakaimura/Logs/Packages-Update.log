@@ -43,3 +43,11 @@ The following packages were updated:
   com.unity.inputsystem from version 1.11.2 to 1.13.1
   com.unity.render-pipelines.universal from version 17.0.3 to 17.0.4
   com.unity.test-framework from version 1.4.5 to 1.4.6
+
+=== Mon Dec 22 11:07:20 2025
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.render-pipelines.universal from version 10.8.1 to 17.0.4
