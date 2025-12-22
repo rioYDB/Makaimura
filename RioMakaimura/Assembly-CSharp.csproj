@@ -61,11 +61,11 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.0.43f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ASSETSTORE\Dark Forest\scripts\ParallaxEffect\ParallaxBehavior.cs" />
     <Compile Include="Assets\script\player_control.cs" />
     <Compile Include="Assets\script\ememy\enemy_Flower.cs" />
     <Compile Include="Assets\script\stage\Gimmick\magmagimmick.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Human.cs" />
-    <Compile Include="Assets\Dark Forest\scripts\ParallaxEffect\ParallaxBehavior.cs" />
     <Compile Include="Assets\script\ememy\Clown_default.cs" />
     <Compile Include="Assets\script\SetGravity.cs" />
     <Compile Include="Assets\script\stage\vampirestage.cs" />
@@ -77,6 +77,7 @@
     <Compile Include="Assets\Stage_Manager.cs" />
     <Compile Include="Assets\script\SceneManager.cs" />
     <Compile Include="Assets\script\ememy\Frankenstein.cs" />
+    <Compile Include="Assets\ASSETSTORE\Dark Forest\scripts\MoveCamera\Move.cs" />
     <Compile Include="Assets\script\bullet\Enemybullet.cs" />
     <Compile Include="Assets\script\Coin.cs" />
     <Compile Include="Assets\script\CameraShake.cs" />
@@ -87,7 +88,6 @@
     <Compile Include="Assets\script\bullet\firepillar.cs" />
     <Compile Include="Assets\script\stage\vanpire_goal.cs" />
     <Compile Include="Assets\script\ItemSpawner.cs" />
-    <Compile Include="Assets\Dark Forest\scripts\MoveCamera\Move.cs" />
     <Compile Include="Assets\script\ememy\karasu.cs" />
     <Compile Include="Assets\script\stage\Downdoor.cs" />
     <Compile Include="Assets\script\ememy\Cerberus_bullet.cs" />
