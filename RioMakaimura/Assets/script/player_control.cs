@@ -1252,10 +1252,10 @@ public class player_control : MonoBehaviour
     {
 
         // 「Ground」+「Platform」両方を対象にする
-        //int groundAndPlatformMask = Ground | (1 << LayerMask.NameToLayer("Platform"));
+        int groundAndPlatformMask = Ground | (1 << LayerMask.NameToLayer("Platform"));
 
-        // 判定対象レイヤーを初期化
-        int groundAndPlatformMask = Ground;
+        //// 判定対象レイヤーを初期化
+        //int groundAndPlatformMask = Ground;
 
         // すり抜け中ではない、またはコライダーが無効化されていない場合にPlatformも対象にする
         if (IsOnPlatform())
