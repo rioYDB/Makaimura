@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      mariodoa_0: -1671061480228996234
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
