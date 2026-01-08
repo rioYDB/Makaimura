@@ -208,11 +208,11 @@ MonoBehaviour:
     jump: {fileID: 7982676504757638466, guid: ddd833d2876c4124b9f72ff038213a37, type: 3}
     attack: {fileID: -3031680609643799387, guid: 1dfca5f7f1e970f48b3b8a96e37d073b, type: 3}
   okamiAnim:
-    idle: {fileID: 21300000, guid: 2b956bbee6ca00747a0e7b799d6dcae2, type: 3}
+    idle: {fileID: -7816610022595134840, guid: e7110888bf13dfc4db5781dc134400dd, type: 3}
     walk:
     - {fileID: -2758321919065202026, guid: 2b7d18f73d7ed58428d02300dd8b006b, type: 3}
     - {fileID: -8646320061983074359, guid: 4e2140a8f19ffee4b963499422e15b33, type: 3}
-    jump: {fileID: 424343601805645015, guid: 8b25df4bb1a7b4c45905cec991f04a7c, type: 3}
+    jump: {fileID: -6304047064371240990, guid: 9d04deec4923df543ab833d3a5957cda, type: 3}
     attack: {fileID: 4133606873013446406, guid: 03f4c1564e6a6ba4eaed93d8b57bf719, type: 3}
   witchAnim:
     idle: {fileID: 4084873730771437129, guid: 9619d944a10f94846bdfbb78565ac9a7, type: 3}
