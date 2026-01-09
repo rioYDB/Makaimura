@@ -205,7 +205,7 @@ MonoBehaviour:
     - {fileID: 7090605721915909114, guid: 4686e4ee66d2d014193926c55cd4b84a, type: 3}
     - {fileID: -729090268136524045, guid: d746869e53a1dc342995d6f7941e3dd3, type: 3}
     - {fileID: -2184622745527533648, guid: fc7294dcb65e2bd4b8632ba1630304b2, type: 3}
-    jump: {fileID: 7982676504757638466, guid: ddd833d2876c4124b9f72ff038213a37, type: 3}
+    jump: {fileID: -4330182603232050613, guid: 94d05ac7f465fb24095137720e9143de, type: 3}
     attack: {fileID: -3031680609643799387, guid: 1dfca5f7f1e970f48b3b8a96e37d073b, type: 3}
   okamiAnim:
     idle: {fileID: -7816610022595134840, guid: e7110888bf13dfc4db5781dc134400dd, type: 3}
