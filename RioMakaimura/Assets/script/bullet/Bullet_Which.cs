@@ -11,6 +11,15 @@ public class Bullet_Which : bullet
     private Vector3 currentMoveDirection;
     public LayerMask Ground;            // 地面を判定するレイヤー
 
+    [Header("Animation Curve Settings")]
+
+    [SerializeField] private AnimationCurve speedCurve = AnimationCurve.Linear(0, 0, 1, 1);
+
+    // カーブの横軸（時間）を進める倍率（例：2.0にすると0.5秒でカーブの右端に到達する）
+    [SerializeField] private float curveSpeedMultiplier = 1.0f;
+
+    private float curveTimer = 0f; // 生成からの経過時間を記録する用
+
     //---------------------------------------------------------------------------------------------------------------------------
 
     //敵が画面内にいない状態はゆらゆら動く弾
@@ -37,18 +46,27 @@ public class Bullet_Which : bullet
     // Update is called once per frame
     protected override void Update()
     {
+        // タイマーを更新
+        curveTimer += Time.deltaTime * curveSpeedMultiplier;
+
+        // カーブから現在の速度倍率を取得（Evaluate）
+        // 例：カーブの縦軸が2.0なら、movespeedの2倍の速さになる
+        float currentSpeedFactor = speedCurve.Evaluate(curveTimer);
+        float activeMoveSpeed = movespeed * currentSpeedFactor;
+
         // ★追加★ 初速時間タイマーを更新
         if (initialFlyTimer < InitialFlyTime)
         {
             initialFlyTimer += Time.deltaTime;
 
-            // 初速中は、生成時の角度（currentMoveDirection）を使って移動する
-            transform.Translate(currentMoveDirection * Time.deltaTime, Space.World);
-            return; // 初速中はホーミング処理をスキップ
+            // currentMoveDirection（ベクトル）に速度倍率を適用して移動
+            transform.Translate(currentMoveDirection.normalized * activeMoveSpeed * Time.deltaTime, Space.World);
+            return;
         }
 
+        
         // 初速時間が終わったらホーミング処理を開始
-        Horming();
+        Horming(activeMoveSpeed);
 
         // ホーミング中でない場合に「ゆらゆら」処理を適用 (ターゲットがいない、または消滅した場合)
         if (EnemyTarget == null)
@@ -142,7 +160,7 @@ public class Bullet_Which : bullet
 
     //関数名：Horming()
     //用途：ホーミング処理
-    private void Horming()
+    private void Horming(float speed)
     {
         // ターゲットが見つからない、またはターゲットが消滅していたら
         if (EnemyTarget == null || (EnemyTarget != null && EnemyTarget.gameObject == null))
@@ -165,6 +183,6 @@ public class Bullet_Which : bullet
             targetDirection,
             HormingSpeed * Time.deltaTime,
             0.0f
-        ).normalized * movespeed;
+        ).normalized * speed;
     }
 }

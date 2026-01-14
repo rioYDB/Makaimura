@@ -128,7 +128,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.41, y: 0.34}
+    oldSize: {x: 0.78333336, y: 0.18888889}
     newSize: {x: 0.8, y: 0.8}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -181,5 +181,39 @@ MonoBehaviour:
   Ground:
     serializedVersion: 2
     m_Bits: 8
+  speedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.00035858154
+      value: 1.4987793
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.8979025
+      value: 0.6644901
+      inSlope: 0.030412724
+      outSlope: 0.030412724
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.09966437
+      outWeight: 0.039584972
+    - serializedVersion: 3
+      time: 2.5014186
+      value: 2.5067976
+      inSlope: -0.016943611
+      outSlope: -0.016943611
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.09731339
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  curveSpeedMultiplier: 1
   waveAmplitude: 0.3
   waveSpeed: 5
