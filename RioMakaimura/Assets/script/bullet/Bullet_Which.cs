@@ -2,99 +2,66 @@ using UnityEngine;
 
 public class Bullet_Which : bullet
 {
+    [SerializeField] public float HormingSpeed = 2.0f;   // ホーミングの回転速度
+    public float InitialFlyTime = 0.2f;                 // 初速でまっすぐ飛ぶ時間
+    private float initialFlyTimer = 0f;                 // 初速タイマー
 
-    [SerializeField] public float HormingSpeed = 2.0f; // ★このままで大丈夫ですが、もしprivateにしていたらpublicに戻してください★   // ホーミングの回転速度
-    public float InitialFlyTime = 0.2f; // ★追加★ 初速でまっすぐ飛ぶ時間
-    private float initialFlyTimer = 0f; // 初速タイマー
-
-    private Transform EnemyTarget;      // ホーミング対象のエネミー
+    private Transform EnemyTarget;                      // ホーミング対象のエネミー
     private Vector3 currentMoveDirection;
-    public LayerMask Ground;            // 地面を判定するレイヤー
+    public LayerMask Ground;                            // 地面を判定するレイヤー
 
     [Header("Animation Curve Settings")]
-
     [SerializeField] private AnimationCurve speedCurve = AnimationCurve.Linear(0, 0, 1, 1);
-
-    // カーブの横軸（時間）を進める倍率（例：2.0にすると0.5秒でカーブの右端に到達する）
+    // カーブの横軸（時間）を進める倍率
     [SerializeField] private float curveSpeedMultiplier = 1.0f;
-
-    private float curveTimer = 0f; // 生成からの経過時間を記録する用
-
-    //---------------------------------------------------------------------------------------------------------------------------
-
-    //敵が画面内にいない状態はゆらゆら動く弾
-    public float waveAmplitude = 5.0f; //ゆらゆらの幅
-    public float waveSpeed = 0.5f;     //ゆらゆらの速度
-    private float PositionY;           //弾のY座標を保持する
+    private float curveTimer = 0f;                      // 生成からの経過時間を記録する用
 
     protected override void Start()
     {
-        // 親クラスのStart()を呼び出す (movespeed, direction の設定のため)
+        // 親クラスのStart()を呼び出す
         base.Start();
 
-        // ターゲットを探すのは Start() で一度だけ
         FindEnemy();
 
-        // ★修正★ InitialFlyTime中は、現在の回転（transform.right）を移動方向とする
-        // transform.right は、player_control.csで設定されたZ軸の回転方向を指します。
+        // ★修正ポイント★
+        // インスタンス化された時の「向き（角度）」をそのまま初期の移動方向に設定します。
+        // これにより、player_control.cs で設定した 0度, 45度, 90度 が活かされます。
         currentMoveDirection = transform.right * movespeed;
-
-        // ターゲットがいない場合のゆらゆら処理のためにY座標を保存
-        PositionY = transform.position.y;
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
-        // タイマーを更新
-        curveTimer += Time.deltaTime * curveSpeedMultiplier;
-
-        // カーブから現在の速度倍率を取得（Evaluate）
-        // 例：カーブの縦軸が2.0なら、movespeedの2倍の速さになる
-        float currentSpeedFactor = speedCurve.Evaluate(curveTimer);
-        float activeMoveSpeed = movespeed * currentSpeedFactor;
-
-        // ★追加★ 初速時間タイマーを更新
+        // 1. 初速タイマーの更新
         if (initialFlyTimer < InitialFlyTime)
         {
             initialFlyTimer += Time.deltaTime;
-
-            // currentMoveDirection（ベクトル）に速度倍率を適用して移動
-            transform.Translate(currentMoveDirection.normalized * activeMoveSpeed * Time.deltaTime, Space.World);
+            transform.Translate(currentMoveDirection * Time.deltaTime, Space.World);
             return;
         }
 
-        
-        // 初速時間が終わったらホーミング処理を開始
-        Horming(activeMoveSpeed);
+        // 2. アニメーションカーブによる速度の計算
+        curveTimer += Time.deltaTime * curveSpeedMultiplier;
+        float curveMultiplier = speedCurve.Evaluate(curveTimer);
+        float currentCurveSpeed = movespeed * curveMultiplier;
 
-        // ホーミング中でない場合に「ゆらゆら」処理を適用 (ターゲットがいない、または消滅した場合)
-        if (EnemyTarget == null)
+        // 3. ホーミング方向の計算（定義に合わせて引数なしで呼ぶ）
+        Horming();
+
+        // 4. 移動ベクトルの向きを維持しつつ、速度をカーブのものに更新
+        if (currentMoveDirection != Vector3.zero)
         {
-            // X軸方向は currentMoveDirection (直進速度) を利用して進む
-            float newX = transform.position.x + currentMoveDirection.x * Time.deltaTime;
-
-            // Y軸方向はサイン波を使ってゆらゆら動く
-            float waveY = Mathf.Sin(Time.time * waveSpeed) * waveAmplitude;
-            float newY = PositionY + waveY;
-
-            // XとYを組み合わせて移動させる 
-            transform.position = new Vector3(newX, newY, transform.position.z);
+            currentMoveDirection = currentMoveDirection.normalized * currentCurveSpeed;
         }
-        else // ホーミング中（ターゲットが存在する）
-        {
-            // 計算された移動方向で実際に弾を移動させる
-            transform.Translate(currentMoveDirection * Time.deltaTime, Space.World);
 
-            // 弾の見た目の向きを進行方向（currentMoveDirection）に合わせる
-            if (currentMoveDirection != Vector3.zero)
-            {
-                // transform.right を使うことで、Z軸の回転を移動方向と一致させる
-                transform.right = currentMoveDirection;
-            }
+        // 5. 移動処理
+        transform.Translate(currentMoveDirection * Time.deltaTime, Space.World);
+
+        // 6. 弾の向きを進行方向に合わせる
+        if (currentMoveDirection != Vector3.zero)
+        {
+            transform.right = currentMoveDirection;
         }
     }
-
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
@@ -102,87 +69,61 @@ public class Bullet_Which : bullet
 
         if (((1 << collision.gameObject.layer) & Ground) != 0)
         {
-            Debug.Log("ホーミング弾が地面に！");
-            Destroy(gameObject); // 地面にトリガーしたらホーミング弾を消す
+            Destroy(gameObject);
         }
-
         else if (collision.gameObject.CompareTag("Enemy"))
         {
-
-            // 敵にEnemy_HPスクリプトがあるか確認
             enemy_HP enemyHP = collision.GetComponent<enemy_HP>();
             if (enemyHP != null)
             {
-                enemyHP.TakeDamage(1); // ダメージ量を1とする（必要に応じて変える）
+                enemyHP.TakeDamage(1);
             }
-
         }
     }
 
-
-
-    //関数名：FindEnemy()
-    //用途：一番近いエネミーを探す処理
     private void FindEnemy()
     {
-        GameObject[] enemy = GameObject.FindGameObjectsWithTag("Enemy");        //シーン内のEnemyのタグをすべて取得する
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        float closestDistanceEnemy = Mathf.Infinity;
+        Transform closestEnemy = null;
+        Vector3 currentPosition = transform.position;
 
-        float ClosestDistanceEnemy = Mathf.Infinity;                            //最も近いEnemyを探すための初期設定
-
-        Transform ClosestEmemy = null;
-
-        Vector3 CurrentPosition = transform.position;                             //現在の位置
-
-
-        foreach (GameObject enemeis in enemy)                                   //最も近いエネミーを見つける処理
+        foreach (GameObject enemy in enemies)
         {
+            if (enemy == null) continue;
 
-            // 対象となる敵が有効なゲームオブジェクトであるかチェック
-            if (enemeis == null) continue; // もし敵が既に破壊されていたらスキップ
+            Vector3 directionToEnemy = enemy.transform.position - currentPosition;
+            float distanceEnemy = directionToEnemy.sqrMagnitude;
 
-            Vector3 DirectionEnemy = enemeis.transform.position - CurrentPosition;      //現在の弾の位置からエネミーの距離を引いたベクトル
-
-            float DistanceEnemy = DirectionEnemy.sqrMagnitude;                          //距離の二乗を計算
-
-
-            //今まで近かったエネミーの距離よりDistanceEnemyの距離が短かったら
-            if (DistanceEnemy < ClosestDistanceEnemy)
+            if (distanceEnemy < closestDistanceEnemy)
             {
-                ClosestDistanceEnemy = DistanceEnemy;
-
-                ClosestEmemy = enemeis.transform;  //最も近いエネミーを更新する
+                closestDistanceEnemy = distanceEnemy;
+                closestEnemy = enemy.transform;
             }
         }
-
-        EnemyTarget = ClosestEmemy;            //一番近いエネミーをターゲットにする
+        EnemyTarget = closestEnemy;
     }
 
-
-    //関数名：Horming()
-    //用途：ホーミング処理
-    private void Horming(float speed)
+    // ★修正★ 引数なしの定義に統一
+    private void Horming()
     {
-        // ターゲットが見つからない、またはターゲットが消滅していたら
         if (EnemyTarget == null || (EnemyTarget != null && EnemyTarget.gameObject == null))
         {
             EnemyTarget = null;
-            // X軸方向だけは前の移動速度を維持し、Y軸はゆらゆら処理のためにリセット
-            currentMoveDirection = new Vector3(currentMoveDirection.x, 0, 0);
-
+            // ターゲットがいない場合、現在の向きで直進を続ける（ゆらゆら処理は削除済み）
             return;
         }
 
         // ターゲットが存在する場合のホーミング処理
-
-        // ターゲットの方向を計算
         Vector3 targetDirection = (EnemyTarget.position - transform.position).normalized;
 
-        // ホーミング速度で現在の移動方向をターゲット方向に近づける
+        // 現在の向きをターゲット方向に徐々に回転させる
         currentMoveDirection = Vector3.RotateTowards(
             currentMoveDirection.normalized,
             targetDirection,
             HormingSpeed * Time.deltaTime,
             0.0f
-        ).normalized * speed;
+        ).normalized;
+        // ※速度の掛け合わせは Update 内で行うため、ここでは向き(normalized)のみ計算
     }
 }
