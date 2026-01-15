@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\ASSETSTORE\Dark Forest\scripts\ParallaxEffect\ParallaxBehavior.cs" />
+    <Compile Include="Assets\script\Stage_Manager.cs" />
     <Compile Include="Assets\script\player_control.cs" />
     <Compile Include="Assets\script\ememy\enemy_Flower.cs" />
     <Compile Include="Assets\script\stage\Gimmick\magmagimmick.cs" />
@@ -74,9 +75,10 @@
     <Compile Include="Assets\script\bullet\bullet.cs" />
     <Compile Include="Assets\script\stage\LoadScene.cs" />
     <Compile Include="Assets\script\ememy\Zombi_default.cs" />
-    <Compile Include="Assets\Stage_Manager.cs" />
+    <Compile Include="Assets\script\StageSelect.cs" />
     <Compile Include="Assets\script\SceneManager.cs" />
     <Compile Include="Assets\script\ememy\Frankenstein.cs" />
+    <Compile Include="Assets\script\R_BackGround.cs" />
     <Compile Include="Assets\ASSETSTORE\Dark Forest\scripts\MoveCamera\Move.cs" />
     <Compile Include="Assets\script\bullet\Enemybullet.cs" />
     <Compile Include="Assets\script\Coin.cs" />
@@ -95,7 +97,6 @@
     <Compile Include="Assets\OtherData\FadeManager\Sample\FadeSample.cs" />
     <Compile Include="Assets\script\stage\doorcontroller.cs" />
     <Compile Include="Assets\script\cannon.cs" />
-    <Compile Include="Assets\Horming.cs" />
     <Compile Include="Assets\script\Basesetting.cs" />
     <Compile Include="Assets\script\stage\ayabe5_goal.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Which.cs" />
@@ -108,11 +109,11 @@
     <Compile Include="Assets\script\stage\CheckArea.cs" />
     <Compile Include="Assets\script\ememy\Clown_Projectile.cs" />
     <Compile Include="Assets\script\stage\Finish.cs" />
+    <Compile Include="Assets\script\Horming.cs" />
     <Compile Include="Assets\script\player\PlayerGroundCheck.cs" />
     <Compile Include="Assets\script\stage\NextStage.cs" />
     <Compile Include="Assets\script\stage\LoadNextStage.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Okami.cs" />
-    <Compile Include="Assets\StageSelect.cs" />
     <Compile Include="Assets\script\GameManager.cs" />
     <Compile Include="Assets\script\CoinRotate.cs" />
     <Compile Include="Assets\script\stage\honkistage.cs" />
