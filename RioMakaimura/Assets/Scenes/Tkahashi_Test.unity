@@ -1912,13 +1912,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: onewayPlatform
       objectReference: {fileID: 0}
+    - target: {fileID: 1100450404363996288, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 3059106114808184101, guid: beaf9253025da734a9fd4f21b82e94bf, type: 3}
+    - target: {fileID: 7380633918065405081, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.43391997
+      objectReference: {fileID: 0}
+    - target: {fileID: 7380633918065405081, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.38089544
+      objectReference: {fileID: 0}
     - target: {fileID: 7380633918065405081, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.62625384
+      value: -0.37
       objectReference: {fileID: 0}
     - target: {fileID: 7380633918065405081, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.8593035
+      value: -1.89
       objectReference: {fileID: 0}
     - target: {fileID: 7380633918065405081, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1951,6 +1963,26 @@ PrefabInstance:
     - target: {fileID: 7380633918065405081, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8779639514296465432, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
+      propertyPath: m_Size.x
+      value: 4.530463
+      objectReference: {fileID: 0}
+    - target: {fileID: 8779639514296465432, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
+      propertyPath: m_Offset.x
+      value: 1.7651811
+      objectReference: {fileID: 0}
+    - target: {fileID: 8779639514296465432, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
+      propertyPath: m_SpriteTilingProperty.pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8779639514296465432, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 10.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 8779639514296465432, guid: e99ef0204fee4bc45b329a67dfb5e007, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 3.72
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2061,6 +2093,7 @@ MonoBehaviour:
   maxHP: 5
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
+  D_Effect: {fileID: 0}
 --- !u!1 &1056457132
 GameObject:
   m_ObjectHideFlags: 0
@@ -2180,7 +2213,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1179411293
@@ -2624,7 +2657,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1601329856
