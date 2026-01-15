@@ -29,24 +29,28 @@ public class BackGround : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //背景の移動（カメラの動きと背景の動きを関連付ける）
+        // カメラが未設定の場合の安全策
+        if (cam == null) return;
+
+        // 1. 背景全体の移動（カメラとの追従）
         this.transform.position = new Vector2(cam.transform.position.x * scrollSpeed, 0.0f);
 
-        //背景画像を回り込ませる
+        // 2. 背景個別の回り込み（ローカル座標で管理する）
         for (int i = 0; i < bg.Length; ++i)
         {
-            //カメラのX座標と背景画像もX座標の距離が一定値を超えたら回り込ませる
-            if (bg[i].transform.position.x < cam.transform.position.x - 30.0f)
-            {
-                //右端に回り込ませる
-                bg[i].transform.localPosition = new Vector2(bg[i].transform.localPosition.x + 60.0f, 0.0f);
-            }
-            else if (bg[i].transform.position.x > cam.transform.position.x + 30.0f)
-            {
-                //左端に回り込ませる
-                bg[i].transform.localPosition = new Vector2(bg[i].transform.localPosition.x - 60.0f, 0.0f);
-            }
+            // 親（this）から見た背景の相対位置（localPosition）を取得
+            float localX = bg[i].transform.localPosition.x;
 
+            // 親（背景システム全体の中心）から30以上離れたら移動させる
+            // ※ 20.0f幅の画像3枚(計60f)をループさせる計算
+            if (localX < -30.0f)
+            {
+                bg[i].transform.localPosition += new Vector3(60.0f, 0, 0);
+            }
+            else if (localX > 30.0f)
+            {
+                bg[i].transform.localPosition -= new Vector3(60.0f, 0, 0);
+            }
         }
     }
 }
