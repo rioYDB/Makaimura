@@ -438,37 +438,50 @@ public class player_control : MonoBehaviour
 
     void SetAnimation()
     {
-        // 攻撃のボタン入力
+        //まず攻撃フラグの更新（スプライトの代入はまだしない）
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetButton("Fire1"))
         {
             attackFlag = true;
         }
-        // 攻撃中で時間計測
-        if( attackFlag == true)
+
+        if (attackFlag)
         {
             attackAnimTimer += Time.deltaTime;
-            if (attackAnimTimer > 0.3f) // アニメーション速度（0.5秒で終了）
+            if (attackAnimTimer > 0.3f)
             {
                 attackAnimTimer = 0f;
-                attackFlag = false;     // flagを元に戻す
+                attackFlag = false;
             }
+        }
+
+        //優先度1：ジャンプ（空中にいるなら最優先）
+        // IsJumpingフラグだけでなく、物理的な速度(y)もチェックすると確実です
+        if (!IsGrounded())
+        {
+            // 空中かつ攻撃中の場合、攻撃スプライトを優先する
+            if (attackFlag)
+            {
+                sr.sprite = currentAnim.attack;
+            }
+            else
+            {
+                sr.sprite = currentAnim.jump;
+            }
+            return; // 空中ならここで処理終了
+        }
+
+        //優先度2：攻撃（地上にいる場合のみ攻撃スプライトを表示）
+        if (attackFlag)
+        {
             sr.sprite = currentAnim.attack;
             return;
         }
 
-
-        // ジャンプ中はジャンプ用スプライト
-        if (IsJumping && !IsGrounded())
-        {
-            sr.sprite = currentAnim.jump;
-            return;
-        }
-
-        // 横移動中（地面にいる場合）のスプライト切り替え（歩行アニメ）
-        if (Mathf.Abs(Moveinput) > 0.01f && IsGrounded())
+        //優先度3：移動（横移動中）
+        if (Mathf.Abs(Moveinput) > 0.01f)
         {
             walkAnimTimer += Time.deltaTime;
-            if (walkAnimTimer > 0.2f) // アニメーション速度（0.2秒ごとに切り替え）
+            if (walkAnimTimer > 0.2f)
             {
                 walkAnimIndex = (walkAnimIndex + 1) % currentAnim.walk.Length;
                 walkAnimTimer = 0f;
@@ -477,7 +490,7 @@ public class player_control : MonoBehaviour
             return;
         }
 
-        // それ以外（待機状態）のスプライト
+        // 5. デフォルト：待機
         sr.sprite = currentAnim.idle;
     }
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class enemy_HP : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class enemy_HP : MonoBehaviour
     public Color flashColor = Color.red;
     public float flashDuration = 0.1f;
     
+    //ダメージエフェクト
+    public GameObject D_Effect;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -35,6 +38,8 @@ public class enemy_HP : MonoBehaviour
             Die();
         }
 
+        StartCoroutine(DamageEffect());
+
         StartCoroutine(FlashRed()); // 赤くフラッシュ
     }
 
@@ -44,6 +49,8 @@ public class enemy_HP : MonoBehaviour
         Debug.Log("敵が倒れた！");
         Destroy(gameObject);
     }
+
+   
 
     private System.Collections.IEnumerator FlashRed()
     {
@@ -55,5 +62,34 @@ public class enemy_HP : MonoBehaviour
             yield return new WaitForSeconds(flashDuration); // 少し待つ
             spriteRenderer.color = originalColor;
         }
+    }
+
+    //ダメージエフェクト(コインのエフェクトを流用)
+    private IEnumerator DamageEffect()
+    {
+        float duration = 0.05f; // 拡大にかける時間
+        Vector3 originalScale = transform.localScale;
+        Vector3 targetScale = originalScale * 1.5f;
+
+        float timer = 0f;
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            float t = timer / duration;
+            transform.localScale = Vector3.Lerp(originalScale, targetScale, t);
+            yield return null;
+        }
+
+        //パーティクルを出す！
+        if (D_Effect != null)
+        {
+            GameObject effect = Instantiate(D_Effect, transform.position, Quaternion.identity);
+            Destroy(effect, 0.2f); // 0.5秒で消す
+        }
+
+        // 少し待ってから消える
+        yield return new WaitForSeconds(0.05f);
+
+        Destroy(gameObject);
     }
 }
