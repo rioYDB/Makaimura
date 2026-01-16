@@ -164,6 +164,13 @@ public class enemy_HP : MonoBehaviour
 			Destroy(effect, 0.3f);
 		}
 
+		// š ‚±‚±‚ÅƒJƒƒ‰ŒÅ’è‰ğœII
+		CameraMove cam = Camera.main.GetComponent<CameraMove>();
+		if (cam != null)
+		{
+			cam.UnlockCamera();
+		}
+
 		yield return new WaitForSeconds(0.1f);
 		Destroy(gameObject);
 	}

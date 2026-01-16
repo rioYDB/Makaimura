@@ -28,8 +28,9 @@ public class CameraMove : MonoBehaviour
 
     private Coroutine shakeCoroutine;
     private bool isShaking = false;
+	public bool isFollow = true;
 
-    private Rigidbody2D playerRb;
+	private Rigidbody2D playerRb;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -43,19 +44,46 @@ public class CameraMove : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void LateUpdate()
-    {
-        if (player == null /*|| isShaking*/)
-            return;
+	// Update is called once per frame
+	//void LateUpdate()
+	//{
+	//    if (player == null /*|| isShaking*/)
+	//        return;
 
-        if (shakeCoroutine == null) // © —h‚ê’†‚Í’Êí’Ç]‚ğ~‚ß‚é
-        {
-            UpdateCameraFollow();
-        }
-    }
+	//    if (shakeCoroutine == null) // © —h‚ê’†‚Í’Êí’Ç]‚ğ~‚ß‚é
+	//    {
+	//        UpdateCameraFollow();
+	//    }
+	//}
 
-    private void UpdateCameraFollow()
+	void LateUpdate()
+	{
+		if (player == null)
+			return;
+
+		// š ƒ{ƒXƒGƒŠƒA‚È‚Ç‚ÅŒÅ’è’†
+		if (!isFollow)
+			return;
+
+		if (shakeCoroutine == null)
+		{
+			UpdateCameraFollow();
+		}
+	}
+
+	public void LockCamera()
+	{
+		isFollow = false;
+	}
+
+	public void UnlockCamera()
+	{
+		isFollow = true;
+	}
+
+
+
+	private void UpdateCameraFollow()
     {
         // ƒvƒŒƒCƒ„[‚ÌŒ»İˆÊ’u
         Vector3 playerPos = player.transform.position;

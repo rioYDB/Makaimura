@@ -66,6 +66,7 @@
     <Compile Include="Assets\script\player_control.cs" />
     <Compile Include="Assets\script\ememy\enemy_Flower.cs" />
     <Compile Include="Assets\script\stage\Gimmick\magmagimmick.cs" />
+    <Compile Include="Assets\script\ememy\BOSS\BossHP.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Human.cs" />
     <Compile Include="Assets\script\ememy\Clown_default.cs" />
     <Compile Include="Assets\script\SetGravity.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Assets\script\player\PlayerGroundCheck.cs" />
     <Compile Include="Assets\script\stage\NextStage.cs" />
     <Compile Include="Assets\script\stage\LoadNextStage.cs" />
+    <Compile Include="Assets\script\ememy\BOSS\BossCameraTrigger.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Okami.cs" />
     <Compile Include="Assets\script\GameManager.cs" />
     <Compile Include="Assets\script\CoinRotate.cs" />
