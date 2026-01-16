@@ -33,6 +33,7 @@ public class player_control : MonoBehaviour
     bool jumpPressed;
     bool jumpHeld;
 
+    private SEController SE;
 
     //攻撃オブジェクトをプレイヤーからどれだけ上に生成するか (Y軸)
     public float attackSpawnYOffset = 0.5f; // Inspectorで調整してください (この値を大きくすると弾の位置が高くなります)
@@ -182,6 +183,7 @@ public class player_control : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         bc = GetComponent<BoxCollider2D>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
+        SE = GetComponent<SEController>();
         /*SpriteRenderer.color = Color.green; */                                    //プレイヤーの色を緑色にする
 
         // SpriteRendererコンポーネントを取得します
@@ -307,7 +309,8 @@ public class player_control : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetButtonDown("Fire1"))
         {
             Attack();
-        }
+            SE.Play("Player.Shoot");
+		}
 
 
 
