@@ -257,45 +257,37 @@ public class Frankenstein : MonoBehaviour
     // ジャンプして叩きつけ、スタン波を発生させる攻撃
     IEnumerator Attack_Stan()
     {
-        currentState = FrankenState.Attack_Stan;
-        // anim.SetTrigger("JumpSlam");
+		currentState = FrankenState.Attack_Stan;
+		rb.linearVelocity = new Vector2(0, jumpForce);
 
-        // 1. ジャンプ
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector2.zero; // 一旦速度リセット
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        }
+		yield return new WaitForSeconds(0.2f);
+		yield return new WaitUntil(() => IsGrounded() && rb.linearVelocity.y <= 0.1f);
 
-        // 2. 着地を待つ
-        // 実際のゲームでは IsGrounded() などのカスタム判定メソッドを使います
-        yield return new WaitUntil(() => IsGrounded());
+		if (stunWavePrefab != null)
+		{
+			Debug.Log("着地：左右へ衝撃波発射！");
 
-        // 3. 地面叩きつけ (Stun Waveの生成)
-        // anim.SetTrigger("GroundSlam");
+			Vector3 spawnPos = transform.position;
+			if (enemyCollider != null) spawnPos.y = enemyCollider.bounds.min.y;
 
-        // 衝撃波を生成（ケルベロスと同様、衝撃波プレハブに当たり判定ロジックを持たせる）
-        if (stunWavePrefab != null)
-        {
-            Debug.Log("スタン開始");
+			// --- 右方向の衝撃波 ---
+			GameObject waveR = Instantiate(stunWavePrefab, spawnPos, Quaternion.identity);
+			waveR.GetComponent<Stan>().SetDirection(Vector2.right);
 
-            // フランケンの足元（またはコライダーの下端）に生成
-            Vector3 spawnPos = transform.position;
-            if (GetComponent<Collider2D>() != null)
-            {
-                spawnPos.y = GetComponent<Collider2D>().bounds.min.y;
-            }
-            Instantiate(stunWavePrefab, spawnPos, Quaternion.identity);
-        }
+			// --- 左方向の衝撃波 ---
+			GameObject waveL = Instantiate(stunWavePrefab, spawnPos, Quaternion.identity);
+			waveL.GetComponent<Stan>().SetDirection(Vector2.left);
+		}
 
-        // 4. 叩きつけ後の硬直時間
-        yield return new WaitForSeconds(slamHardnessTime);
+		yield return new WaitForSeconds(slamHardnessTime);
+		currentState = FrankenState.Idle;
+		cooldownTimer = attackCooldown;
+	}
 
-        Debug.Log("スタン終わり");
 
-        cooldownTimer = attackCooldown;
-        currentState = FrankenState.Idle;
-    }
+
+
+
 
 
     // --- ヘルパーメソッド ---
