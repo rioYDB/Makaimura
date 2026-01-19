@@ -129,7 +129,7 @@ public class enemy_HP : MonoBehaviour
 		yield return new WaitForSeconds(0.003f);
 
 	}
-	private IEnumerator DeathEffect()
+	protected virtual IEnumerator DeathEffect()
 	{
 		// 全Colliderを無効化
 		foreach (var col in GetComponentsInChildren<Collider2D>())
@@ -137,7 +137,6 @@ public class enemy_HP : MonoBehaviour
 			col.enabled = false;
 		}
 
-		// Rigidbodyも止める（任意）
 		Rigidbody2D rb = GetComponent<Rigidbody2D>();
 		if (rb != null)
 		{
@@ -162,13 +161,6 @@ public class enemy_HP : MonoBehaviour
 		{
 			GameObject effect = Instantiate(D_Effect, transform.position, Quaternion.identity);
 			Destroy(effect, 0.3f);
-		}
-
-		// ★ ここでカメラ固定解除！！
-		CameraMove cam = Camera.main.GetComponent<CameraMove>();
-		if (cam != null)
-		{
-			cam.UnlockCamera();
 		}
 
 		yield return new WaitForSeconds(0.1f);

@@ -2,38 +2,21 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-	//public static GameManager Instance { get; private set; }
+	public static GameManager Instance { get; private set; }
 
-	//public GameObject playerPrefab;
-	//public Transform spawnPoint;
+	[Header("ボス撃破フラグ")]
+	public bool isBossDefeated = false;
 
-	//private void Awake()
-	//{
-	//	// シングルトンのセットアップ
-	//	if (Instance == null)
-	//	{
-	//		Instance = this;
-	//	}
-	//	else
-	//	{
-	//		Destroy(gameObject);
-	//	}
-	//}
+	private void Awake()
+	{
+		// Singleton 保証
+		if (Instance != null && Instance != this)
+		{
+			Destroy(gameObject);
+			return;
+		}
 
-	//public void RespawnPlayer()
-	//{
-	//	Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity);
-	//}
-
-	// Start is called once before the first execution of Update after the MonoBehaviour is created
-	void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+		Instance = this;
+		DontDestroyOnLoad(gameObject); // シーン跨ぎたいなら
+	}
 }
