@@ -2,21 +2,34 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-	public static GameManager Instance { get; private set; }
+	public static GameManager Instance;
 
-	[Header("ボス撃破フラグ")]
+	[Header("Boss")]
 	public bool isBossDefeated = false;
 
-	private void Awake()
+	[Header("Goal")]
+	public GameObject goal;   // ゴールを入れる
+
+	void Awake()
 	{
-		// Singleton 保証
-		if (Instance != null && Instance != this)
+		if (Instance == null)
+		{
+			Instance = this;
+			DontDestroyOnLoad(gameObject);
+		}
+		else
 		{
 			Destroy(gameObject);
-			return;
 		}
+	}
 
-		Instance = this;
-		DontDestroyOnLoad(gameObject); // シーン跨ぎたいなら
+	public void OnBossDefeated()
+	{
+		isBossDefeated = true;
+
+		if (goal != null)
+		{
+			goal.SetActive(true);
+		}
 	}
 }

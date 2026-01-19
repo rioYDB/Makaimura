@@ -10,7 +10,7 @@ public class BossHP : enemy_HP
 	{
 		if (GameManager.Instance != null)
 		{
-			GameManager.Instance.isBossDefeated = true;
+			GameManager.Instance.OnBossDefeated();
 		}
 
 		CameraMove cam = Camera.main.GetComponent<CameraMove>();
