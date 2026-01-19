@@ -1,26 +1,25 @@
 using UnityEngine;
-using System.Collections;
+using System.Collections;   // ← ★ 必須 ★
 
-//public class BossHP : enemy_HP
-//{
-//	protected override IEnumerator DeathEffect()
-//	{
-//		// 共通の死亡処理（無効化など）
-//		yield return StartCoroutine(base.DeathEffect());
 
-//		// ★ ボス撃破フラグ
-//		GameManager.Instance.isBossDefeated = true;
+public class BossHP : enemy_HP
+{
 
-//		// ★ カメラ解除
-//		CameraMove cam = Camera.main.GetComponent<CameraMove>();
-//		if (cam != null)
-//		{
-//			cam.UnlockCamera();
-//		}
 
-//		// ★ 余韻
-//		yield return new WaitForSeconds(0.5f);
+	protected override IEnumerator DeathEffect()
+	{
+		if (GameManager.Instance != null)
+		{
+			GameManager.Instance.OnBossDefeated();
+		}
 
-//		Destroy(gameObject);
-//	}
-//}
+		CameraMove cam = Camera.main.GetComponent<CameraMove>();
+		if (cam != null)
+		{
+			cam.UnlockCamera();
+		}
+
+		yield return new WaitForSeconds(0.2f);
+		Destroy(gameObject);
+	}
+}
