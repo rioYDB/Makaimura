@@ -648,7 +648,13 @@ public class player_control : MonoBehaviour
         
     }
 
-    
+
+    // player_control.cs の中に追加UI用
+    public int GetCurrentHP()
+    {
+        return HP;
+    }
+
 
 
     //接触判定（敵やアイテム）
