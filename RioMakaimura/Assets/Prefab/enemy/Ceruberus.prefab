@@ -228,6 +228,13 @@ MonoBehaviour:
   premonitionEffectPrefab: {fileID: 5364064335996997443, guid: 90130d7f542a41d439cde00d8fba8c03, type: 3}
   moveSpeed: 2
   moveRange: 3
+  dashSpeed: 18
+  dashTime: 1
+  wallCheckDistance: 1
+  maxDashDistance: 15
+  emergeTopOffset: 1
+  GroundTileMapName: TileMap
+  TileMapLayer: 0
 --- !u!1 &1896874625863979194
 GameObject:
   m_ObjectHideFlags: 0

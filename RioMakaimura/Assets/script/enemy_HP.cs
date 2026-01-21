@@ -10,9 +10,12 @@ public class enemy_HP : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     public Color flashColor = Color.red;
     public float flashDuration = 0.1f;
-    
-    //ダメージエフェクト
-    public GameObject D_Effect;
+
+	private bool isDead = false;
+
+
+	//ダメージエフェクト
+	public GameObject D_Effect;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,31 +31,63 @@ public class enemy_HP : MonoBehaviour
         
     }
 
-    public void TakeDamage(int damage)
-    {
-        currentHP -= damage;
-        Debug.Log("敵がダメージを受けた。残りHP: " + currentHP);
+	//	public void TakeDamage(int damage)
+	//{
+	//    if (isDead) return; // ← ここが一番大事
 
-        if (currentHP <= 0)
-        {
-            Die();
-        }
+	//    currentHP -= damage;
+	//    Debug.Log("敵がダメージを受けた。残りHP: " + currentHP);
 
-        StartCoroutine(DamageEffect());
+	//    StartCoroutine(FlashRed());
 
-        StartCoroutine(FlashRed()); // 赤くフラッシュ
-    }
+	//    if (currentHP <= 0)
+	//    {
+	//        Die();
+	//    }
+	//    else
+	//    {
+	//        StartCoroutine(DamageEffect());
+	//    }
+	//}
+
+	public void TakeDamage(int damage)
+	{
+		if (isDead) return; // ← ここが一番大事
+
+		currentHP -= damage;
+		Debug.Log("敵がダメージを受けた。残りHP: " + currentHP);
+
+		StartCoroutine(FlashRed());
+
+		if (currentHP <= 0)
+		{
+			Die();
+		}
+		else
+		{
+			StartCoroutine(DamageEffect());
+		}
+	}
 
 
-    protected virtual void Die()
-    {
-        Debug.Log("敵が倒れた！");
-        Destroy(gameObject);
-    }
 
-   
 
-    private System.Collections.IEnumerator FlashRed()
+	//protected virtual void Die()
+	//{
+	//	Debug.Log("敵が倒れた！");
+	//	StartCoroutine(DeathEffect());
+	//}
+	protected virtual void Die()
+	{
+		if (isDead) return;
+
+		isDead = true; // ← 先に立てる！！
+		Debug.Log("敵が倒れた！");
+		StartCoroutine(DeathEffect());
+	}
+
+
+	private System.Collections.IEnumerator FlashRed()
     {
         if (spriteRenderer != null)
         {
@@ -64,32 +99,73 @@ public class enemy_HP : MonoBehaviour
         }
     }
 
-    //ダメージエフェクト(コインのエフェクトを流用)
-    private IEnumerator DamageEffect()
-    {
-        float duration = 0.05f; // 拡大にかける時間
-        Vector3 originalScale = transform.localScale;
-        Vector3 targetScale = originalScale * 1.5f;
+	/// <summary>
+	///ダメージエフェクト(コインのエフェクトを流用)
+	/// </summary>
+	/// <returns></returns>
+	private IEnumerator DamageEffect()
+	{
+		float duration = 0.05f; // 拡大にかける時間
+		Vector3 originalScale = transform.localScale;
+		Vector3 targetScale = originalScale * 1f;
 
-        float timer = 0f;
-        while (timer < duration)
-        {
-            timer += Time.deltaTime;
-            float t = timer / duration;
-            transform.localScale = Vector3.Lerp(originalScale, targetScale, t);
-            yield return null;
-        }
+		float timer = 0f;
+		while (timer < duration)
+		{
+			timer += Time.deltaTime;
+			float t = timer / duration;
+			transform.localScale = Vector3.Lerp(originalScale, targetScale, t);
+			yield return null;
+		}
 
-        //パーティクルを出す！
-        if (D_Effect != null)
-        {
-            GameObject effect = Instantiate(D_Effect, transform.position, Quaternion.identity);
-            Destroy(effect, 0.2f); // 0.5秒で消す
-        }
+		//パーティクルを出す！
+		if (D_Effect != null)
+		{
+			GameObject effect = Instantiate(D_Effect, transform.position, Quaternion.identity);
+			Destroy(effect, 0.2f); // 0.5秒で消す
+		}
 
-        // 少し待ってから消える
-        yield return new WaitForSeconds(0.05f);
+		// 少し待ってから消える
+		yield return new WaitForSeconds(0.003f);
 
-        Destroy(gameObject);
-    }
+	}
+	protected virtual IEnumerator DeathEffect()
+	{
+		// 全Colliderを無効化
+		foreach (var col in GetComponentsInChildren<Collider2D>())
+		{
+			col.enabled = false;
+		}
+
+		Rigidbody2D rb = GetComponent<Rigidbody2D>();
+		if (rb != null)
+		{
+			rb.linearVelocity = Vector2.zero;
+			rb.simulated = false;
+		}
+
+		float duration = 0.05f;
+		Vector3 originalScale = transform.localScale;
+		Vector3 targetScale = originalScale * 1.3f;
+
+		float timer = 0f;
+		while (timer < duration)
+		{
+			timer += Time.deltaTime;
+			transform.localScale =
+				Vector3.Lerp(originalScale, targetScale, timer / duration);
+			yield return null;
+		}
+
+		if (D_Effect != null)
+		{
+			GameObject effect = Instantiate(D_Effect, transform.position, Quaternion.identity);
+			Destroy(effect, 0.3f);
+		}
+
+		yield return new WaitForSeconds(0.1f);
+		Destroy(gameObject);
+	}
+
+
 }

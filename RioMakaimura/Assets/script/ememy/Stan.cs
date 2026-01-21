@@ -2,45 +2,45 @@ using UnityEngine;
 
 public class Stan : MonoBehaviour
 {
-    [Header("スタン効果設定")]
-    public float duration = 0.5f;           // 衝撃波の生存時間（見た目が続く時間）
-    public float stunTime = 2.0f;           // 敵やプレイヤーがスタンする時間
+	[Header("スタン効果設定")]
+	public float duration = 0.5f;
+	public float stunTime = 2.0f;
 
-    // Startで実行される衝突判定は、OnTriggerEnter2Dに任せます。
+	[Header("移動設定")]
+	public float speed = 10f;               // 衝撃波の移動速度
+	private Vector2 moveDirection;          // 移動方向
 
-    void Start()
-    {
-        // 衝撃波はすぐに消えるため、生成と同時にタイマーを開始
-        Destroy(gameObject, duration);
-    }
+	// 方向をセットするためのメソッド
+	public void SetDirection(Vector2 dir)
+	{
+		moveDirection = dir;
 
-    // 衝撃波のコライダーに触れたオブジェクトへの処理
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        // 敵味方問わずスタンさせるため、ターゲットをチェック
+		// 進行方向を向くようにスプライトを反転させる（必要に応じて）
+		if (dir.x < 0) transform.localScale = new Vector3(-1, 1, 1);
+	}
 
-        // プレイヤーの検出
-        if (other.CompareTag("Player"))
-        {
-            // プレイヤーのコントローラを取得し、スタンメソッドを呼び出す
-            player_control playerController = other.GetComponent<player_control>();
-            if (playerController != null)
-            {
-                // playerController.Stun(stunTime); // プレイヤー制御スクリプトにStunメソッドが必要
-                Debug.Log("プレイヤーがスタンしました！");
-            }
-        }
-        // 敵の検出 (ケルベロス以外の他の敵も含む)
-        else if (other.CompareTag("Enemy"))
-        {
-            // 敵のコントローラを取得し、スタンメソッドを呼び出す
-            // フランケン自身はスタンさせないように注意が必要です (Franken_Controllerは無視)
-            if (other.GetComponent<Frankenstein>() == null)
-            {
-                // EnemyController enemyController = other.GetComponent<EnemyController>();
-                // if (enemyController != null) enemyController.Stun(stunTime); 
-                Debug.Log(other.gameObject.name + "がスタンしました！");
-            }
-        }
-    }
+	void Start()
+	{
+		Destroy(gameObject, duration);
+	}
+
+	void Update()
+	{
+		// 毎フレーム指定された方向に移動させる
+		transform.Translate(moveDirection * speed * Time.deltaTime);
+	}
+
+	private void OnTriggerEnter2D(Collider2D other)
+	{
+		if (other.CompareTag("Player"))
+		{
+			player_control playerController = other.GetComponent<player_control>();
+			if (playerController != null)
+			{
+				
+				playerController.playerHP(1);    // ダメージを与える
+				Debug.Log("プレイヤーがスタンしました！");
+			}
+		}
+	}
 }

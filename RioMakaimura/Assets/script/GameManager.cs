@@ -2,38 +2,34 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-	//public static GameManager Instance { get; private set; }
+	public static GameManager Instance;
 
-	//public GameObject playerPrefab;
-	//public Transform spawnPoint;
+	[Header("Boss")]
+	public bool isBossDefeated = false;
 
-	//private void Awake()
-	//{
-	//	// シングルトンのセットアップ
-	//	if (Instance == null)
-	//	{
-	//		Instance = this;
-	//	}
-	//	else
-	//	{
-	//		Destroy(gameObject);
-	//	}
-	//}
+	[Header("Goal")]
+	public GameObject goal;   // ゴールを入れる
 
-	//public void RespawnPlayer()
-	//{
-	//	Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity);
-	//}
+	void Awake()
+	{
+		if (Instance == null)
+		{
+			Instance = this;
+			DontDestroyOnLoad(gameObject);
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
+	}
 
-	// Start is called once before the first execution of Update after the MonoBehaviour is created
-	void Start()
-    {
-        
-    }
+	public void OnBossDefeated()
+	{
+		isBossDefeated = true;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+		if (goal != null)
+		{
+			goal.SetActive(true);
+		}
+	}
 }

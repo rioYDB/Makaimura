@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 public class CameraMove : MonoBehaviour
 {
     [Header("プレイヤーの参照")]
@@ -28,34 +29,87 @@ public class CameraMove : MonoBehaviour
 
     private Coroutine shakeCoroutine;
     private bool isShaking = false;
+	public bool isFollow = true;
 
-    private Rigidbody2D playerRb;
+	private Vector3 startCameraPos;
+	private bool startIsFollow;
+
+
+	private Rigidbody2D playerRb;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if (player != null)
-        {
-            // プレイヤーとカメラの初期距離を記録
-            originalOffset = transform.position - player.transform.position;
-            //originalOffset.y = yOffset; // ← 初期化時にY調整を反映
+		// ★ カメラ自身の初期状態を保存
+		startCameraPos = transform.position;
+		startIsFollow = isFollow;
 
-        }
-    }
+		if (player != null)
+		{
+			originalOffset = transform.position - player.transform.position;
+		}
 
-    // Update is called once per frame
-    void LateUpdate()
-    {
-        if (player == null /*|| isShaking*/)
-            return;
 
-        if (shakeCoroutine == null) // ← 揺れ中は通常追従を止める
-        {
-            UpdateCameraFollow();
-        }
-    }
+	}
+	void OnEnable()
+	{
+		SceneManager.sceneLoaded += OnSceneLoaded;
+	}
 
-    private void UpdateCameraFollow()
+	void OnDisable()
+	{
+		SceneManager.sceneLoaded -= OnSceneLoaded;
+	}
+
+	void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+	{
+		ResetCameraOnSceneLoad();
+	}
+
+
+	void LateUpdate()
+	{
+		if (player == null)
+			return;
+
+		// ★ ボスエリアなどで固定中
+		if (!isFollow)
+			return;
+
+		if (shakeCoroutine == null)
+		{
+			UpdateCameraFollow();
+		}
+	}
+
+	public void LockCamera()
+	{
+		isFollow = false;
+	}
+
+	public void UnlockCamera()
+	{
+		isFollow = true;
+	}
+
+	public void ResetCamera()
+	{
+		isFollow = startIsFollow;
+		transform.position = startCameraPos;
+
+		// ★ これが超重要！！
+		if (player != null)
+		{
+			originalOffset = transform.position - player.transform.position;
+		}
+
+		currentLookAheadX = 0f;
+		targetLookAheadX = 0f;
+	}
+
+
+
+	private void UpdateCameraFollow()
     {
         // プレイヤーの現在位置
         Vector3 playerPos = player.transform.position;
@@ -121,4 +175,28 @@ public class CameraMove : MonoBehaviour
         transform.position = originalPos; // 元の位置に戻す
         shakeCoroutine = null; // 終了を記録
     }
+
+	void ResetCameraOnSceneLoad()
+	{
+		// プレイヤーを再取得（シーン遷移で別インスタンスになるため）
+		player = FindObjectOfType<player_control>();
+
+		isFollow = true;
+
+		if (player != null)
+		{
+			// カメラをプレイヤーの初期位置に即座に合わせる
+			transform.position = new Vector3(
+				player.transform.position.x,
+				player.transform.position.y + yOffset+1f,
+				transform.position.z
+			);
+
+			originalOffset = transform.position - player.transform.position;
+		}
+
+		currentLookAheadX = 0f;
+		targetLookAheadX = 0f;
+	}
+
 }

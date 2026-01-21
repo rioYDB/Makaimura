@@ -154,3 +154,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 0.5
   stunTime: 2
+  speed: 10
