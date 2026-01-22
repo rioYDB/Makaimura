@@ -1366,6 +1366,7 @@ MonoBehaviour:
   maxHP: 100
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
+  D_Effect: {fileID: 0}
 --- !u!1001 &90756917
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4298,6 +4299,7 @@ MonoBehaviour:
   shakeMagnitude: 0.05
   lookAheadDistance: 3
   lookAheadSmoothSpeed: 1
+  isFollow: 1
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4310,6 +4312,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9047a3ed74f67c64cb68ee69dd77ea07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isBossDefeated: 0
+  goal: {fileID: 0}
 --- !u!114 &519420036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4487,19 +4491,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7850864881250960338, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9659259
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7850864881250960338, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7850864881250960338, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7850864881250960338, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.25881904
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7850864881250960338, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4511,7 +4515,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7850864881250960338, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7850864881250960338, guid: 64a3932833a6c5043ad6a194a6945ef6, type: 3}
       propertyPath: m_ConstrainProportionsScale
@@ -5156,6 +5160,7 @@ MonoBehaviour:
   maxHP: 30
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
+  D_Effect: {fileID: 0}
 --- !u!1001 &680150366
 PrefabInstance:
   m_ObjectHideFlags: 0
