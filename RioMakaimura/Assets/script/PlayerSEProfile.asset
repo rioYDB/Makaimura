@@ -37,7 +37,31 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 62731643425794041b0125c650d00586, type: 3}
     volume: 1.5
     cooldown: 0
-  - id: Player.change
+  - id: Player.change_O
+    clip: {fileID: 8300000, guid: 2694485fd2cc1634bb0bf558a27ccae7, type: 3}
+    volume: 5
+    cooldown: 0
+  - id: Player.change_W
     clip: {fileID: 8300000, guid: f90405a7d88bffd459fd74775643790c, type: 3}
+    volume: 5
+    cooldown: 0
+  - id: Player.change_V
+    clip: {fileID: 8300000, guid: f90405a7d88bffd459fd74775643790c, type: 3}
+    volume: 5
+    cooldown: 0
+  - id: Player.jump_O
+    clip: {fileID: 8300000, guid: f90405a7d88bffd459fd74775643790c, type: 3}
+    volume: 5
+    cooldown: 0
+  - id: Player.jump_W
+    clip: {fileID: 8300000, guid: 83315214119d26e43b540a02e7559930, type: 3}
+    volume: 5
+    cooldown: 0
+  - id: Player.jump_V
+    clip: {fileID: 8300000, guid: f90405a7d88bffd459fd74775643790c, type: 3}
+    volume: 5
+    cooldown: 0
+  - id: Player.jump_H
+    clip: {fileID: 8300000, guid: 187067e6eb283ab4fa0292fd5d256105, type: 3}
     volume: 5
     cooldown: 0

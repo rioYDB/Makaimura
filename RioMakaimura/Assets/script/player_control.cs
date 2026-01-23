@@ -521,7 +521,7 @@ public class player_control : MonoBehaviour
         //狼男アイテムに触れたら自分が狼男になる
         if (collision.gameObject.tag == "Okami")
         {
-			SE.Play("Player.change");
+			SE.Play("Player.change_O");
 			sr.sprite = Okami;
             BulletChange("Okami");
 
@@ -536,7 +536,7 @@ public class player_control : MonoBehaviour
         //魔女アイテムに触れたら自分が魔女になる
         if (collision.gameObject.tag == "Which")
         {
-			SE.Play("Player.change");
+			SE.Play("Player.change_W");
 			sr.sprite = Which;
             BulletChange("Which");
 
@@ -577,7 +577,7 @@ public class player_control : MonoBehaviour
         //ヴァンパイアアイテムに触れたら自分が魔女になる
         if (collision.gameObject.tag == "Vampire")
         {
-            SE.Play("Player.change");
+            SE.Play("Player.change_V");
             sr.sprite = Vampire;
             BulletChange("Vampire");
 
@@ -803,17 +803,29 @@ public class player_control : MonoBehaviour
             //プレイヤーの状態に併せてジャンプ力を変更する
             float currentJumpPower = jumpPower;
 
-            //狼男の状態だとジャンプ力が上がる
-            if (currentAttack == AttackType.Okami)
+			// human
+			if (currentAttack == AttackType.Human)
+			{
+				SE.Play("Player.jump_H");
+			}
+			//狼男の状態だとジャンプ力が上がる
+			if (currentAttack == AttackType.Okami)
             {
                 currentJumpPower *= 1.2f;
-            }
+				SE.Play("Player.jump_O");
+			}
+			// 魔女状態
+			if (currentAttack == AttackType.Which)
+			{
+                SE.Play("Player.jump_W");
+			}
 
-            //ヴァンパイア状態だとジャンプ力が少し上がる
-            if (currentAttack == AttackType.Vampire)
+			//ヴァンパイア状態だとジャンプ力が少し上がる
+			if (currentAttack == AttackType.Vampire)
             {
                 currentJumpPower *= 1.1f;
-            }
+				SE.Play("Player.jump_V");
+			}
 
 
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, currentJumpPower);
