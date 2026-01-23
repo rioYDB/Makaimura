@@ -46,13 +46,13 @@ public class doorcontroller : MonoBehaviour
     // スイッチから呼び出されるメソッド
     public void OpenDoor()
     {
-        Debug.Log("扉が開く！");
+        Debug.Log("★★ OpenDoor 呼ばれた ★★", this);
         isOpening = true;
 
-        // 音を鳴らす (オプション)
         if (audioSource != null && openSound != null)
         {
             audioSource.PlayOneShot(openSound);
         }
     }
+
 }
