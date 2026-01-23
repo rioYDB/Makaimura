@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   seList:
   - id: Player.Shoot1
-    clip: {fileID: 8300000, guid: 31a9450a6fdae9146a9492d78271e90f, type: 3}
+    clip: {fileID: 8300000, guid: 03232584dd82e344faa0017f5074d59d, type: 3}
     volume: 5
     cooldown: 0
   - id: Player.Shoot2
@@ -26,7 +26,7 @@ MonoBehaviour:
     volume: 5
     cooldown: 0
   - id: Player.Shoot4
-    clip: {fileID: 8300000, guid: cc530b32032d6364e9fb7256d06d5659, type: 3}
+    clip: {fileID: 8300000, guid: efa07b5fa91298140a36f5e98472ed5c, type: 3}
     volume: 5
     cooldown: 0
   - id: Player.damage
@@ -42,7 +42,7 @@ MonoBehaviour:
     volume: 5
     cooldown: 0
   - id: Player.change_W
-    clip: {fileID: 8300000, guid: f90405a7d88bffd459fd74775643790c, type: 3}
+    clip: {fileID: 8300000, guid: 143fe9e7df0aa794db34c12677da68d3, type: 3}
     volume: 5
     cooldown: 0
   - id: Player.change_V
@@ -54,7 +54,7 @@ MonoBehaviour:
     volume: 5
     cooldown: 0
   - id: Player.jump_W
-    clip: {fileID: 8300000, guid: 83315214119d26e43b540a02e7559930, type: 3}
+    clip: {fileID: 8300000, guid: 26dc2f11bb17d954ba1752fd5701d7b1, type: 3}
     volume: 5
     cooldown: 0
   - id: Player.jump_V
