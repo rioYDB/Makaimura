@@ -1542,8 +1542,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isBossDefeated: 0
-  bossDoor: {fileID: 860009844}
-  goal: {fileID: 1131939615}
+  bossDoor: {fileID: 0}
+  goal: {fileID: 0}
 --- !u!114 &519420036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2287,25 +2287,6 @@ PrefabInstance:
 --- !u!1 &860009836 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6548755391902275641, guid: 9a78b5f0b1a8f03468cd55cfd8d946ae, type: 3}
-  m_PrefabInstance: {fileID: 1969582066}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &860009837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 860009836}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5987d93f631a70a40932ff948c336b07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  doorCollider: {fileID: 860009839}
-  animator: {fileID: 0}
---- !u!70 &860009839 stripped
-CapsuleCollider2D:
-  m_CorrespondingSourceObject: {fileID: 3659218828586493014, guid: 9a78b5f0b1a8f03468cd55cfd8d946ae, type: 3}
   m_PrefabInstance: {fileID: 1969582066}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &860009844
@@ -16912,6 +16893,8 @@ MonoBehaviour:
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
   D_Effect: {fileID: 3242572187331146978, guid: 1877df7d4f0f8f44295f2a18690387c0, type: 3}
+  openDoor: {fileID: 860009844}
+  goal: {fileID: 1131939615}
 --- !u!1001 &1903075112
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17041,9 +17024,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6548755391902275641, guid: 9a78b5f0b1a8f03468cd55cfd8d946ae, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 860009837}
     - targetCorrespondingSourceObject: {fileID: 6548755391902275641, guid: 9a78b5f0b1a8f03468cd55cfd8d946ae, type: 3}
       insertIndex: -1
       addedObject: {fileID: 860009844}
