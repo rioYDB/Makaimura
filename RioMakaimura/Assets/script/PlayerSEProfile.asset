@@ -13,7 +13,31 @@ MonoBehaviour:
   m_Name: PlayerSEProfile
   m_EditorClassIdentifier: 
   seList:
-  - id: Player.Shoot
+  - id: Player.Shoot1
     clip: {fileID: 8300000, guid: 31a9450a6fdae9146a9492d78271e90f, type: 3}
     volume: 5
-    cooldown: 1
+    cooldown: 0
+  - id: Player.Shoot2
+    clip: {fileID: 8300000, guid: 12da8f73c3fb54840a9001da237c1a37, type: 3}
+    volume: 5
+    cooldown: 0
+  - id: Player.Shoot3
+    clip: {fileID: 8300000, guid: 5adf2c7f9aabc6f4499f93ec2ee1905c, type: 3}
+    volume: 5
+    cooldown: 0
+  - id: Player.Shoot4
+    clip: {fileID: 8300000, guid: cc530b32032d6364e9fb7256d06d5659, type: 3}
+    volume: 5
+    cooldown: 0
+  - id: Player.damage
+    clip: {fileID: 8300000, guid: 7b015c2977f29784b89c598c71178e75, type: 3}
+    volume: 1.5
+    cooldown: 0
+  - id: Player.heal
+    clip: {fileID: 8300000, guid: 62731643425794041b0125c650d00586, type: 3}
+    volume: 1.5
+    cooldown: 0
+  - id: Player.change
+    clip: {fileID: 8300000, guid: f90405a7d88bffd459fd74775643790c, type: 3}
+    volume: 5
+    cooldown: 0

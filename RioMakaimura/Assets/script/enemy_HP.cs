@@ -5,9 +5,9 @@ public class enemy_HP : MonoBehaviour
 {
     public int maxHP;       // 最大HP（インスペクターで調整）
     private int currentHP;
-
-    //色変化
-    private SpriteRenderer spriteRenderer;
+	private SEController SE;
+	//色変化
+	private SpriteRenderer spriteRenderer;
     public Color flashColor = Color.red;
     public float flashDuration = 0.1f;
 
@@ -20,7 +20,8 @@ public class enemy_HP : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentHP = maxHP;
+		SE = GetComponent<SEController>();
+		currentHP = maxHP;
 
         spriteRenderer = GetComponent<SpriteRenderer>(); // SpriteRenderer を取得
     }
@@ -55,6 +56,7 @@ public class enemy_HP : MonoBehaviour
 		if (isDead) return; // ← ここが一番大事
 
 		currentHP -= damage;
+		SE.Play("Enemy_damage");
 		Debug.Log("敵がダメージを受けた。残りHP: " + currentHP);
 
 		StartCoroutine(FlashRed());

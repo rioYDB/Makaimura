@@ -7,11 +7,12 @@ public class Coin : MonoBehaviour
     public int value = 1; // コインの価値（スコア用）
     private bool isCollected = false; // 連続で取られないようにするため
     public GameObject sparkleEffect; // ← パーティクルプレハブを登録する用
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+	private SEController SE;
+	// Start is called once before the first execution of Update after the MonoBehaviour is created
+	void Start()
     {
-
-    }
+		SE = GetComponent<SEController>();
+	}
 
     // Update is called once per frame
     void Update()
@@ -25,18 +26,19 @@ public class Coin : MonoBehaviour
         if (collision.CompareTag("Player") && !isCollected)
         {
             isCollected = true;
-
-            // スコアを加算する（スコア管理クラスがあれば）
-            CoinScoreManager.instance.AddScore(value);
+            
+			// スコアを加算する（スコア管理クラスがあれば）
+			CoinScoreManager.instance.AddScore(value);
 
             // コインの拡大演出を実行
             StartCoroutine(CollectEffect());
 
-            // 取得音（任意）
-            // AudioSource.PlayClipAtPoint(coinSound, transform.position);
+			// 取得音（任意）
+			// SE
+			SE.Play("Coin_get");
 
 
-        }
+		}
     }
 
     private IEnumerator CollectEffect()

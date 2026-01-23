@@ -309,7 +309,23 @@ public class player_control : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetButtonDown("Fire1"))
         {
             Attack();
-            SE.Play("Player.Shoot");
+			// 変身状態によってSE変化
+			if (currentAttack == AttackType.Human)
+            {
+				SE.Play("Player.Shoot1");
+			}
+			if (currentAttack == AttackType.Okami)
+			{
+				SE.Play("Player.Shoot2");
+			}
+			if (currentAttack == AttackType.Which)
+			{
+				SE.Play("Player.Shoot3");
+			}
+			if (currentAttack == AttackType.Vampire)
+			{
+				SE.Play("Player.Shoot4");
+			}
 		}
 
 
@@ -505,8 +521,8 @@ public class player_control : MonoBehaviour
         //狼男アイテムに触れたら自分が狼男になる
         if (collision.gameObject.tag == "Okami")
         {
-
-            sr.sprite = Okami;
+			SE.Play("Player.change");
+			sr.sprite = Okami;
             BulletChange("Okami");
 
             SetCurrentAnimSet();
@@ -520,8 +536,8 @@ public class player_control : MonoBehaviour
         //魔女アイテムに触れたら自分が魔女になる
         if (collision.gameObject.tag == "Which")
         {
-
-            sr.sprite = Which;
+			SE.Play("Player.change");
+			sr.sprite = Which;
             BulletChange("Which");
 
             SetCurrentAnimSet();
@@ -561,7 +577,7 @@ public class player_control : MonoBehaviour
         //ヴァンパイアアイテムに触れたら自分が魔女になる
         if (collision.gameObject.tag == "Vampire")
         {
-
+            SE.Play("Player.change");
             sr.sprite = Vampire;
             BulletChange("Vampire");
 
@@ -1427,6 +1443,8 @@ public class player_control : MonoBehaviour
         if (!IsInvincible)
         {
             HP -= Damege;
+            // SE
+            SE.Play("Player.damage");
             Debug.Log("痛い");
 
 
@@ -1466,7 +1484,9 @@ public class player_control : MonoBehaviour
     public void Heal(int amount)
     {
         HP += amount;
-        if (HP > maxHP)
+		// SE
+		SE.Play("Player.heal");
+		if (HP > maxHP)
         {
             HP = maxHP; // 最大値を超えないように
         }
