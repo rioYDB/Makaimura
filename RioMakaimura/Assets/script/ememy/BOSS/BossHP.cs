@@ -3,13 +3,24 @@ using System.Collections;
 
 public class BossHP : enemy_HP
 {
+    [Header("Boss Clear Action")]
+    public doorcontroller openDoor;   // このボスが開くドア
+    public GameObject goal;            // ゴール（必要なら）
+
     protected override IEnumerator DeathEffect()
     {
-        if (GameManager.Instance != null)
+        // ★ このボス専用の処理
+        if (openDoor != null)
         {
-            GameManager.Instance.OnBossDefeated();
+            openDoor.OpenDoor();
         }
 
+        if (goal != null)
+        {
+            goal.SetActive(true);
+        }
+
+        // カメラ解除（共通）
         CameraMove cam = Camera.main.GetComponent<CameraMove>();
         if (cam != null)
         {
