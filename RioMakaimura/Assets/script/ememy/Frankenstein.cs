@@ -254,34 +254,53 @@ public class Frankenstein : MonoBehaviour
     }
 
 
-    // ジャンプして叩きつけ、スタン波を発生させる攻撃
-    IEnumerator Attack_Stan()
-    {
+	// ジャンプして叩きつけ、スタン波を発生させる攻撃
+	// Frankenstein.cs の Attack_Stan を書き換え
+	IEnumerator Attack_Stan()
+	{
 		currentState = FrankenState.Attack_Stan;
 		rb.linearVelocity = new Vector2(0, jumpForce);
 
+		// 上昇中を待つ
 		yield return new WaitForSeconds(0.2f);
+		// 地面に着くまで待機
 		yield return new WaitUntil(() => IsGrounded() && rb.linearVelocity.y <= 0.1f);
 
 		if (stunWavePrefab != null)
 		{
-			Debug.Log("着地：左右へ衝撃波発射！");
+			Debug.Log("着地：連鎖衝撃波スタート！");
 
-			Vector3 spawnPos = transform.position;
-			if (enemyCollider != null) spawnPos.y = enemyCollider.bounds.min.y;
+			// 足元の位置を計算
+			float groundY = transform.position.y;
+			if (enemyCollider != null) groundY = enemyCollider.bounds.min.y;
 
-			// --- 右方向の衝撃波 ---
-			GameObject waveR = Instantiate(stunWavePrefab, spawnPos, Quaternion.identity);
-			waveR.GetComponent<Stan>().SetDirection(Vector2.right);
-
-			// --- 左方向の衝撃波 ---
-			GameObject waveL = Instantiate(stunWavePrefab, spawnPos, Quaternion.identity);
-			waveL.GetComponent<Stan>().SetDirection(Vector2.left);
+			// 左右同時に連鎖を発生させるコルーチンを開始
+			StartCoroutine(SpawnSlamWaves(new Vector3(transform.position.x, groundY, 0)));
 		}
 
 		yield return new WaitForSeconds(slamHardnessTime);
 		currentState = FrankenState.Idle;
 		cooldownTimer = attackCooldown;
+	}
+
+	// ヴァンパイアの攻撃を流用・改造した連鎖生成ロジック
+	IEnumerator SpawnSlamWaves(Vector3 centerPos)
+	{
+		int waveCount = 4;      // 片側4つ、合計8つ出す
+		float spread = 1.8f;    // 火柱同士の間隔
+		float delay = 0.08f;    // 次の波が出るまでの速さ
+
+		for (int i = 1; i <= waveCount; i++)
+		{
+			// 右と左の生成位置を計算
+			Vector3 rightPos = centerPos + new Vector3(i * spread, 0.2f, 0); // 0.2f浮かせると埋まりにくい
+			Vector3 leftPos = centerPos + new Vector3(-i * spread, 0.2f, 0);
+
+			Instantiate(stunWavePrefab, rightPos, Quaternion.identity);
+			Instantiate(stunWavePrefab, leftPos, Quaternion.identity);
+
+			yield return new WaitForSeconds(delay);
+		}
 	}
 
 
@@ -290,13 +309,13 @@ public class Frankenstein : MonoBehaviour
 
 
 
-    // --- ヘルパーメソッド ---
+	// --- ヘルパーメソッド ---
 
-    /// <summary>
-    /// ボスが地面に接地しているかを判定します。
-    /// </summary>
-    /// <returns>接地していれば true</returns>
-    bool IsGrounded()
+	/// <summary>
+	/// ボスが地面に接地しているかを判定します。
+	/// </summary>
+	/// <returns>接地していれば true</returns>
+	bool IsGrounded()
     {
         if (enemyCollider == null)
         {
