@@ -233,9 +233,14 @@ public class player_control : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
 
-        if (IsGrounded())
+		// ★追加：スタン中はここで処理を中断させる
+		if (isStunned) return;
+
+		if (IsGrounded())
+
+
+			if (IsGrounded())
         {
             IsJumping = false;
         }
@@ -1731,4 +1736,38 @@ public class player_control : MonoBehaviour
         col.enabled = true;       // 元に戻す
         bc.enabled = true;
     }
+
+
+
+
+	// スタンを開始する公開メソッド
+	public void Stun(float duration)
+	{
+		// 無敵中や既にスタン中なら重ねてスタンしない
+		if (IsInvincible || isStunned) return;
+
+		StartCoroutine(StunRoutine(duration));
+	}
+
+
+	private IEnumerator StunRoutine(float duration)
+	{
+		isStunned = true;
+		Color originalColor = sr.color; // 現在の色を保存
+
+		// 1. 移動を止める
+		rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+
+		// 2. 見た目をグレーにする
+		sr.color = Color.gray;
+
+		// 3. 指定時間待機（この間、Updateでの入力を受け付けない）
+		yield return new WaitForSeconds(duration);
+
+		// 4. 元に戻す
+		sr.color = originalColor;
+		isStunned = false;
+	}
+
+
 }

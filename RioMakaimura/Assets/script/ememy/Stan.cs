@@ -12,16 +12,16 @@ public class Stan : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D other)
 	{
-		// 1. 相手がプレイヤーかチェック
 		if (other.CompareTag("Player"))
 		{
 			player_control player = other.GetComponent<player_control>();
 			if (player != null)
 			{
-				// 2. プレイヤーのダメージ処理を直接呼び出す
-				// これにより、SE再生、無敵、フラッシュ、HP減少がすべて走ります
+				// ダメージを与える
 				player.playerHP(1);
-				Debug.Log("衝撃波がプレイヤーに命中！");
+
+				// ★スタンさせる（2秒間）
+				player.Stun(stunTime);
 			}
 		}
 	}
