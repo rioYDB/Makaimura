@@ -2,44 +2,26 @@ using UnityEngine;
 
 public class Stan : MonoBehaviour
 {
-	[Header("スタン効果設定")]
-	public float duration = 0.5f;
-	public float stunTime = 2.0f;
-
-	[Header("移動設定")]
-	public float speed = 10f;               // 衝撃波の移動速度
-	private Vector2 moveDirection;          // 移動方向
-
-	// 方向をセットするためのメソッド
-	public void SetDirection(Vector2 dir)
-	{
-		moveDirection = dir;
-
-		// 進行方向を向くようにスプライトを反転させる（必要に応じて）
-		if (dir.x < 0) transform.localScale = new Vector3(-1, 1, 1);
-	}
+	public float lifeTime = 0.5f; // ヴァンパイアの火柱のように短時間で消す
+	public float stunTime = 2.0f; // 後のスタン処理用
 
 	void Start()
 	{
-		Destroy(gameObject, duration);
-	}
-
-	void Update()
-	{
-		// 毎フレーム指定された方向に移動させる
-		transform.Translate(moveDirection * speed * Time.deltaTime);
+		Destroy(gameObject, lifeTime);
 	}
 
 	private void OnTriggerEnter2D(Collider2D other)
 	{
+		// 1. 相手がプレイヤーかチェック
 		if (other.CompareTag("Player"))
 		{
-			player_control playerController = other.GetComponent<player_control>();
-			if (playerController != null)
+			player_control player = other.GetComponent<player_control>();
+			if (player != null)
 			{
-				
-				playerController.playerHP(1);    // ダメージを与える
-				Debug.Log("プレイヤーがスタンしました！");
+				// 2. プレイヤーのダメージ処理を直接呼び出す
+				// これにより、SE再生、無敵、フラッシュ、HP減少がすべて走ります
+				player.playerHP(1);
+				Debug.Log("衝撃波がプレイヤーに命中！");
 			}
 		}
 	}
