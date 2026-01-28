@@ -48,31 +48,25 @@ public class CoinScoreManager : MonoBehaviour
     // スコアを加算する関数
     public void AddScore(int value)
     {
-        // スコアにvalue分を足す
         score += value;
-        
-        // Textにスコアを表示（UIを更新）
-        scoreText.text = "Coins: " + score.ToString();
 
-        // スコアUIをピョンっと動かす演出
-        // 既にアニメ中なら止めてから再スタート
-        if (scaleCoroutine != null)
-            StopCoroutine(scaleCoroutine);
-        scaleCoroutine = StartCoroutine(ScoreTextEffect());
+        // ★修正：scoreTextがセットされている時だけ更新する（エラー防止）
+        if (scoreText != null)
+        {
+            scoreText.text = "Coins: " + score.ToString();
 
-        //10枚集めたらHP回復＆リセット
+            if (scaleCoroutine != null)
+                StopCoroutine(scaleCoroutine);
+            scaleCoroutine = StartCoroutine(ScoreTextEffect());
+        }
+
         if (score % 10 == 0)
         {
             if (playerHealth != null)
             {
-                playerHealth.Heal(1); // HPを1回復！
+                playerHealth.Heal(1);
             }
-
-            // ここでスコアをリセット
             ResetScore();
-
-            // 必要なら「ボーナス演出」や「音」もここで追加できる
-            Debug.Log("10枚集めた！HP回復！スコアをリセットしました。");
         }
     }
 
@@ -110,7 +104,10 @@ public class CoinScoreManager : MonoBehaviour
     public void ResetScore()
     {
         score = 0;
-        scoreText.text = "Coins: " + score.ToString();
+        if (scoreText != null)
+        {
+            scoreText.text = "Coins: " + score.ToString();
+        }
     }
 
     // 現在のスコアを取得したいときに使う（任意）
