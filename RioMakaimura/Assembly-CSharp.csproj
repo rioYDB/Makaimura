@@ -66,6 +66,7 @@
     <Compile Include="Assets\script\player_control.cs" />
     <Compile Include="Assets\script\ememy\enemy_Flower.cs" />
     <Compile Include="Assets\script\stage\Gimmick\magmagimmick.cs" />
+    <Compile Include="Assets\Coinmanager.cs" />
     <Compile Include="Assets\script\ememy\BOSS\BossHP.cs" />
     <Compile Include="Assets\script\bullet\Bullet_Human.cs" />
     <Compile Include="Assets\StartManager.cs" />

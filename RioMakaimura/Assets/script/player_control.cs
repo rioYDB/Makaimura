@@ -509,6 +509,13 @@ public class player_control : MonoBehaviour
         //優先度3：移動（横移動中）
         if (Mathf.Abs(Moveinput) > 0.01f)
         {
+            // ★追加：配列が空、またはNullの場合は待機スプライトを表示して抜ける
+            if (currentAnim.walk == null || currentAnim.walk.Length == 0)
+            {
+                sr.sprite = currentAnim.idle;
+                return;
+            }
+
             walkAnimTimer += Time.deltaTime;
             if (walkAnimTimer > 0.2f)
             {
