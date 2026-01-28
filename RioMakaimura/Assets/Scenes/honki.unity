@@ -12845,6 +12845,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: StartUI
       objectReference: {fileID: 0}
+    - target: {fileID: 4128207139224841047, guid: 44ad607299ad7c64290935686852f61c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 104
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128207139224841047, guid: 44ad607299ad7c64290935686852f61c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7395738897142820571, guid: 44ad607299ad7c64290935686852f61c, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -12924,6 +12932,18 @@ PrefabInstance:
     - target: {fileID: 7395738897142820571, guid: 44ad607299ad7c64290935686852f61c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8183276567944394297, guid: 44ad607299ad7c64290935686852f61c, type: 3}
+      propertyPath: stageName
+      value: LastStage
+      objectReference: {fileID: 0}
+    - target: {fileID: 8860904252476190115, guid: 44ad607299ad7c64290935686852f61c, type: 3}
+      propertyPath: m_fontSize
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 8860904252476190115, guid: 44ad607299ad7c64290935686852f61c, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 150
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
