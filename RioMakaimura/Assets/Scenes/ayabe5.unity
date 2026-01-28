@@ -1105,7 +1105,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: ed4f8ce917433fc4cac540231096c5a4, type: 3}
   m_Resource: {fileID: 8300000, guid: ed4f8ce917433fc4cac540231096c5a4, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
@@ -7756,6 +7756,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: StartUI
       objectReference: {fileID: 0}
+    - target: {fileID: 4128207139224841047, guid: 44ad607299ad7c64290935686852f61c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 144
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128207139224841047, guid: 44ad607299ad7c64290935686852f61c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 47
+      objectReference: {fileID: 0}
     - target: {fileID: 7395738897142820571, guid: 44ad607299ad7c64290935686852f61c, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -7835,6 +7843,14 @@ PrefabInstance:
     - target: {fileID: 7395738897142820571, guid: 44ad607299ad7c64290935686852f61c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8183276567944394297, guid: 44ad607299ad7c64290935686852f61c, type: 3}
+      propertyPath: stageName
+      value: Stage2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8860904252476190115, guid: 44ad607299ad7c64290935686852f61c, type: 3}
+      propertyPath: m_margin.z
+      value: -65.86023
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9371,7 +9387,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 722991091692978503, guid: a5e779d2f2b3593428319d69b274a8ee, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 722991091692978503, guid: a5e779d2f2b3593428319d69b274a8ee, type: 3}
       propertyPath: m_LocalRotation.w
@@ -30856,6 +30872,7 @@ MonoBehaviour:
   D_Effect: {fileID: 3242572187331146978, guid: 1877df7d4f0f8f44295f2a18690387c0, type: 3}
   openDoor: {fileID: 1969377491}
   goal: {fileID: 1509434711}
+  cameraTrigger: {fileID: 0}
 --- !u!1001 &503757413461214821
 PrefabInstance:
   m_ObjectHideFlags: 0
