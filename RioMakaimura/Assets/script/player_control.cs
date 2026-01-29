@@ -174,8 +174,8 @@ public class player_control : MonoBehaviour
     //スタン攻撃
     public bool isStunned = false; //スタン攻撃を受けたかどうか
 	//-----------------------------------------------------------------------------------------------------------------------
-
-
+    public bool canControl = true;   // ★操作を受け付けるか
+　  //-----------------------------------------------------------------------------------------------------------------------
 
 	public bool isFacingRight = true; // カメラが参照する向きフラグ
 
@@ -233,6 +233,13 @@ public class player_control : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		// 操作不能（ステージ開始演出・イベント中など）
+		if (!canControl)
+		{
+			// 念のため完全停止
+			rb.linearVelocity = Vector2.zero;
+			return;
+		}
 
 		// ★追加：スタン中はここで処理を中断させる
 		if (isStunned) return;

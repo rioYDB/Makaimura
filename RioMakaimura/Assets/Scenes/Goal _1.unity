@@ -184,6 +184,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4401474150410378089, guid: 72cbef06973fcbb42bd93952ca2e6026, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.23
+      objectReference: {fileID: 0}
     - target: {fileID: 6995478164355141875, guid: 72cbef06973fcbb42bd93952ca2e6026, type: 3}
       propertyPath: m_Name
       value: Clear
@@ -410,7 +414,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: db8046b35721eb145a580ed7a94dbe23, type: 3}
   m_Resource: {fileID: 8300000, guid: db8046b35721eb145a580ed7a94dbe23, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1

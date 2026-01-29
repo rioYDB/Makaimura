@@ -20,6 +20,10 @@ public class StartManager : MonoBehaviour
 		// プレイヤーのRigidbodyを取得（シーンに1人想定）
 		GameObject playerObj = GameObject.FindWithTag("Player");
 		Rigidbody2D playerRb = playerObj?.GetComponent<Rigidbody2D>();
+		player_control player = playerObj?.GetComponent<player_control>();
+
+		// 操作停止
+		if (player != null) player.canControl = false;
 
 		// 1. ゲームの進行を止め、プレイヤーを物理演算から切り離す
 		Time.timeScale = 0f;
@@ -48,5 +52,8 @@ public class StartManager : MonoBehaviour
 			playerRb.bodyType = RigidbodyType2D.Dynamic; // 動的な状態に戻す
 		}
 		Time.timeScale = 1f;
+
+		// 操作再開
+		if (player != null) player.canControl = true;
 	}
 }
