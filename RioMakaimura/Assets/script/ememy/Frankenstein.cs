@@ -3,360 +3,251 @@ using System.Collections;
 
 public enum FrankenState
 {
-  Idle,                 //待機
-  Move,                 //移動
-  Defend,               //防御（弾破壊）
-  Attack_main,          //攻撃（基本攻撃）
-  Attack_Stan,          //スタン攻撃
-  Hit,                  //ダメージ
-  Dead                  //死亡
+    Idle,                 //待機
+    Move,                 //移動
+    Defend,               //防御
+    Attack_main,          //攻撃
+    Attack_Stan,          //スタン攻撃
+    Hit,                  //ダメージ
+    Dead                  //死亡
 }
+
 public class Frankenstein : MonoBehaviour
 {
-
-
     public FrankenState currentState = FrankenState.Idle;
     public Transform playerTransform;
 
+    [Header("移動設定")]
+    public float moveSpeed = 2.0f;       // ★追加：移動速度
+    public float stopDistance = 3.0f;   // ★追加：この距離まで近づいたら止まって攻撃
+
     [Header("攻撃設定")]
-    public float detectRange = 5f;          // 近接攻撃の検知距離
-    public float attackCooldown = 2.0f;     // 攻撃間のクールダウン
+    public float detectRange = 5f;
+    public float attackCooldown = 2.0f;
     private float cooldownTimer = 0f;
     public Collider2D hammerHitbox;
 
+    [Header("通常攻撃・判定設定")]
+    public ContactFilter2D playerFilter;
 
     [Header("防御設定")]
-    public float defenseDuration = 0.7f;     // 防御アニメーション時間
-    public LayerMask playerBulletLayer;      // プレイヤーの弾のLayerMask
-    public float defenseRadius = 3.0f;       // 弾を破壊する検知エリアの半径
+    public float defenseDuration = 0.7f;
+    public LayerMask playerBulletLayer;
+    public float defenseRadius = 3.0f;
 
     [Header("スタン攻撃設定")]
     public float jumpForce = 15f;
-    public float slamHardnessTime = 0.5f;    // 叩きつけ後の硬直時間
-    public GameObject stunWavePrefab;        // スタン衝撃波のプレハブ
+    public float slamHardnessTime = 0.5f;
+    public GameObject stunWavePrefab;
 
     [Header("ハンマー制御")]
-    public Transform hammerVisual;       // ハンマーの見た目のTransform
-    public Vector3 swingStartRotation = new Vector3(0, 0, 90); // 振り上げ開始時の角度
-    public Vector3 swingEndRotation = new Vector3(0, 0, -45);  // 振り下ろし終了時の角度
-    public float swingDuration = 0.15f;  // 振り下ろし動作の時間
+    public Transform hammerVisual;
+    public Vector3 swingStartRotation = new Vector3(0, 0, 90);
+    public Vector3 swingEndRotation = new Vector3(0, 0, -45);
+    public float swingDuration = 0.15f;
 
     [Header("接地判定設定")]
-    public float groundCheckDistance = 0.1f; // 足元からレイを飛ばす
-    public LayerMask groundLayer;            // 地面判定用レイヤー
-
+    public float groundCheckDistance = 0.1f;
+    public LayerMask groundLayer;
 
     private Rigidbody2D rb;
-    private Collider2D enemyCollider; // 自身のコライダーを格納
+    private Collider2D enemyCollider;
     private Animator anim;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-
-
-        rb = GetComponent<Rigidbody2D>();
-        //自身のコライダーを取得
         enemyCollider = GetComponent<Collider2D>();
         anim = GetComponent<Animator>();
 
-        //プレイヤーのTransformを取得
         GameObject playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null)
         {
             playerTransform = playerObj.transform;
         }
-        else
-        {
-            // プレイヤーが見つからない場合は警告を出し、攻撃ロジックをスキップできるようにする
-            Debug.LogError("Playerタグのオブジェクトが見つかりません。攻撃ロジックが機能しません。", this);
-        }
 
-        //ハンマーを非表示
         if (hammerVisual != null)
         {
             hammerVisual.gameObject.SetActive(false);
         }
-
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // クールダウン処理
         if (cooldownTimer > 0)
         {
             cooldownTimer -= Time.deltaTime;
         }
 
+        // 状態に応じた処理
         switch (currentState)
         {
             case FrankenState.Idle:
-            case FrankenState.Move:
+                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); // 止まる
                 CheckAttacks();
                 break;
-                // 攻撃中は他の処理をブロック
+
+            case FrankenState.Move:
+                MoveTowardsPlayer(); // ★移動処理を実行
+                CheckAttacks();
+                break;
         }
     }
 
+    // ★追加：プレイヤーに向かって歩く処理
+    void MoveTowardsPlayer()
+    {
+        if (playerTransform == null) return;
 
-    // 攻撃選択ロジック
+        // プレイヤーとの距離を計算
+        float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
+
+        // 攻撃範囲より遠い場合のみ移動する
+        if (distanceToPlayer > stopDistance)
+        {
+            // プレイヤーの方向（右か左か）を判定
+            float direction = playerTransform.position.x > transform.position.x ? 1 : -1;
+
+            // 移動速度をセット（Y軸は物理演算に任せる）
+            rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
+
+            // 向きをプレイヤーの方に変える
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * direction, transform.localScale.y, transform.localScale.z);
+        }
+        else
+        {
+            // 近づきすぎたら止まる
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+            currentState = FrankenState.Idle;
+        }
+    }
+
     void CheckAttacks()
     {
         if (cooldownTimer > 0) return;
 
-        // 1. 弾の接近を優先的にチェック (防御ロジック)
+        // 防御判定
         if (Physics2D.OverlapCircle(transform.position, defenseRadius, playerBulletLayer))
         {
             StartCoroutine(Defend());
             return;
         }
 
-        // 2. プレイヤーが近接距離にいるかチェック (ハンマー振り下ろし)
-        if (Vector2.Distance(transform.position, playerTransform.position) < detectRange)
+        float distance = Vector2.Distance(transform.position, playerTransform.position);
+
+        // 攻撃範囲内なら攻撃
+        if (distance < detectRange)
         {
-            // 一定の確率で近接攻撃とスタン攻撃を使い分ける
-            if (Random.Range(0f, 1f) < 0.6f) // 60%の確率で近接攻撃
+            if (Random.Range(0f, 1f) < 0.6f)
             {
                 StartCoroutine(Attack_main());
             }
-            else // 40%の確率でスタン攻撃
+            else
             {
                 StartCoroutine(Attack_Stan());
             }
         }
         else
         {
-            currentState = FrankenState.Move; // 遠い場合は移動など
+            // 遠ければ移動状態へ
+            currentState = FrankenState.Move;
         }
     }
 
-
-
-    // 弾が接近した際の防御行動
+    // --- 以下、既存の攻撃コルーチン（変更なし） ---
     IEnumerator Defend()
     {
         currentState = FrankenState.Defend;
-        // anim.SetTrigger("HammerBlock"); 
-
-        // 予備動作時間（ハンマーを振り上げる時間）
+        rb.linearVelocity = Vector2.zero; // 防御中は止まる
         yield return new WaitForSeconds(0.2f);
-
-        // --- 弾の破壊処理 ---
-        // 検知エリア内のすべての弾を破壊
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(transform.position, defenseRadius, playerBulletLayer);
-
         foreach (Collider2D col in hitColliders)
         {
-            // 弾であることを確認して破壊
             if (col.CompareTag("PlayerBullet") || col.gameObject.GetComponent<bullet>() != null)
-            {
-                Debug.Log("破壊");
                 Destroy(col.gameObject);
-            }
         }
-
-        // 防御後の硬直
         yield return new WaitForSeconds(defenseDuration);
-
-        cooldownTimer = attackCooldown;
-        currentState = FrankenState.Idle;
+        EndAttack();
     }
 
-    // プレイヤーへのハンマー振り下ろし攻撃
     IEnumerator Attack_main()
     {
         currentState = FrankenState.Attack_main;
-        // anim.SetTrigger("HammerSwing");
+        rb.linearVelocity = Vector2.zero; // 攻撃中は止まる
 
-        Debug.Log("通常攻撃");
-
-        // 予備動作中に見た目をプレイヤーに向かせる（オプション）
-        if (playerTransform != null)
-        {
-            // 振り下ろす前にプレイヤーの方向を向く
-            bool lookLeft = playerTransform.position.x < transform.position.x;
-            // SRが存在するとして、見た目を反転させる
-            // if (GetComponent<SpriteRenderer>() != null) GetComponent<SpriteRenderer>().flipX = lookLeft; 
-        }
-
-        Debug.Log("通常攻撃: 予備動作開始");
-
-
-
-        //ハンマーを表示する
         if (hammerVisual != null)
         {
             hammerVisual.gameObject.SetActive(true);
-            hammerVisual.localRotation = Quaternion.Euler(swingStartRotation); // 振り上げ開始位置
+            hammerVisual.localRotation = Quaternion.Euler(swingStartRotation);
         }
-
-        // 1. 振り下ろし動作の予備動作 (チャージ)
-        // 予備動作時間: 0.4秒
         yield return new WaitForSeconds(0.4f);
-
-
-        //攻撃判定の開始
-        // 振り下ろし開始時刻を記録
         float startTime = Time.time;
-
-        // 振り下ろしが完了するまでループ
+        bool damageApplied = false;
         while (Time.time < startTime + swingDuration)
         {
-            // 進行度 (0.0 から 1.0)
             float t = (Time.time - startTime) / swingDuration;
-
-            // 開始角度から終了角度へ補間して回転させる
-            Quaternion targetRotation = Quaternion.Euler(swingEndRotation);
-            Quaternion currentRotation = Quaternion.Euler(swingStartRotation);
-
-            hammerVisual.localRotation = Quaternion.Slerp(currentRotation, targetRotation, t);
-
-            // 攻撃判定を有効化 (動作中に当たり判定ON)
-            if (t >= 0.2f && hammerHitbox != null && !hammerHitbox.enabled)
+            hammerVisual.localRotation = Quaternion.Slerp(Quaternion.Euler(swingStartRotation), Quaternion.Euler(swingEndRotation), t);
+            if (t >= 0.2f && !damageApplied && hammerHitbox != null)
             {
-                Debug.Log("通常攻撃: ヒットボックスON");
-                hammerHitbox.enabled = true;
+                Collider2D[] results = new Collider2D[5];
+                int count = hammerHitbox.Overlap(playerFilter, results);
+                for (int i = 0; i < count; i++)
+                {
+                    if (results[i].CompareTag("Player"))
+                    {
+                        player_control player = results[i].GetComponent<player_control>();
+                        if (player != null) { player.playerHP(1); damageApplied = true; break; }
+                    }
+                }
             }
-
             yield return null;
         }
-
-        // 動作完了後、角度を正確に終了位置に設定
-        if (hammerVisual != null)
-        {
-            hammerVisual.localRotation = Quaternion.Euler(swingEndRotation);
-        }
-
-
-
-        //攻撃判定の終了
-        if (hammerHitbox != null)
-        {
-            Debug.Log("通常攻撃: ヒットボックスOFF");
-            hammerHitbox.enabled = false; // 攻撃判定を無効化
-        }
-
-
-
-        // 攻撃後の硬直
         yield return new WaitForSeconds(0.7f);
-
-        if(hammerVisual != null)
-        {
-            hammerVisual.gameObject.SetActive(false);
-        }
-
-
-        cooldownTimer = attackCooldown;
-        currentState = FrankenState.Idle;
+        if (hammerVisual != null) hammerVisual.gameObject.SetActive(false);
+        EndAttack();
     }
 
-
-	// ジャンプして叩きつけ、スタン波を発生させる攻撃
-	// Frankenstein.cs の Attack_Stan を書き換え
-	IEnumerator Attack_Stan()
-	{
-		currentState = FrankenState.Attack_Stan;
-		rb.linearVelocity = new Vector2(0, jumpForce);
-
-		// 上昇中を待つ
-		yield return new WaitForSeconds(0.2f);
-		// 地面に着くまで待機
-		yield return new WaitUntil(() => IsGrounded() && rb.linearVelocity.y <= 0.1f);
-
-		if (stunWavePrefab != null)
-		{
-			Debug.Log("着地：連鎖衝撃波スタート！");
-
-			// 足元の位置を計算
-			float groundY = transform.position.y;
-			if (enemyCollider != null) groundY = enemyCollider.bounds.min.y;
-
-			// 左右同時に連鎖を発生させるコルーチンを開始
-			StartCoroutine(SpawnSlamWaves(new Vector3(transform.position.x, groundY, 0)));
-		}
-
-		yield return new WaitForSeconds(slamHardnessTime);
-		currentState = FrankenState.Idle;
-		cooldownTimer = attackCooldown;
-	}
-
-	// ヴァンパイアの攻撃を流用・改造した連鎖生成ロジック
-	IEnumerator SpawnSlamWaves(Vector3 centerPos)
-	{
-		int waveCount = 4;      // 片側4つ、合計8つ出す
-		float spread = 1.8f;    // 火柱同士の間隔
-		float delay = 0.08f;    // 次の波が出るまでの速さ
-
-		for (int i = 1; i <= waveCount; i++)
-		{
-			// 右と左の生成位置を計算
-			Vector3 rightPos = centerPos + new Vector3(i * spread, 0.2f, 0); // 0.2f浮かせると埋まりにくい
-			Vector3 leftPos = centerPos + new Vector3(-i * spread, 0.2f, 0);
-
-			Instantiate(stunWavePrefab, rightPos, Quaternion.identity);
-			Instantiate(stunWavePrefab, leftPos, Quaternion.identity);
-
-			yield return new WaitForSeconds(delay);
-		}
-	}
-
-
-
-
-
-
-
-	// --- ヘルパーメソッド ---
-
-	/// <summary>
-	/// ボスが地面に接地しているかを判定します。
-	/// </summary>
-	/// <returns>接地していれば true</returns>
-	bool IsGrounded()
+    IEnumerator Attack_Stan()
     {
-        if (enemyCollider == null)
+        currentState = FrankenState.Attack_Stan;
+        rb.linearVelocity = new Vector2(0, jumpForce);
+        yield return new WaitForSeconds(0.2f);
+        yield return new WaitUntil(() => IsGrounded() && rb.linearVelocity.y <= 0.1f);
+        if (stunWavePrefab != null)
         {
-            // コライダーがない場合は常に非接地とみなす
-            return false;
+            float groundY = enemyCollider != null ? enemyCollider.bounds.min.y : transform.position.y;
+            StartCoroutine(SpawnSlamWaves(new Vector3(transform.position.x, groundY, 0)));
         }
-
-        // コライダーの下端の中心からレイを飛ばして地面をチェック
-        Vector2 origin = enemyCollider.bounds.center;
-        origin.y = enemyCollider.bounds.min.y; // コライダーの真下を開始点とする
-
-        // レイの長さをコライダーのサイズ + チェック距離とする
-        float rayLength = groundCheckDistance;
-
-        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayLength, groundLayer);
-
-        // デバッグ表示 (確認用にSceneビューにラインを表示)
-        // Debug.DrawRay(origin, Vector2.down * rayLength, hit.collider != null ? Color.green : Color.red);
-
-        return hit.collider != null;
+        yield return new WaitForSeconds(slamHardnessTime);
+        EndAttack();
     }
 
+    IEnumerator SpawnSlamWaves(Vector3 centerPos)
+    {
+        int waveCount = 4;
+        float spread = 1.8f;
+        float delay = 0.08f;
+        for (int i = 1; i <= waveCount; i++)
+        {
+            Vector3 rightPos = centerPos + new Vector3(i * spread, 0.2f, 0);
+            Vector3 leftPos = centerPos + new Vector3(-i * spread, 0.2f, 0);
+            Instantiate(stunWavePrefab, rightPos, Quaternion.identity);
+            Instantiate(stunWavePrefab, leftPos, Quaternion.identity);
+            yield return new WaitForSeconds(delay);
+        }
+    }
 
+    bool IsGrounded()
+    {
+        if (enemyCollider == null) return false;
+        Vector2 origin = new Vector2(enemyCollider.bounds.center.x, enemyCollider.bounds.min.y);
+        return Physics2D.Raycast(origin, Vector2.down, groundCheckDistance, groundLayer).collider != null;
+    }
 
-
-
-
-    /// <summary>
-    /// 攻撃シーケンスを終了し、クールダウンを開始します。
-    /// </summary>
     void EndAttack()
     {
-        // 攻撃終了時に必ず速度をリセット
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector2.zero;
-        }
-
+        rb.linearVelocity = Vector2.zero;
         cooldownTimer = attackCooldown;
         currentState = FrankenState.Idle;
     }
-
-
 }

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5652573388539571867}
   - component: {fileID: 1383382879311842064}
-  - component: {fileID: 8413121794269269831}
+  - component: {fileID: 8129466366213370289}
   m_Layer: 9
   m_Name: hammer
   m_TagString: EnemyBullet
@@ -26,13 +26,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 520674886737505187}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.30070576, w: 0.953717}
-  m_LocalPosition: {x: -1.42, y: 0.94, z: -1}
+  m_LocalRotation: {x: -0, y: -0, z: -0.10783228, w: 0.9941691}
+  m_LocalPosition: {x: -0.966, y: 0.503, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7541771336895939338}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -35}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -12.381}
 --- !u!212 &1383382879311842064
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -77,18 +77,18 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 1dc1cd18a9ad4724d87153d0f4f92e30, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6edd62ea4bf879246b6f4c2ccfb6fa0c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.0028572, y: 1.4314286}
+  m_Size: {x: 2.4, y: 2.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &8413121794269269831
+--- !u!61 &8129466366213370289
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,21 +118,21 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.508574, y: 0.23411238}
+  m_Offset: {x: -1.2867597, y: 1.2527524}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.0028572, y: 1.4314286}
-    newSize: {x: 2.0028572, y: 1.4314286}
+    pivot: {x: 0.7648579, y: 0.1737726}
+    oldSize: {x: 2.4, y: 2.4}
+    newSize: {x: 2.4, y: 2.4}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.52114755, y: 0.7890307}
+  m_Size: {x: 0.9107058, y: 1.0220308}
   m_EdgeRadius: 0
 --- !u!1 &1732606993215086778
 GameObject:
@@ -148,6 +148,8 @@ GameObject:
   - component: {fileID: 1613188624547383922}
   - component: {fileID: 1149069808338341220}
   - component: {fileID: 1971101485623263704}
+  - component: {fileID: 696812118607294195}
+  - component: {fileID: 7195866343490768878}
   m_Layer: 0
   m_Name: Frankenstein
   m_TagString: Enemy
@@ -215,7 +217,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: d75491118fd039345a8c22ece4ae823c, type: 3}
+  m_Sprite: {fileID: -676870912995211500, guid: a5c30f4fb87c534448a96ccc80815eea, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -242,7 +244,21 @@ MonoBehaviour:
   playerTransform: {fileID: 0}
   detectRange: 5
   attackCooldown: 2
-  hammerHitbox: {fileID: 8413121794269269831}
+  hammerHitbox: {fileID: 8129466366213370289}
+  playerFilter:
+    useTriggers: 0
+    useLayerMask: 0
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 0
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 0
+    maxNormalAngle: 0
   defenseDuration: 0.7
   playerBulletLayer:
     serializedVersion: 2
@@ -293,17 +309,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.029167175, y: 0}
+  m_Offset: {x: 0.54577637, y: 0.039236784}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.2, y: 3.2}
+    oldSize: {x: 3.905, y: 3.695}
     newSize: {x: 3.2, y: 3.2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.9168243, y: 3.2}
+  m_Size: {x: 1.5822449, y: 3.4146233}
   m_EdgeRadius: 0
 --- !u!50 &1149069808338341220
 Rigidbody2D:
@@ -347,3 +363,62 @@ MonoBehaviour:
   maxHP: 10
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
+  D_Effect: {fileID: 0}
+--- !u!61 &696812118607294195
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732606993215086778}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.56929016, y: -0.017692327}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 3.905, y: 3.695}
+    newSize: {x: 3.2, y: 3.2}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1.9169312, y: 2.9407167}
+  m_EdgeRadius: 0
+--- !u!114 &7195866343490768878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1732606993215086778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04a8278850bfe1d4f86bb82af316b289, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
