@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BlinkText : MonoBehaviour
 {
-    public float speed = 1f;
+    public float speed = 2f;
     TextMeshProUGUI text;
 
     void Start()
@@ -13,7 +13,7 @@ public class BlinkText : MonoBehaviour
 
     void Update()
     {
-        float a = Mathf.Abs(Mathf.Sin(Time.time * speed));
+        float a = Mathf.Abs(Mathf.Sin(Time.unscaledTime * speed));
         text.alpha = a;
     }
 }
