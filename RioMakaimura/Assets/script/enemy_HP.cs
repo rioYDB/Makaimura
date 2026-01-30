@@ -79,7 +79,7 @@ public class enemy_HP : MonoBehaviour
 	//	Debug.Log("“G‚ª“|‚ê‚½I");
 	//	StartCoroutine(DeathEffect());
 	//}
-	protected virtual void Die()
+	public virtual void Die()
 	{
 		if (isDead) return;
 

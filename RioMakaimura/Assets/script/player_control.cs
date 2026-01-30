@@ -355,6 +355,9 @@ public class player_control : MonoBehaviour
 
             Debug.Log("死ぬwwwwwwwwww");
 
+            // 現在のシーン名を保存
+            PlayerPrefs.SetString("RetryScene", SceneManager.GetActiveScene().name);
+
             //Sceneをリセットする
             SceneManager.LoadScene("GameOver");
         }

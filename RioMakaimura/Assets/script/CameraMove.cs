@@ -90,7 +90,17 @@ public class CameraMove : MonoBehaviour
 	public void UnlockCamera()
 	{
 		isFollow = true;
-	}
+
+        if (player != null)
+        {
+            // ★ 現在のカメラ位置を基準にし直す
+            originalOffset = transform.position - player.transform.position;
+        }
+
+        // 先読みもリセット
+        currentLookAheadX = 0f;
+        targetLookAheadX = 0f;
+    }
 
 	public void ResetCamera()
 	{

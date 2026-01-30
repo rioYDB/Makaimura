@@ -51,7 +51,7 @@ public class Downdoor : MonoBehaviour
     }
 
     // 実際の落下処理（Y軸方向の移動）
-    private void FallDown()
+    public void FallDown()
     {
         // 目標位置へ移動 (transform.positionを直接操作)
         transform.position = Vector3.MoveTowards(
