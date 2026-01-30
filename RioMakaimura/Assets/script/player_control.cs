@@ -71,7 +71,7 @@ public class player_control : MonoBehaviour
     public float KnockbackForce;                                                    //ノックバック
     public float invincibleTime;                                                        //無敵時間
     public int maxBulletsOnScreen = 3;                                          //画面内に出るプレイヤー攻撃の最大の数
-
+    public int maxWitchBulletsOnScreen = 9;                                     //魔女の弾制限
     public int FirePillarCnt = 0;                                               //火柱を何連させるか
     public float FirePillarDelay = 0.0f;                                        //火柱の出現間隔
     public float FirePillarSpread = 0.0f;                                       //火柱がどのくらい広がるか
@@ -326,23 +326,7 @@ public class player_control : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z) || Input.GetButtonDown("Fire1"))
         {
             Attack();
-			// 変身状態によってSE変化
-			if (currentAttack == AttackType.Human)
-            {
-				SE.Play("Player.Shoot1");
-			}
-			if (currentAttack == AttackType.Okami)
-			{
-				SE.Play("Player.Shoot2");
-			}
-			if (currentAttack == AttackType.Which)
-			{
-				SE.Play("Player.Shoot3");
-			}
-			if (currentAttack == AttackType.Vampire)
-			{
-				SE.Play("Player.Shoot4");
-			}
+		
 		}
 
 
@@ -1148,6 +1132,8 @@ public class player_control : MonoBehaviour
 		// 槍オブジェクトをすべて取得するために配列を作成
 		GameObject[] bullets = GameObject.FindGameObjectsWithTag("PlayerBullet");
 
+        GameObject[] WitchBullet = GameObject.FindGameObjectsWithTag("Spear");
+
 		// プレイヤーの向きを取得
 		float playerDirection = transform.localScale.x > 0 ? 1f : -1f;
 
@@ -1172,6 +1158,9 @@ public class player_control : MonoBehaviour
 				return;
 			}
 
+			//SEを再生
+			SE.Play("Player.Shoot4");
+
 			//火柱を出力
 			StartCoroutine(SpawnFirePillarsRoutine(spawnPosition, playerDirection, FirePillarCnt, FirePillarDelay, FirePillarSpread, Ground));
 			return; // ★攻撃後はここで処理を終了★
@@ -1182,12 +1171,23 @@ public class player_control : MonoBehaviour
         // ===============================================
         else if (currentAttack == AttackType.Which)
         {
-            // 弾の生成は、配列を使って3箇所に定義します。
-            // プレイヤーの向きは考慮せず、常に右向きを基準(playerDirection=1)として定義し、
-            // 最後にplayerDirectionで補正します。
+			// 弾の生成は、配列を使って3箇所に定義します。
+			// プレイヤーの向きは考慮せず、常に右向きを基準(playerDirection=1)として定義し、
+			// 最後にplayerDirectionで補正します。
 
-            // { Xオフセット, Yオフセット, Z回転角度 }
-            float[][] spawnData = new float[][]
+			// 既存の弾数制限
+			if (WitchBullet.Length > maxWitchBulletsOnScreen)
+			{
+				return;
+			}
+
+            Debug.Log(bullets.Length + "現在の弾数");
+
+			//SEを再生
+			SE.Play("Player.Shoot3");
+
+			// { Xオフセット, Yオフセット, Z回転角度 }
+			float[][] spawnData = new float[][]
             {
                 // 1. 頭上 (真上90度へ)
                 new float[] { 0.0f, 1.5f, 90f,2.0f }, 
@@ -1261,6 +1261,17 @@ public class player_control : MonoBehaviour
 				return;
 			}
 
+
+			// 変身状態によってSEを再生
+			if (currentAttack == AttackType.Human)
+			{
+				SE.Play("Player.Shoot1");
+			}
+            else if (currentAttack == AttackType.Okami)
+            {
+                SE.Play("Player.Shoot2");
+            }
+
 			// 生成位置を計算
 			Vector3 SpawnPosition = transform.position + new Vector3(
 				playerDirection * Offsetx,
@@ -1274,7 +1285,7 @@ public class player_control : MonoBehaviour
 			// プレイヤーの向きに合わせて反転
 			bullet.transform.localScale = new Vector3(playerDirection, 1, 1);
 
-			// ★攻撃後はここで処理を終了★
+			//攻撃後はここで処理を終了
 			return;
 		}
 

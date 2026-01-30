@@ -148,9 +148,7 @@ GameObject:
   - component: {fileID: 1613188624547383922}
   - component: {fileID: 1149069808338341220}
   - component: {fileID: 1971101485623263704}
-  - component: {fileID: 696812118607294195}
-  - component: {fileID: 7195866343490768878}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Frankenstein
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -171,6 +169,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5652573388539571867}
+  - {fileID: 5380568519195858317}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7748450355336859632
@@ -242,6 +241,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   playerTransform: {fileID: 0}
+  moveSpeed: 2
+  stopDistance: 3
   detectRange: 5
   attackCooldown: 2
   hammerHitbox: {fileID: 8129466366213370289}
@@ -364,13 +365,60 @@ MonoBehaviour:
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
   D_Effect: {fileID: 0}
---- !u!61 &696812118607294195
+--- !u!1 &6254076927047970645
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5380568519195858317}
+  - component: {fileID: 1481656311233237891}
+  - component: {fileID: 5142696194397748073}
+  m_Layer: 0
+  m_Name: Damegearea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5380568519195858317
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6254076927047970645}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.58, y: 0, z: 0}
+  m_LocalScale: {x: 1.43, y: 2.88, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7541771336895939338}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1481656311233237891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6254076927047970645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04a8278850bfe1d4f86bb82af316b289, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageAmount: 1
+  damageInterval: 1
+--- !u!61 &5142696194397748073
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1732606993215086778}
+  m_GameObject: {fileID: 6254076927047970645}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -398,27 +446,15 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.56929016, y: -0.017692327}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.905, y: 3.695}
-    newSize: {x: 3.2, y: 3.2}
-    adaptiveTilingThreshold: 0.5
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.9169312, y: 2.9407167}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &7195866343490768878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1732606993215086778}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04a8278850bfe1d4f86bb82af316b289, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
