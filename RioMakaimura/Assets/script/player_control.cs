@@ -180,9 +180,10 @@ public class player_control : MonoBehaviour
 	public bool isFacingRight = true; // カメラが参照する向きフラグ
 
 
+	// player_control.cs のメンバ変数として追加
+	private Vector2 platformVelocity; // 現在乗っている床の速度
 
-
-    void Start()
+	void Start()
     {
         //アタッチされているComponentを取得
         rb = GetComponent<Rigidbody2D>();
@@ -890,195 +891,86 @@ public class player_control : MonoBehaviour
     }
 
 
-    //関数名：Move()
-    //用途：移動処理
-    //引数：なし
-    //戻り値：なし
-    void Move()
-    {
-        // はしごの中で横慣性を残さないようにリセット
-        if (isClimbingLadder)
-        {
-            Moveinput = 0f;
-            return;
-        }
-        GetComponent<SetGravity>().IsEnable = true;
-            rb.gravityScale = originalGravityScale;
+	//関数名：Move()
+	//用途：移動処理
+	//引数：なし
+	//戻り値：なし
+	void Move()
+	{
+		// はしごの中では移動入力をリセット
+		if (isClimbingLadder)
+		{
+			Moveinput = 0f;
+			return;
+		}
 
-        //空中でも入力を受け付けるようにする
-        Moveinput = Input.GetAxisRaw("Horizontal");
-        //地上にいないときは入力を受け付けない
-        if (IsGrounded() == true )
-        {
-            //地面についたら滑空時間をリセットする
-            FlyingTime = 0.0f;
+		GetComponent<SetGravity>().IsEnable = true;
+		rb.gravityScale = originalGravityScale;
 
-            //プレイヤーの向きを変更
-            if (Moveinput != 0)
-            {
-                Movedirection = new Vector2(Moveinput, 0f);
+		// 入力取得
+		Moveinput = Input.GetAxisRaw("Horizontal");
 
-                // 向きを反転させる処理
-                Vector3 scale = transform.localScale;
-                scale.x = Mathf.Abs(scale.x) * Mathf.Sign(Moveinput); // 左ならマイナス、右ならプラス
-                transform.localScale = scale;
+		if (IsGrounded())
+		{
+			FlyingTime = 0.0f;
+			if (Moveinput != 0)
+			{
+				// 向きの反転処理
+				Vector3 scale = transform.localScale;
+				scale.x = Mathf.Abs(scale.x) * Mathf.Sign(Moveinput);
+				transform.localScale = scale;
+				isFacingRight = (Moveinput > 0);
+			}
+		}
 
-                // 向きフラグを更新
-                isFacingRight = (Moveinput > 0);
-            }
-        }
+		currentMoveSpeed = moveSpeed;
+		float PlayerDirection = transform.localScale.x > 0 ? 1f : -1f;
 
+		// --- 狼男の壁登り処理 (ここは独自の速度上書きなのでそのまま) ---
+		if (currentAttack == AttackType.Okami)
+		{
+			currentMoveSpeed *= 1.5f;
+			float WallCheck = 0.1f;
+			Vector2 wallRayOrigin = (Vector2)transform.position + bc.offset + new Vector2(bc.size.x / 2f * PlayerDirection, 0f);
+			RaycastHit2D wallHit = Physics2D.Raycast(wallRayOrigin, Vector2.right * PlayerDirection, WallCheck, WallClim);
 
+			if (wallHit.collider != null && Input.GetAxisRaw("Vertical") > 0.1f)
+			{
+				GetComponent<SetGravity>().IsEnable = false;
+				rb.gravityScale = 0f;
+				rb.linearVelocity = new Vector2(rb.linearVelocity.x, currentMoveSpeed * 0.8f);
+				return;
+			}
+		}
+		// --- ヴァンパイアの飛行処理 ---
+		else if (currentAttack == AttackType.Vampire)
+		{
+			currentMoveSpeed *= 1.2f;
+			HandleVampireFlight();
+			if (isFlying) return; // 飛行中も独自の速度制御なので抜ける
+		}
 
+		// --- ★ここが重要：速度の合算処理 ---
+		float airControl = 1f;
 
-        currentMoveSpeed = moveSpeed;  //moveSpeedを一時的な変数に保管
-        float PlayerDirection = transform.localScale.x > 0 ? 1f : -1f; // Move()内で使うplayerDirectionを定義
+		if (IsGrounded())
+		{
+			// 地上：自分の歩行速度 + 床の速度(X)
+			float targetX = Moveinput * currentMoveSpeed + platformVelocity.x;
+			// Y軸も床の上下移動(platformVelocity.y)を足して、離れないようにする
+			rb.linearVelocity = new Vector2(targetX, rb.linearVelocity.y + platformVelocity.y);
+		}
+		else
+		{
+			// 空中：少し慣性を乗せつつ床の速度の影響も受ける
+			float targetX = Moveinput * (moveSpeed * 0.8f) + platformVelocity.x;
+			float newX = Mathf.Lerp(rb.linearVelocity.x, targetX, airControl * Time.deltaTime);
+			rb.linearVelocity = new Vector2(newX, rb.linearVelocity.y);
+		}
+	}
 
-
-        //狼男になった時に壁を登れるようになる
-        if (currentAttack == AttackType.Okami)
-        {
-            currentMoveSpeed *= 1.5f;
-
-            float WallCheck = 0.1f;
-
-            // Y軸オフセットを追加
-            float verticalCenterOffset = bc.size.y * 0.50f; // プレイヤーの高さの1/4分上にずらす
-
-            Vector2 wallRayOrigin = (Vector2)transform.position + bc.offset + new Vector2(bc.size.x / 2f * PlayerDirection, 0f);
-
-
-
-            // 壁のチェック (横方向)
-            RaycastHit2D wallHit = Physics2D.Raycast(wallRayOrigin, Vector2.right * PlayerDirection, WallCheck, WallClim);
-
-            // 壁に触れていて、かつ上方向の入力がある場合 (壁登りの継続/開始条件)
-            if (wallHit.collider != null && Input.GetAxisRaw("Vertical") > 0.1f)
-            {
-                // 壁登りの実行
-                GetComponent<SetGravity>().IsEnable = false;
-                rb.gravityScale = 0f;
-
-                float climbSpeed = currentMoveSpeed * 0.8f;
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, climbSpeed);
-
-                return; // 壁登り中は他の移動処理をスキップ
-            }
-
-            // ★★★ 修正箇所: 横方向の壁がなくなった時のチェック ★★★
-
-            // 壁登りモード中に、横の壁がなくなった（wallHit.collider == null）場合
-            // ただし、Playerが空中にいる場合のみこのロジックが適用されるようにする（地面にいる場合は通常の移動ロジックで制御される）
-            if (rb.gravityScale == 0f && !IsGrounded())
-            {
-                // 空中で、かつ壁がなくなった（Raycastがヒットしなかった）場合
-                if (wallHit.collider == null)
-                {
-                    Debug.Log("横の壁が途切れたため、壁登りモードを解除します。");
-
-                    // 重力と移動を復帰させる
-                    GetComponent<SetGravity>().IsEnable = true;
-                    rb.gravityScale = originalGravityScale;
-
-                    // プレイヤーが向いている方向（Moveinput方向）にジャンプさせる
-                    rb.linearVelocity = new Vector2(PlayerDirection * jumpPower * 0.5f, jumpPower * 0.8f);
-
-                    return; // 処理を終了し、通常の移動処理をスキップ
-                }
-            }
-
-            // 壁に触れていない、または上入力がない場合は重力を元に戻す
-            else
-            {
-                GetComponent<SetGravity>().IsEnable = true;
-                rb.gravityScale = originalGravityScale;
-            }
-
-        }
-
-
-        //魔女になった時に魔女限定で動かしたい時に使う
-        else if (currentAttack == AttackType.Which)
-        {
-
-        }
-
-        //ヴァンパイアになったときに飛べるようになる
-        else if (currentAttack == AttackType.Vampire)
-        {
-            currentMoveSpeed *= 1.2f;
-
-
-            HandleVampireFlight();
-            //// Wキー長押しで飛行モードに入る例
-            //if ((Input.GetKey(KeyCode.Space) || jumpHeld) && !isClimbingLadder) // はしご登り中は飛ばない
-            //{
-
-            //    FlyingTime += Time.deltaTime;
-            //    Debug.Log(("経過") + FlyingTime);
-
-            //    //Gravityのスクリプトも止める
-            //    GetComponent<SetGravity>().IsEnable = false;
-
-            //    rb.gravityScale = 0f; // 重力を無効にする
-
-
-
-            //    // Y軸の速度は0に固定する
-            //    // 左右の移動はMoveinputで制御、Y軸はInput.GetAxisRaw("Vertical")の影響を受けないようにする
-            //    rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, 0f); // Y軸の速度を0に固定！
-            //}
-
-            //if (FlyingTime >= 2.0f) //3秒たったら重力を元に戻し徐々に下降していく
-            //{
-            //    SpriteRenderer.color = Color.magenta;   //プレイヤーに下降している状態とわかりやすく伝えるために色を変える
-
-            //    GetComponent<SetGravity>().IsEnable = true;
-            //    rb.gravityScale = originalGravityScale;
-            //}
-
-            //else if (Input.GetKeyUp(KeyCode.Space)|| !jumpHeld) // Wキーを離したら重力を元に戻す
-            //{
-            //    PlayerColor();                 //元の体力状態の色に戻す
-            //    GetComponent<SetGravity>().IsEnable = true;
-            //    rb.gravityScale = originalGravityScale;
-
-
-
-            //}
-        }
-
-
-        // --- 空中の横移動を少しだけ効くようにする設定 ---
-        float airMoveSpeed = moveSpeed * 0.8f;   // 空中での最大速度（地上の半分）
-        float airControl = 1f;                 // 空中での加速具合（低いと慣性強め）
-
-        // --- 空中か地上かで処理を分ける ---
-        if (IsGrounded())
-        {
-            // 地上：普通に反応する
-            rb.linearVelocity = new Vector2(Moveinput * currentMoveSpeed, rb.linearVelocity.y);
-        }
-        else
-        {
-            // 空中：慣性を残しつつ入力方向に寄っていく
-            float targetX = Moveinput * airMoveSpeed;
-
-            float newX = Mathf.Lerp(rb.linearVelocity.x, targetX, airControl * Time.deltaTime);
-
-            rb.linearVelocity = new Vector2(newX, rb.linearVelocity.y);
-        }
-
-
-        if (Moveinput != 0)
-        {
-            Movedirection = new Vector2(Moveinput, 0f);
-        }
-
-    }
-
-    // ヴァンパイアの飛行の関数
-    void HandleVampireFlight()
+	// ヴァンパイアの飛行の関数
+	void HandleVampireFlight()
     {
         // ヴァンパイア形態でなければスキップ
         if (currentAttack != AttackType.Vampire)
@@ -1795,6 +1687,13 @@ public class player_control : MonoBehaviour
 		// 4. 元に戻す
 		sr.color = originalColor;
 		isStunned = false;
+	}
+
+
+	// 外部（movetile.cs）から床の速度を注入するための関数
+	public void SetPlatformVelocity(Vector2 velocity)
+	{
+		platformVelocity = velocity;
 	}
 
 

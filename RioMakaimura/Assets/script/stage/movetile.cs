@@ -8,56 +8,54 @@ public class movetile : MonoBehaviour
 
 	private float journeyLength;
 	private float startTime;
-
 	private Rigidbody2D rb;
-	private Vector3 prevPosition;
-
-	private Rigidbody2D playerRb;
+	private Vector2 lastPosition;
 
 	void Start()
 	{
 		rb = GetComponent<Rigidbody2D>();
+		rb.bodyType = RigidbodyType2D.Kinematic; // 物理で動かされないように固定
 		transform.position = leftEndPoint;
 
 		journeyLength = Vector3.Distance(leftEndPoint, rightEndPoint);
 		startTime = Time.time;
-
-		prevPosition = rb.position;
+		lastPosition = rb.position;
 	}
 
 	void FixedUpdate()
 	{
-		float t = Mathf.PingPong(
-			(Time.time - startTime) * moveSpeed / journeyLength, 1f);
+		// 往復移動の計算
+		float t = Mathf.PingPong((Time.time - startTime) * moveSpeed / journeyLength, 1f);
+		Vector2 targetPos = Vector2.Lerp(leftEndPoint, rightEndPoint, t);
 
-		Vector3 targetPos = Vector3.Lerp(leftEndPoint, rightEndPoint, t);
+		// ★このフレームの床の速度を計算する
+		Vector2 currentVelocity = (targetPos - lastPosition) / Time.fixedDeltaTime;
+
+		// 床を動かす
 		rb.MovePosition(targetPos);
+		lastPosition = targetPos;
 
-		// ★ 床の移動量
-		Vector3 delta = targetPos - prevPosition;
+		// 判定：上に乗っているプレイヤーを探す
+		// 親子関係にはせず、速度だけを伝える
+		RaycastHit2D hit = Physics2D.BoxCast(transform.position, GetComponent<BoxCollider2D>().size, 0, Vector2.up, 0.5f, LayerMask.GetMask("Player"));
 
-		// ★ プレイヤーを一緒に動かす
-		if (playerRb != null)
+		if (hit.collider != null)
 		{
-			playerRb.transform.position += delta;
-		}
-
-		prevPosition = targetPos;
-	}
-
-	private void OnCollisionEnter2D(Collision2D collision)
-	{
-		if (collision.gameObject.CompareTag("Player"))
-		{
-			playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
+			player_control pc = hit.collider.GetComponent<player_control>();
+			if (pc != null)
+			{
+				pc.SetPlatformVelocity(currentVelocity);
+			}
 		}
 	}
 
+	// プレイヤーが離れたら速度をリセットさせる
 	private void OnCollisionExit2D(Collision2D collision)
 	{
 		if (collision.gameObject.CompareTag("Player"))
 		{
-			playerRb = null;
+			player_control pc = collision.gameObject.GetComponent<player_control>();
+			if (pc != null) pc.SetPlatformVelocity(Vector2.zero);
 		}
 	}
 }
