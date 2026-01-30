@@ -11,9 +11,9 @@ public class BossCameraTrigger : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		if (other.CompareTag("Player"))
-		{
-			cam.LockCamera();
-		}
-	}
+        if (other.CompareTag("Player"))
+        {
+            GameManager.Instance.StartBossEvent();
+        }
+    }
 }
