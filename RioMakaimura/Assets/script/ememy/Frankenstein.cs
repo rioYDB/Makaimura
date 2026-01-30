@@ -70,7 +70,10 @@ public class Frankenstein : MonoBehaviour
         {
             hammerVisual.gameObject.SetActive(false);
         }
-    }
+
+        //ぶつかってもすり抜けられるようにする
+		Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Enemy"), LayerMask.NameToLayer("Player"), true);
+	}
 
     void Update()
     {
