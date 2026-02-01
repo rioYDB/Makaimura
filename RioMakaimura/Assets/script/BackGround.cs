@@ -6,7 +6,7 @@ public class BackGround : MonoBehaviour
 {
     public Camera cam;
     public GameObject bgObj;
-    public float scrollSpeed;
+    public float scrollSpeed; // 0ならカメラに完全固定、1なら動かない
 
     [Header("背景のサイズ設定")]
     public float bgWidth = 50.0f;
@@ -14,16 +14,12 @@ public class BackGround : MonoBehaviour
     private GameObject[] bg;
     private bool isInitialized = false;
 
-    // ★重要：エディタで設定した「高さ」や「奥行き」を保存する変数
-    private float startY;
     private float startZ;
     private float startX;
 
     void Start()
     {
-        // 1. ゲーム開始時の位置（Y軸やZ軸）を記録する
         startX = transform.position.x;
-        startY = transform.position.y;
         startZ = transform.position.z;
 
         bg = new GameObject[3];
@@ -31,12 +27,10 @@ public class BackGround : MonoBehaviour
         {
             if (bgObj == null) return;
 
-            // 2. 子オブジェクト（背景）を生成する際、親のY,Zに合わせる
-            bg[i] = Instantiate(bgObj, new Vector3((float)(i - 1) * bgWidth, 0.0f, 0.0f), Quaternion.identity);
+            // 最初は「左・中・右」の順に並べる (-1, 0, 1)
+            bg[i] = Instantiate(bgObj, new Vector3((i - 1) * bgWidth, 0.0f, 0.0f), Quaternion.identity);
             bg[i].transform.SetParent(transform);
-
-            // 子のローカル座標を確実に(0,0,0)ベースにする
-            bg[i].transform.localPosition = new Vector3((float)(i - 1) * bgWidth, 0.0f, 0.0f);
+            bg[i].transform.localPosition = new Vector3((i - 1) * bgWidth, 0.0f, 0.0f);
 
             SpriteRenderer sr = bg[i].GetComponentInChildren<SpriteRenderer>();
             if (sr != null) sr.sortingOrder = -1;
@@ -48,29 +42,26 @@ public class BackGround : MonoBehaviour
     {
         if (cam == null || !isInitialized) return;
 
-        // 3. 【位置調整の核心】
-        // X座標はカメラに合わせて動かすが、YとZは「最初にエディタで置いた値」を維持する
-        float targetX = startX + (cam.transform.position.x * scrollSpeed);
+        // 1. パララックス移動量の計算
+        // dist: カメラに合わせて背景をどれだけずらすか
+        float dist = (cam.transform.position.x * scrollSpeed);
 
-        // ここで startY と startZ を使うことで、エディタでの調整が反映されます
-        this.transform.position = new Vector3(targetX, startY, startZ);
+        // 2. ループ（回り込み）判定用の計算
+        // temp: 視差を考慮した「実質的なカメラの移動量」
+        float temp = (cam.transform.position.x * (1 - scrollSpeed));
 
-        for (int i = 0; i < bg.Length; ++i)
+        // 3. 親オブジェクトをカメラの高さに固定しつつ、Xは視差移動
+        transform.position = new Vector3(startX + dist, cam.transform.position.y, startZ);
+
+        // 4. 背景の回り込みロジック (ここが重要！)
+        // カメラが今の背景の端を越えたら、startXを1枚分ずらす
+        if (temp > startX + bgWidth)
         {
-            if (bg[i] == null) continue;
-
-            float localX = bg[i].transform.localPosition.x;
-            float limit = bgWidth * 1.5f;
-            float moveStep = bgWidth * 3.0f;
-
-            if (localX < -limit)
-            {
-                bg[i].transform.localPosition += new Vector3(moveStep, 0, 0);
-            }
-            else if (localX > limit)
-            {
-                bg[i].transform.localPosition -= new Vector3(moveStep, 0, 0);
-            }
+            startX += bgWidth;
+        }
+        else if (temp < startX - bgWidth)
+        {
+            startX -= bgWidth;
         }
     }
 }
