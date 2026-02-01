@@ -3437,9 +3437,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9047a3ed74f67c64cb68ee69dd77ea07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraMove: {fileID: 0}
+  bossPrefab: {fileID: 0}
+  bossSpawnPoint: {fileID: 0}
+  bossSpawnDelay: 1
   isBossDefeated: 0
-  bossDoor: {fileID: 0}
+  OpenDoor: {fileID: 0}
+  CloseDoor: {fileID: 0}
   goal: {fileID: 0}
+  cameraUnlockDelay: 1.5
 --- !u!114 &519420036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7410,7 +7416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 519420031}
-  bgObj: {fileID: 2240914376753806707, guid: 318069ced5a525547aa63318805f32ed, type: 3}
+  bgObj: {fileID: 6121739347188373176, guid: 4d2fd520dafaa314296824b25a70a6c5, type: 3}
   scrollSpeed: 0.5
   bgWidth: 50
 --- !u!4 &1056457134
@@ -12591,19 +12597,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 128236404541610040, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -528
+      value: -876
       objectReference: {fileID: 0}
     - target: {fileID: 128236404541610040, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 291
+      value: 456
       objectReference: {fileID: 0}
     - target: {fileID: 1547816426627258770, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -375
+      value: -723
       objectReference: {fileID: 0}
     - target: {fileID: 1547816426627258770, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 198.3
+      value: 363.3
       objectReference: {fileID: 0}
     - target: {fileID: 1799275828427532754, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: player
@@ -12611,11 +12617,11 @@ PrefabInstance:
       objectReference: {fileID: 2102234896}
     - target: {fileID: 2775577971096717064, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -120
+      value: -468
       objectReference: {fileID: 0}
     - target: {fileID: 2775577971096717064, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 77.5
+      value: 242.5
       objectReference: {fileID: 0}
     - target: {fileID: 4759850005583886099, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_Pivot.x
@@ -12699,11 +12705,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4959017532082623453, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -527
+      value: -875
       objectReference: {fileID: 0}
     - target: {fileID: 4959017532082623453, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 200.5
+      value: 365.5
       objectReference: {fileID: 0}
     - target: {fileID: 6079745533900601664, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_Name
@@ -12711,19 +12717,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6284939667825063980, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -120
+      value: -468
       objectReference: {fileID: 0}
     - target: {fileID: 6284939667825063980, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 77.5
+      value: 242.5
       objectReference: {fileID: 0}
     - target: {fileID: 8084445296479768940, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -374
+      value: -722
       objectReference: {fileID: 0}
     - target: {fileID: 8084445296479768940, guid: 21df1df6d682fcf4ca78c6399d3d7cd7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 290
+      value: 455
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
