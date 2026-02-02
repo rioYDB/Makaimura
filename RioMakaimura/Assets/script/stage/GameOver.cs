@@ -23,7 +23,7 @@ public class GameOver : MonoBehaviour
         }
 
         // 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space)||Input.GetButtonDown("LetsPlay"))
         {
             Retry();
         }
