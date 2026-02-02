@@ -104,8 +104,14 @@ public class Cerberus_Controller : MonoBehaviour
             attackCoolDownTimer -= Time.deltaTime;
         }
 
-        // 現在の状態に応じて処理を分岐
-        switch (currentState)
+		// ★追加：待機(Idle) または 移動(Move) の時だけ向きを更新する
+		if (currentState == CerberusState.Idle || currentState == CerberusState.Move)
+		{
+			FlipTowardsPlayer();
+		}
+
+		// 現在の状態に応じて処理を分岐
+		switch (currentState)
         {
             case CerberusState.Idle:
                 HandleIdleState();
@@ -268,7 +274,8 @@ public class Cerberus_Controller : MonoBehaviour
 
     void StartAttack3()
     {
-        currentState = CerberusState.Attack3;
+		
+		currentState = CerberusState.Attack3;
         Debug.Log("ケルベロス: 攻撃3を開始！ (突進)");
         StartCoroutine(Attack3Coroutine());
     }
@@ -436,10 +443,21 @@ public class Cerberus_Controller : MonoBehaviour
         // 突進方向の決定（チャージ中に決定し、見た目を向けておく）
         int playerDirectionInt = (playerTransform.position.x > transform.position.x) ? 1 : -1;
         moveDirection = playerDirectionInt;
-        if (sr != null) sr.flipX = (playerDirectionInt == -1); // 見た目を突進方向に向ける
+		Vector3 dashScale = transform.localScale;
+		if (playerDirectionInt == 1)
+		{
+			// 右（プラス）に突進するときは、左向き画像を反転させる（マイナスにする）
+			dashScale.x = -Mathf.Abs(dashScale.x);
+		}
+		else
+		{
+			// 左（マイナス）に突進するときは、元の左向き（プラス）に戻す
+			dashScale.x = Mathf.Abs(dashScale.x);
+		}
+		transform.localScale = dashScale;
 
-        // 横揺れループ
-        while (Time.time < startTime + shakeDuration)
+		// 横揺れループ
+		while (Time.time < startTime + shakeDuration)
         {
             // サイン波を使って左右に振動するオフセットを計算
             float shakeX = Mathf.Sin((Time.time - startTime) * shakeFrequency) * shakeAmplitude;
@@ -523,4 +541,26 @@ public class Cerberus_Controller : MonoBehaviour
         currentState = CerberusState.Idle;
         attackCoolDownTimer = attackCoolDownTime;
     }
+
+	void FlipTowardsPlayer()
+	{
+		if (playerTransform == null) return;
+
+		float direction = playerTransform.position.x - transform.position.x;
+		Vector3 scale = transform.localScale;
+
+		// ★ ここを逆にしました！
+		if (direction > 0)
+		{
+			// プレイヤーが右にいるとき、左向き素材ならマイナスにする
+			scale.x = -Mathf.Abs(scale.x);
+		}
+		else if (direction < 0)
+		{
+			// プレイヤーが左にいるとき、左向き素材ならプラス（反転解除）にする
+			scale.x = Mathf.Abs(scale.x);
+		}
+
+		transform.localScale = scale;
+	}
 }

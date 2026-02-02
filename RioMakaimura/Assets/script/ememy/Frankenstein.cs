@@ -82,8 +82,13 @@ public class Frankenstein : MonoBehaviour
             cooldownTimer -= Time.deltaTime;
         }
 
-        // 状態に応じた処理
-        switch (currentState)
+		if (currentState != FrankenState.Dead && currentState != FrankenState.Hit)
+		{
+			FlipTowardsPlayer();
+		}
+
+		// 状態に応じた処理
+		switch (currentState)
         {
             case FrankenState.Idle:
                 rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); // 止まる
@@ -157,7 +162,7 @@ public class Frankenstein : MonoBehaviour
         }
     }
 
-    // --- 以下、既存の攻撃コルーチン（変更なし） ---
+
     IEnumerator Defend()
     {
         currentState = FrankenState.Defend;
@@ -253,4 +258,17 @@ public class Frankenstein : MonoBehaviour
         cooldownTimer = attackCooldown;
         currentState = FrankenState.Idle;
     }
+
+	void FlipTowardsPlayer()
+	{
+		if (playerTransform == null) return;
+
+		float direction = playerTransform.position.x - transform.position.x;
+		Vector3 scale = transform.localScale;
+
+		if (direction > 0) scale.x = -Mathf.Abs(scale.x);
+		else if (direction < 0) scale.x = Mathf.Abs(scale.x);
+
+		transform.localScale = scale;
+	}
 }
