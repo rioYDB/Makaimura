@@ -245,6 +245,24 @@ public class player_control : MonoBehaviour
 		// ★追加：スタン中はここで処理を中断させる
 		if (isStunned) return;
 
+
+
+		// ★追加：スティックを下に入力しているかどうかの判定
+		// GetAxisRaw は -1.0(下) から 1.0(上) の値をとります。
+		// -0.5 より小さければ「下に入力している」とみなします。
+		bool isPressingDown = Input.GetAxisRaw("Vertical") < -0.5f;
+
+		// ★追加：すり抜け床を降りる処理
+		// 「下入力」＋「ジャンプボタンが押された瞬間」に発動させるのが一般的です
+		if (isPressingDown)
+		{
+			if (IsOnPlatform())
+			{
+				StartCoroutine(DisableColliderMomentarily());
+			}
+		}
+
+
 		if (IsGrounded())
 
 

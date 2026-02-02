@@ -21,6 +21,14 @@ public class NextStage : MonoBehaviour
 
             Debug.Log("main");
         }
+
+
+        else if (Input.GetKeyDown(KeyCode.Backspace) || Input.GetButtonDown("Respawn"))
+        {
+            SceneManager.LoadScene("title");
+
+        }
+
     }
 
 
