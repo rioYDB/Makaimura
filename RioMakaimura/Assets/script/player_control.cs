@@ -363,25 +363,15 @@ public class player_control : MonoBehaviour
             SceneManager.LoadScene("GameOver");
         }
 
-        // =================== デバッグキー ===================
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            IsInvincible = !IsInvincible;  // 無敵トグル
-            if (IsInvincible)
-            {
-                InvincibleTimer = 999f; // 十分に長い時間を設定
-                StartCoroutine(InvincibilityFlash());
-                StartCoroutine(IgnoreEnemyCollisionDuringInvincibility());
-                Debug.Log("無敵モード ON");
-            }
-            else
-            {
-                InvincibleTimer = 0f;
-                Debug.Log("無敵モード OFF");
-            }
-        }
+		// =================== デバッグキー ===================
 
-        if (Input.GetKeyDown(KeyCode.F2))
+		if (Input.GetKeyDown(KeyCode.F1))
+		{
+            SceneManager.LoadScene("title");
+		}
+
+
+		if (Input.GetKeyDown(KeyCode.F2))
         {
             sr.sprite = Okami;
             BulletChange("Okami");
@@ -417,11 +407,32 @@ public class player_control : MonoBehaviour
             Debug.Log("人間に戻る");
         }
 
-        if (Input.GetKeyDown(KeyCode.F6))
+		if (Input.GetKeyDown(KeyCode.F6))
+		{
+			IsInvincible = !IsInvincible;  // 無敵トグル
+			if (IsInvincible)
+			{
+				InvincibleTimer = 999f; // 十分に長い時間を設定
+				StartCoroutine(InvincibilityFlash());
+				StartCoroutine(IgnoreEnemyCollisionDuringInvincibility());
+				Debug.Log("無敵モード ON");
+			}
+			else
+			{
+				InvincibleTimer = 0f;
+				Debug.Log("無敵モード OFF");
+			}
+		}
+
+
+		if (Input.GetKeyDown(KeyCode.F7))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             Debug.Log("シーンリセット");
         }
+
+
+
 
         // ↓キー入力時に物理設定を変更する前後でログを出力
         #if false
