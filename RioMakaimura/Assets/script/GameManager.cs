@@ -1,12 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    [Header("Camera")]
-    public CameraMove cameraMove;
+  
 
 
     [Header("BossSpawn")]
@@ -42,9 +42,11 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+	
 
-    // ボスイベント開始用メソッド
-    public void StartBossEvent()
+
+	// ボスイベント開始用メソッド
+	public void StartBossEvent()
     {
         if (bossEventStarted) return;
         bossEventStarted = true;
@@ -52,57 +54,58 @@ public class GameManager : MonoBehaviour
         StartCoroutine(BossEventSequence());
     }
 
-    // カメラ解除用コルーチン
-    private IEnumerator UnlockCameraAfterDelay()
-    {
-        yield return new WaitForSeconds(cameraUnlockDelay);
+	// カメラ解除用コルーチン
+	private IEnumerator UnlockCameraAfterDelay()
+	{
+		yield return new WaitForSeconds(cameraUnlockDelay);
 
-        if (cameraMove != null)
-        {
-            cameraMove.UnlockCamera();
-        }
+		CameraMove cam = Camera.main?.GetComponent<CameraMove>();
+		if (cam != null)
+		{
+			cam.UnlockCamera();
+		}
 
-        Debug.Log("カメラ固定解除");
-    }
+		Debug.Log("カメラ固定解除");
+	}
 
-    // ボス戦開始時
-    private IEnumerator BossEventSequence()
-    {
-        // ① 扉を閉める
-        if (CloseDoor != null)
-        {
-            CloseDoor.StartFalling();
-        }
 
-        // ② カメラ固定
-        if (cameraMove != null)
-        {
-            cameraMove.LockCamera();
-        }
-        Debug.Log("① BossEventSequence 開始");
+	// ボス戦開始時
+	private IEnumerator BossEventSequence()
+	{
+		// ① 扉を閉める
+		if (CloseDoor != null)
+		{
+			CloseDoor.StartFalling();
+		}
 
-        if (CloseDoor == null) Debug.LogWarning("CloseDoor が null");
-        if (cameraMove == null) Debug.LogWarning("cameraMove が null");
-        if (bossPrefab == null) Debug.LogWarning("bossPrefab が null");
-        if (bossSpawnPoint == null) Debug.LogWarning("bossSpawnPoint が null");
+		// ② カメラ固定（★ここ！）
+		CameraMove cam = Camera.main?.GetComponent<CameraMove>();
+		if (cam != null)
+		{
+			cam.LockCamera();
+		}
+		else
+		{
+			Debug.LogWarning("CameraMove が見つからない（BossEventSequence）");
+		}
 
-        // ③ 演出待ち
-        yield return new WaitForSeconds(bossSpawnDelay);
+		Debug.Log("① BossEventSequence 開始");
 
-        Debug.Log("② ボス生成直前");
+		// ③ 演出待ち
+		yield return new WaitForSeconds(bossSpawnDelay);
 
-        // ④ ボス出現
-        if (bossPrefab != null && bossSpawnPoint != null)
-        {
-            Instantiate(bossPrefab, bossSpawnPoint.position, Quaternion.identity);
-        }
-        Debug.Log("③ ボス生成完了: " );
+		// ④ ボス出現
+		if (bossPrefab != null && bossSpawnPoint != null)
+		{
+			Instantiate(bossPrefab, bossSpawnPoint.position, Quaternion.identity);
+		}
 
-        Debug.Log("ボスイベント開始！");
-    }
+		Debug.Log("ボスイベント開始！");
+	}
 
-    // ボス撃破後の流れ
-    public void OnBossDefeated()
+
+	// ボス撃破後の流れ
+	public void OnBossDefeated()
     {
         if (isBossDefeated) return; // 二重防止
 

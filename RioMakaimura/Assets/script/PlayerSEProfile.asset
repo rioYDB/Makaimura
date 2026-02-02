@@ -26,7 +26,7 @@ MonoBehaviour:
     volume: 5
     cooldown: 0
   - id: Player.Shoot4
-    clip: {fileID: 8300000, guid: efa07b5fa91298140a36f5e98472ed5c, type: 3}
+    clip: {fileID: 8300000, guid: 76a736a5509e9d54cbe9bdf9eb944033, type: 3}
     volume: 5
     cooldown: 0
   - id: Player.damage
@@ -46,11 +46,11 @@ MonoBehaviour:
     volume: 5
     cooldown: 0
   - id: Player.change_V
-    clip: {fileID: 8300000, guid: f90405a7d88bffd459fd74775643790c, type: 3}
+    clip: {fileID: 8300000, guid: 2dc73d6c7e03aa849bab49fa2a8839b6, type: 3}
     volume: 5
     cooldown: 0
   - id: Player.jump_O
-    clip: {fileID: 8300000, guid: f90405a7d88bffd459fd74775643790c, type: 3}
+    clip: {fileID: 8300000, guid: 4ae327bb7e03db44395aa7f07ab8e179, type: 3}
     volume: 5
     cooldown: 0
   - id: Player.jump_W
@@ -58,7 +58,7 @@ MonoBehaviour:
     volume: 5
     cooldown: 0
   - id: Player.jump_V
-    clip: {fileID: 8300000, guid: f90405a7d88bffd459fd74775643790c, type: 3}
+    clip: {fileID: 8300000, guid: 26dc2f11bb17d954ba1752fd5701d7b1, type: 3}
     volume: 5
     cooldown: 0
   - id: Player.jump_H
