@@ -245,12 +245,17 @@ public class player_control : MonoBehaviour
 		// ★追加：スタン中はここで処理を中断させる
 		if (isStunned) return;
 
+        // 地面に触れているかチェックし、フラグを更新
+        if (IsGrounded())
+        {
+            IsJumping = false;
+            // 狼状態でも着地したら確実にジャンプフラグを折る
+        }
 
-
-		// ★追加：スティックを下に入力しているかどうかの判定
-		// GetAxisRaw は -1.0(下) から 1.0(上) の値をとります。
-		// -0.5 より小さければ「下に入力している」とみなします。
-		bool isPressingDown = Input.GetAxisRaw("Vertical") < -0.5f;
+        // ★追加：スティックを下に入力しているかどうかの判定
+        // GetAxisRaw は -1.0(下) から 1.0(上) の値をとります。
+        // -0.5 より小さければ「下に入力している」とみなします。
+        bool isPressingDown = Input.GetAxisRaw("Vertical") < -0.5f;
 
 		// ★追加：すり抜け床を降りる処理
 		// 「下入力」＋「ジャンプボタンが押された瞬間」に発動させるのが一般的です
@@ -391,6 +396,9 @@ public class player_control : MonoBehaviour
 
 		if (Input.GetKeyDown(KeyCode.F2))
         {
+
+            //滑空状態をリセット
+            ResetVampireState();
             sr.sprite = Okami;
             BulletChange("Okami");
             currentAttack = AttackType.Okami;
@@ -400,6 +408,9 @@ public class player_control : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F3))
         {
+
+            //滑空状態をリセット
+            ResetVampireState();
             sr.sprite = Which;
             BulletChange("Which");
             currentAttack = AttackType.Which;
@@ -409,6 +420,9 @@ public class player_control : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F4))
         {
+
+            //滑空状態をリセット
+            ResetVampireState();
             sr.sprite = Vampire;
             BulletChange("Vampire");
             currentAttack = AttackType.Vampire;
@@ -418,6 +432,8 @@ public class player_control : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F5))
         {
+            //滑空状態をリセット
+            ResetVampireState();
             sr.sprite = humanAnim.idle; // idleスプライトに戻す（または任意のSprite）
             BulletChange("Human");
             currentAttack = AttackType.Human;
@@ -554,6 +570,16 @@ public class player_control : MonoBehaviour
         sr.sprite = currentAnim.idle;
     }
 
+
+    //ヴァンパイアリセット関数
+    void ResetVampireState()
+    {
+        isFlying = false;
+        flyingTime = 0f;
+        rb.gravityScale = originalGravityScale; // 重力を元に戻す
+    }
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
@@ -562,7 +588,11 @@ public class player_control : MonoBehaviour
         //狼男アイテムに触れたら自分が狼男になる
         if (collision.gameObject.tag == "Okami")
         {
-			SE.Play("Player.change_O");
+            //滑空状態をリセット
+            ResetVampireState();
+
+
+            SE.Play("Player.change_O");
 			sr.sprite = Okami;
             BulletChange("Okami");
 
@@ -577,7 +607,10 @@ public class player_control : MonoBehaviour
         //魔女アイテムに触れたら自分が魔女になる
         if (collision.gameObject.tag == "Which")
         {
-			SE.Play("Player.change_W");
+            //滑空状態をリセット
+            ResetVampireState();
+
+            SE.Play("Player.change_W");
 			sr.sprite = Which;
             BulletChange("Which");
 
@@ -1274,7 +1307,7 @@ public class player_control : MonoBehaviour
 
 
         // レイの長さ (調整しやすいように定数化)
-        float rayLength = 0.2f;
+        float rayLength = 0.3f;
 
         // BoxCollider2Dの参照を取得
         // bcはStart()で取得済み
