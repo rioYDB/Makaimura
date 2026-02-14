@@ -5,6 +5,15 @@ public class BossHP : enemy_HP
 {
     public override void Die()
     {
+        // GameManager_2を探して変数に入れる
+        GameManager_2 gm2 = FindObjectOfType<GameManager_2>();
+
+        // もしシーン内にGameManager_2が見つかった時だけ、OnBossDefeatedを実行する
+        if (gm2 != null)
+        {
+            gm2.OnBossDefeated();
+        }
+
         // ★ 先にボス撃破を通知
         if (GameManager.Instance != null)
         {

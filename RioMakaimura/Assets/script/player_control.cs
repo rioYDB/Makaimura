@@ -6,6 +6,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 
+//using System.Diagnostics;
+
+
 public enum AttackType { Human, Okami, Which, Vampire };                                //攻撃種類を管理する
 
 [System.Serializable]
@@ -234,6 +237,10 @@ public class player_control : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
+
+
 		// 操作不能（ステージ開始演出・イベント中など）
 		if (!canControl)
 		{
@@ -245,12 +252,6 @@ public class player_control : MonoBehaviour
 		// ★追加：スタン中はここで処理を中断させる
 		if (isStunned) return;
 
-        // 地面に触れているかチェックし、フラグを更新
-        if (IsGrounded())
-        {
-            IsJumping = false;
-            // 狼状態でも着地したら確実にジャンプフラグを折る
-        }
 
         // ★追加：スティックを下に入力しているかどうかの判定
         // GetAxisRaw は -1.0(下) から 1.0(上) の値をとります。
@@ -259,7 +260,7 @@ public class player_control : MonoBehaviour
 
 		// ★追加：すり抜け床を降りる処理
 		// 「下入力」＋「ジャンプボタンが押された瞬間」に発動させるのが一般的です
-		if (isPressingDown)
+		if (isPressingDown )
 		{
 			if (IsOnPlatform())
 			{
@@ -268,12 +269,18 @@ public class player_control : MonoBehaviour
 		}
 
 
+		
+
+
 		if (IsGrounded())
-
-
-			if (IsGrounded())
         {
-            IsJumping = false;
+                IsJumping = false;
+                isPressingDown = Input.GetAxisRaw("Vertical") < -0.5f || Input.GetKey(KeyCode.DownArrow);
+
+                if (rb.linearVelocity.y < -0.1f && !isPressingDown)
+                {
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+                }
         }
 
         // はしごの一番下 + 地面 のときの特例処理
@@ -291,6 +298,8 @@ public class player_control : MonoBehaviour
 
         if (!isFreeFromLadder)
         {
+           
+
             // ★はしご登り中（すでに登っている最中）
             if (isClimbingLadder)
             {
@@ -1326,9 +1335,9 @@ public class player_control : MonoBehaviour
         //float padding = 0.1f;
 
         // 左足元の位置
-        Vector2 originLeft = center + new Vector2(-extentsX  ,-extentsY);
+        Vector2 originLeft = center + new Vector2(-extentsX, -extentsY);
         // 右足元の位置
-        Vector2 originRight = center + new Vector2(extentsX , -extentsY);
+        Vector2 originRight = center + new Vector2(extentsX, -extentsY);
         // 中央足元の位置 (既存のレイキャストに近い)
         Vector2 originCenter = center + new Vector2(0f, -extentsY);
 
@@ -1428,6 +1437,7 @@ public class player_control : MonoBehaviour
     {
         isClimbingLadder = false;
         rb.gravityScale = originalGravityScale;
+
 
         // 横慣性をリセット
         Moveinput = 0f;
@@ -1604,7 +1614,7 @@ public class player_control : MonoBehaviour
 
     //一旦削除
 
-    
+
     /*
 
     //魔女の隠しエリアのかべのコルーチン
@@ -1722,38 +1732,39 @@ public class player_control : MonoBehaviour
 
 
 
-	// スタンを開始する公開メソッド
-	public void Stun(float duration)
-	{
-		// 無敵中や既にスタン中なら重ねてスタンしない
-		if (IsInvincible || isStunned) return;
+    // スタンを開始する公開メソッド
+    public void Stun(float duration)
+    {
+        // 無敵中や既にスタン中なら重ねてスタンしない
+        if (IsInvincible || isStunned) return;
 
-		StartCoroutine(StunRoutine(duration));
-	}
-
-
-	private IEnumerator StunRoutine(float duration)
-	{
-		isStunned = true;
-		Color originalColor = sr.color; // 現在の色を保存
-
-		// 1. 移動を止める
-		rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
-
-		// 2. 見た目をグレーにする
-		sr.color = Color.gray;
-
-		// 3. 指定時間待機（この間、Updateでの入力を受け付けない）
-		yield return new WaitForSeconds(duration);
-
-		// 4. 元に戻す
-		sr.color = originalColor;
-		isStunned = false;
-	}
+        StartCoroutine(StunRoutine(duration));
+    }
 
 
-	// 外部（movetile.cs）から床の速度を注入するための関数
-	public void SetPlatformVelocity(Vector2 velocity)
+    private IEnumerator StunRoutine(float duration)
+    {
+        isStunned = true;
+        Color originalColor = sr.color; // 現在の色を保存
+
+        // 1. 移動を止める
+        rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+
+        // 2. 見た目をグレーにする
+        sr.color = Color.gray;
+
+        // 3. 指定時間待機（この間、Updateでの入力を受け付けない）
+        yield return new WaitForSeconds(duration);
+
+        // 4. 元に戻す
+        sr.color = originalColor;
+        isStunned = false;
+    }
+
+
+
+    // 外部（movetile.cs）から床の速度を注入するための関数
+    public void SetPlatformVelocity(Vector2 velocity)
 	{
 		platformVelocity = velocity;
 	}

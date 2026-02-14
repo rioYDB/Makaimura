@@ -156,7 +156,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &5708774463391587881
 MonoBehaviour:
@@ -188,6 +188,7 @@ MonoBehaviour:
   KnockbackForce: 12
   invincibleTime: 1.5
   maxBulletsOnScreen: 3
+  maxWitchBulletsOnScreen: 9
   FirePillarCnt: 4
   FirePillarDelay: 0.1
   FirePillarSpread: 1
@@ -239,6 +240,8 @@ MonoBehaviour:
     m_Bits: 1024
   FadeWallTag: Fadewall
   FadeDuration: 0
+  isStunned: 0
+  canControl: 1
   isFacingRight: 1
 --- !u!114 &4921942773722063416
 MonoBehaviour:

@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+
 public class CoinScoreManager : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -33,6 +34,14 @@ public class CoinScoreManager : MonoBehaviour
     {
         // プレイヤーを検索して取得
         playerHealth = FindAnyObjectByType<player_control>();
+
+        // 安全策を追加
+        if (scoreText == null)
+        {
+            Debug.LogError("CoinScoreManager: Score Text がセットされていません！");
+            return; // エラーで止まらないように処理を抜ける
+        }
+
 
         scoreText.text = "Coins: " + score.ToString();
 
